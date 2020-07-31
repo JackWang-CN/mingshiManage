@@ -1,0 +1,209 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+html {
+  width: 100%;
+}
+
+body {
+  min-width: 1790px;
+}
+@media screen and (max-width: 1789px) {
+  body {
+    min-width: 1789px;
+  }
+}
+@media screen and (max-width: 1549px) {
+  body {
+    min-width: 760px;
+  }
+}
+@media screen and (max-width: 750px) {
+  body {
+    min-width: 750px;
+  }
+}
+
+/* 版心容器 */
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* 一级标题 */
+.section_title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.section_title > h3 {
+  padding: 0 50px;
+  font-size: 40px;
+  color: #141414;
+  margin-bottom: 26px;
+  background: url("../images/地球.png") no-repeat 0px 4px;
+}
+
+.section_title > div {
+  font-size: 36px;
+  color: #dcdbdb;
+}
+
+/* 二级标题 */
+.passage_title {
+  text-align: left;
+  font-size: 30px;
+  margin-bottom: 18px;
+  margin-top: 10px;
+}
+.passage_title > .icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #55cddc;
+  margin-right: 25px;
+}
+
+/* 文章容器(带阴影) */
+.article_shadow {
+  border-radius: 4px;
+  box-shadow: 0 0 16px -10px #1a1b1b7e;
+  padding: 58px;
+  background-color: #fff;
+}
+
+.main {
+  padding: 50px 0;
+  background: url("../../assets/images/主页背景.png") no-repeat;
+  background-size: cover;
+}
