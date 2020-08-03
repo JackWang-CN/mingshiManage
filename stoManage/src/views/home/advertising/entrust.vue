@@ -1,14 +1,18 @@
 <template>
   <div id="entrust" class="shadow_container">
-    <div class="pageTitle">我的委托</div>
+    <div class="pageTitle">
+      我的委托
+      <el-button type="success" style="margin-left:50px" @click="toDetails()
+      ">我要委托</el-button>
+    </div>
 
     <!-- 查询表单 -->
     <el-form ref="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
-      <el-form-item label="广告编号">
-        <el-input v-model="find_form.data.reqId" placeholder="请输入广告编号"></el-input>
+      <el-form-item label="委托编号">
+        <el-input v-model="find_form.data.reqId" placeholder="请输入委托编号"></el-input>
       </el-form-item>
-      <el-form-item label="广告状态">
+      <el-form-item label="委托状态">
         <el-select v-model="find_form.data.reqStatus" placeholder="请选择状态">
           <el-option label="启用" :value="0"></el-option>
           <el-option label="禁用" :value="1"></el-option>
@@ -33,7 +37,7 @@
       </el-form-item>
     </el-form>
 
-    <!-- 广告列表 -->
+    <!-- 委托列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="reqId" label="委托" width="200" sortable></el-table-column>
@@ -137,6 +141,14 @@ export default {
         this.$message.error("请勾选至少一项");
         return;
       }
+    },
+
+    // 跳转到详情页
+    toDetails(id) {
+      this.$router.push({
+        path: "entrust_details",
+        query: { id },
+      });
     },
 
     // 重置

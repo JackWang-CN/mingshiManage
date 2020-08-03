@@ -45,6 +45,7 @@
           </template>
           <el-menu-item index="goods_type">商品分类</el-menu-item>
           <el-menu-item index="goods_list">商品列表</el-menu-item>
+          <el-menu-item index="coupon_list">优惠券管理</el-menu-item>
         </el-submenu>
 
         <!-- 订单管理 -->

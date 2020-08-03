@@ -2,7 +2,7 @@
 <template>
   <div id="author_roleAdd" class="shadow_container">
     <div class="pageTitle">{{type?'修改角色':'新增角色'}}</div>
-    <!-- 查询表单 -->
+    <!-- 表单 -->
     <el-form ref="data_info" :model="data_info" label-width="80px">
       <div>
         <el-form-item label="角色名称">

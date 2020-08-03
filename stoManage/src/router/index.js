@@ -37,10 +37,17 @@ export default new VueRouter({
           component: () => import("../views/home/advertising/adv_details.vue"),
           meta: ["广告管理", "修改"],
         },
-        // 广告管理-广告申请
+        // 广告管理-我的委托
         {
           path: "entrust",
           component: () => import("../views/home/advertising/entrust.vue"),
+          meta: ["广告管理", "我的委托"],
+        },
+        // 广告管理-修改&新增委托
+        {
+          path: "entrust_details",
+          component: () =>
+            import("../views/home/advertising/entrust_details.vue"),
           meta: ["广告管理", "我的委托"],
         },
 
@@ -86,6 +93,18 @@ export default new VueRouter({
           path: "goods_details",
           component: () => import("../views/home/goods/goods_details.vue"),
           meta: ["商品管理", "商品详情"],
+        },
+        // 商品管理-优惠券列表
+        {
+          path: "coupon_list",
+          component: () => import("../views/home/goods/coupon_list.vue"),
+          meta: ["商品管理", "优惠券列表"],
+        },
+        // 商品管理-优惠券详情
+        {
+          path: "coupon_details",
+          component: () => import("../views/home/goods/coupon_details.vue"),
+          meta: ["商品管理", "优惠券详情"],
         },
 
         // 订单管理-订单列表

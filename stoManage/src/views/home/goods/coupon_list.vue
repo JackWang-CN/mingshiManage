@@ -1,24 +1,24 @@
-<!-- 我的广告 -->
 <template>
-  <div id="advertising" class="shadow_container">
+  <!-- 优惠券 -->
+  <div id="coupon_list" class="shadow_container">
     <div class="pageTitle">
-      我的广告
-      <el-button type="success" size="medium" @click="toDetails()">添加</el-button>
+      我的优惠券
+      <el-button type="success" style="margin-left:50px" @click="toDetails()
+      ">添加优惠券</el-button>
     </div>
+
     <!-- 查询表单 -->
     <el-form ref="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
-      <el-form-item label="广告编号">
-        <el-input v-model="find_form.data.reqId" placeholder="请输入广告编号"></el-input>
+      <el-form-item label="委托编号">
+        <el-input v-model="find_form.data.reqId" placeholder="请输入委托编号"></el-input>
       </el-form-item>
-
-      <el-form-item label="广告状态">
+      <el-form-item label="委托状态">
         <el-select v-model="find_form.data.reqStatus" placeholder="请选择状态">
           <el-option label="启用" :value="0"></el-option>
           <el-option label="禁用" :value="1"></el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item label="创建时间" label-width="100px">
         <el-date-picker
           v-model="find_form.data.creationTime"
@@ -38,20 +38,15 @@
       </el-form-item>
     </el-form>
 
-    <!-- 广告列表 -->
+    <!-- 优惠券列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="reqId" label="编号" width="200" sortable></el-table-column>
+      <el-table-column prop="reqId" label="委托" width="200" sortable></el-table-column>
       <el-table-column prop="desInfo" label="描述" width="250"></el-table-column>
       <el-table-column prop="reqStatus" label="状态" width="100">
         <template slot-scope="scope">{{scope.row.reqStatus?'禁用':'启用'}}</template>
       </el-table-column>
       <el-table-column prop="creationTime" label="创建时间" width="200"></el-table-column>
-      <el-table-column prop="adUrl" label="资源地址" width="300">
-        <template slot-scope="scope">
-          <img :src="scope.row.adUrl" height="200" alt />
-        </template>
-      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row.reqId)" type="primary" size="small">编辑</el-button>
@@ -59,76 +54,50 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页插件 -->
-    <pagination
-      :find="find_form"
-      @sizeChange="pageChange('size',$event)"
-      @currChange="pageChange('curr',$event)"
-    ></pagination>
   </div>
 </template>
 
 <script>
-import { getDataList, delData, updateDataList } from "@/utils/api/api";
+import { getDataList, delData } from "@/utils/api/api";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
-import pagination from "@/components/Pagination";
-
 export default {
-  components: {
-    pagination,
-  },
   mounted() {
     // 首次加载
     getDataList(
       this.$vision.merchant,
-      "Meraddata",
+      "Entrustreqdata",
       createGet(1, 10),
       "data_list",
       this
     );
   },
-
   data() {
     return {
-      find_form: {
-        currPage: 1,
-        pageSize: 10,
-        data: {},
-        totalDataNum: 0,
-      },
+      find_form: { data: {} },
       data_list: [],
       select_list: [],
       btn_status: false,
     };
   },
-  methods: {
-    // 跳转到详情页
-    toDetails(id) {
-      this.$router.push({
-        path: "adv_details",
-        query: { id },
-      });
-    },
 
-    // pageSize改变时触发
-    pageChange(type, page) {
-      switch (type) {
-        case "size":
-          this.find_form.pageSize = page;
-          break;
-        case "curr":
-          this.find_form.currPage = page;
-          break;
-      }
+  methods: {
+    // 查询
+    findList() {
+      this.btn_status = true;
+      setTimeout(() => {
+        this.btn_status = false;
+      }, 500);
+
       var form = { ...this.find_form };
+      form.data = filteObj(form.data);
+      form.data = spliceKey(form.data);
       getDataList(
         this.$vision.merchant,
-        "Meraddata",
+        "Entrustreqdata",
         form,
         "data_list",
         this,
-        null
+        "btn_status"
       );
     },
 
@@ -174,25 +143,12 @@ export default {
       }
     },
 
-    // 查询
-    findList() {
-      this.btn_status = true;
-      setTimeout(() => {
-        this.btn_status = false;
-      }, 500);
-
-      var form = { ...this.find_form };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
-      console.log(form);
-      getDataList(
-        this.$vision.merchant,
-        "Meraddata",
-        form,
-        "data_list",
-        this,
-        "btn_status"
-      );
+    // 跳转到详情页
+    toDetails(id) {
+      this.$router.push({
+        path: "coupon_details",
+        query: { id },
+      });
     },
 
     // 重置
@@ -206,16 +162,14 @@ export default {
 
     // 获取选中项
     select(list) {
-      this.select_list = list.map((item) => {
-        return { reqId: item.reqId };
-      });
+      this.select_list = list;
     },
   },
 };
 </script>
 
 <style lang='scss'>
-#advertising {
+#coupon_list {
   // 查询表单
   form {
     .el-form-item {
@@ -226,6 +180,9 @@ export default {
   .el-table {
     .cell {
       max-height: 200px;
+      img {
+        height: 180px;
+      }
     }
   }
 }

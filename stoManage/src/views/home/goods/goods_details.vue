@@ -43,15 +43,17 @@
           :auto-upload="false"
           :on-change="getFileList"
           :multiple="false"
+          :file-list="file_list"
+          :disabled="!!file_list.length"
         >
           <i slot="default" class="el-icon-plus"></i>
           <div slot="file" slot-scope="{file}">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+              <span class="el-upload-list__item-preview" @click="imgPreview(file)">
                 <i class="el-icon-zoom-in"></i>
               </span>
-              <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+              <span class="el-upload-list__item-delete" @click="imgRemove(file)">
                 <i class="el-icon-delete"></i>
               </span>
             </span>
@@ -66,6 +68,11 @@
         <el-button type="danger" @click="toPath('goods_list')">取消</el-button>
       </el-form-item>
     </el-form>
+
+    <!-- 图片预览 -->
+    <el-dialog :visible.sync="previewBox">
+      <img width="100%" :src="previewUrl" alt />
+    </el-dialog>
   </div>
 </template>
 
@@ -78,7 +85,7 @@ import {
 } from "@/utils/api/api";
 import { creatFormData, spliceUrl } from "@/utils/common";
 export default {
-  created() {
+  beforeMount() {
     // 获取reqId
     var id = this.$route.query.id;
     if (id) {
@@ -100,6 +107,8 @@ export default {
       type: "add", // 标识当前是"新增"或"修改"
       data_info: {}, // 数据对象
       file_list: [], // 上传文件列表
+      previewBox: false, // 图片预览
+      previewUrl: "", // 图片预览url
     };
   },
   methods: {
@@ -171,6 +180,24 @@ export default {
             );
           }
           break;
+      }
+    },
+
+    // 预览图片
+    imgPreview(file) {
+      this.previewBox = true;
+      this.previewUrl = file.url;
+    },
+
+    // 删除图片
+    imgRemove(file) {
+      var id = file.uid,
+        length = this.file_list.length;
+      for (var i = 0; i < length; i++) {
+        if (this.file_list[i].uid == id) {
+          this.file_list.splice(i, 1);
+          break;
+        }
       }
     },
   },
