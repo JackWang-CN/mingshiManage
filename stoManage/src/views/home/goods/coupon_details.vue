@@ -29,7 +29,7 @@
 
       <el-form-item label="有效日期" label-width="100px">
         <el-date-picker
-          v-model="data_info.validTime"
+          v-model="validTime"
           type="datetimerange"
           align="right"
           unlink-panels
@@ -39,29 +39,6 @@
         ></el-date-picker>
       </el-form-item>
 
-      <!-- 图片上传 -->
-      <el-form-item label="资源上传">
-        <el-upload
-          action="#"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="getFileList"
-          :multiple="false"
-        >
-          <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-            <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span class="el-upload-list__item-delete" @click="handleRemove(file)">
-                <i class="el-icon-delete"></i>
-              </span>
-            </span>
-          </div>
-        </el-upload>
-      </el-form-item>
       <el-form-item label="广告描述">
         <el-input type="textarea" v-model="data_info.desInfo"></el-input>
       </el-form-item>
@@ -80,6 +57,7 @@ export default {
       type: 0, // 标识当前是"新增"或"修改"
       data_info: {}, // 数据对象
       file_list: [], // 上传文件列表
+      validTime: [], // 有效日期
     };
   },
 
@@ -87,6 +65,8 @@ export default {
     getFileList() {},
 
     sendSubmit() {
+      this.data_info.startTime = this.validTime[0].toJSON();
+      this.data_info.endTime = this.validTime[1].toJSON();
       console.log(this.data_info);
     },
   },

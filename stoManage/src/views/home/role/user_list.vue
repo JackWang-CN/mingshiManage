@@ -51,26 +51,36 @@
       <el-table-column prop="userName" label="用户名" width="100"></el-table-column>
       <el-table-column prop="headIco" label="用户头像" width="100">
         <template slot-scope="scope">
-          <el-avatar :src="scope.row.headIco" :size="50"></el-avatar>
+          <el-avatar :src="scope.row.headIco" :size="70"></el-avatar>
         </template>
       </el-table-column>
       <el-table-column prop="merchantname" label="所属商户" width="150"></el-table-column>
-      <el-table-column prop="password" label="密码" width="150">
-        <template slot-scope="scope">{{scope.row.password?scope.row.password:'无'}}</template>
-      </el-table-column>
       <el-table-column prop="isEnable" label="用户状态" width="100">
-        <template slot-scope="scope">{{scope.row.isEnable?'启用':'禁用'}}</template>
+        <template slot-scope="scope">{{scope.row.isEnable-0?'启用':'禁用'}}</template>
       </el-table-column>
-      <el-table-column prop="roleGroupId" label="所属用户组" width="150"></el-table-column>
+      <el-table-column prop="roleGroupId" label="所属用户组" width="150">
+        <template slot-scope="scope">
+          <i v-if="scope.row.roleGroupId=='0'">XX组</i>
+          <i v-else-if="scope.row.roleGroupId=='1'">财务组</i>
+          <i v-else-if="scope.row.roleGroupId=='2'">开发组</i>
+        </template>
+      </el-table-column>
       <el-table-column prop="email" label="邮箱" width="250"></el-table-column>
-      <el-table-column prop="isAdministrator" label="是否超级管理员" width="150"></el-table-column>
+      <el-table-column prop="isAdministrator" label="账号权限" width="150">
+        <template slot-scope="scope">{{scope.row.isAdministrator-0?'超级管理员':'普通管理员'}}</template>
+      </el-table-column>
       <el-table-column prop="realName" label="真实姓名" width="100"></el-table-column>
       <el-table-column prop="idCard" label="身份证号" width="250"></el-table-column>
       <el-table-column prop="creationTime" label="创建时间" width="250"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row.userId)" type="primary" size="small">编辑</el-button>
-          <el-button @click="delRow(scope.row.userId)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="delRow(scope.row.userId)"
+            type="danger"
+            size="small"
+            v-if="!scope.row.isAdministrator-0"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +104,10 @@ export default {
   },
   data() {
     return {
-      find_form: {},
+      find_form: {
+        currPage: 1,
+        pageSize: 10,
+      },
       add_form: {
         username: "",
         password: "",
@@ -120,7 +133,18 @@ export default {
     delRow(userId) {
       var form = { userId };
       delData(this.$vision.merchant, "Userinfo", "del", form).then((res) => {
-        console.log(res);
+        if (res) {
+          this.$message.success("删除成功");
+          getDataList(
+            this.$vision.merchant,
+            "Userinfo",
+            this.find_form,
+            "user_list",
+            this,
+            null,
+            "headIco"
+          );
+        }
       });
     },
     // 批量添加

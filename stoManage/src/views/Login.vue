@@ -100,10 +100,14 @@ export default {
                 clearTimeout(timer);
                 var token = res.accessToken,
                   headImg = spliceUrl([res.user], "headIco")[0].headIco,
-                  userName = res.user.userName;
+                  userName = res.user.userName,
+                  userId = res.user.userId,
+                  merchantname = res.user.merchantname;
                 sessionStorage.setItem("token", token);
                 sessionStorage.setItem("headImg", headImg);
                 sessionStorage.setItem("userName", userName);
+                sessionStorage.setItem("userId", userId);
+                sessionStorage.setItem("merchantname", merchantname);
                 this.loading = false;
                 this.$message.success("登录成功");
                 this.$router.replace("home");

@@ -119,18 +119,19 @@ export default new VueRouter({
           component: () => import("../views/home/order/order_details.vue"),
           meta: ["订单管理", "订单审核"],
         },
-        // 订单管理-订单审核
-        {
-          path: "order_check",
-          component: () => import("../views/home/order/order_check.vue"),
-          meta: ["订单管理", "订单审核"],
-        },
 
         // 客户管理
         {
           path: "customer",
           component: () => import("../views/home/customer/customer.vue"),
           meta: ["客户管理"],
+        },
+
+        // 个人中心
+        {
+          path: "personal_center",
+          component: () => import("../views/home/personal/personal_center.vue"),
+          meta: ["个人中心"],
         },
       ],
     },

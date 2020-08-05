@@ -3,9 +3,11 @@
 // 拼接文件URL
 export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
-    item[imgKey] =
-      "http://192.168.0.89:9001/f1/FileResources/DownLoad?pathtemp=" +
-      item[imgKey];
+    if (item[imgKey]) {
+      item[imgKey] =
+        "http://192.168.0.89:9001/f1/FileResources/DownLoad?pathtemp=" +
+        item[imgKey];
+    }
   });
   return arr;
 };

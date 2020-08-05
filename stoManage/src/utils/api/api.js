@@ -105,12 +105,21 @@ export const addDataList = (vision, control, info, _this, path) => {
 };
 
 // 5.更新数据
-export const updateDataList = (vision, control, info, _this, path) => {
+export const updateDataList = (vision, control, info, _this, path, fn) => {
   var action = "edit";
   updateData(vision, control, action, info).then((res) => {
-    if (res) {
-      _this.$message.success("修改已生效！");
-      _this.$router.push(path);
+    switch (res) {
+      case 1:
+        _this.$message.success("修改已生效！");
+
+        if (path) {
+          _this.$router.push(path);
+        }
+
+        if (fn) {
+          debugger;
+          // fn();
+        }
     }
   });
 };
@@ -123,6 +132,6 @@ export const delData = (vision, control, action, info) => {
 
 // 7.文件上传  place--上传目录  formdata--文件
 export const upLoadFiles = (remarks, formdata) => {
-  var url = `/f1/FileResources/WebUploadForm?Remarks=${remarks}`;
+  var url = `http://192.168.0.89:9001/f1/FileResources/WebUploadForm?Remarks=${remarks}`;
   return axios.post(url, formdata);
 };
