@@ -120,16 +120,16 @@
             {{ new Date(scope.row.creationtime).toJSON() }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="220" fixed="right">
           <template slot-scope="scope">
             <el-button
-              type="text"
+              type="primary"
               size="small"
               @click="changeRow(scope.row.recruitId)"
               >编辑</el-button
             >
             <el-button
-              type="text"
+              type="danger"
               size="small"
               @click="deleteRow(scope.row.recruitId)"
               >删除</el-button

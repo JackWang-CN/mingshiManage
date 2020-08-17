@@ -5,10 +5,16 @@
     <el-form ref="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
       <el-form-item label="商家名称">
-        <el-input v-model="find_form.name" placeholder="请输入商家名称"></el-input>
+        <el-input
+          v-model="find_form.name"
+          placeholder="请输入商家名称"
+        ></el-input>
       </el-form-item>
       <el-form-item label="商家ID">
-        <el-input v-model="find_form.code" placeholder="请输入商家ID"></el-input>
+        <el-input
+          v-model="find_form.code"
+          placeholder="请输入商家ID"
+        ></el-input>
       </el-form-item>
       <el-form-item label="审核状态">
         <el-select v-model="find_form.check_status" placeholder="请选择状态">
@@ -18,7 +24,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="业务经理">
-        <el-input v-model="find_form.manager" placeholder="请选择业务经理"></el-input>
+        <el-input
+          v-model="find_form.manager"
+          placeholder="请选择业务经理"
+        ></el-input>
       </el-form-item>
       <!-- 按钮组 -->
       <el-form-item>
@@ -28,16 +37,43 @@
     </el-form>
 
     <!-- 资源列表 -->
-    <el-table ref="order_list" :data="order_list" tooltip-effect="dark" :border="true">
-      <el-table-column prop="name" label="商家名称" width="150"></el-table-column>
+    <el-table
+      ref="order_list"
+      :data="order_list"
+      tooltip-effect="dark"
+      :border="true"
+    >
+      <el-table-column
+        prop="name"
+        label="商家名称"
+        width="150"
+      ></el-table-column>
       <el-table-column prop="code" label="商家ID" width="150"></el-table-column>
-      <el-table-column prop="manager" label="业务经理" width="150"></el-table-column>
-      <el-table-column prop="file_name" label="附件名称" width="300"></el-table-column>
-      <el-table-column prop="file_address" label="附件地址" width="300"></el-table-column>
-      <el-table-column prop="upload_date" label="上传时间" width="300"></el-table-column>
+      <el-table-column
+        prop="manager"
+        label="业务经理"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="file_name"
+        label="附件名称"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="file_address"
+        label="附件地址"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="upload_date"
+        label="上传时间"
+        width="300"
+      ></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="check(scope.row)" type="success" size="small">审核</el-button>
+          <el-button @click="check(scope.row)" type="success" size="small"
+            >审核</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -109,15 +145,9 @@ export default {
     user_add() {
       this.$router.push("author_userAdd");
     },
-    user_update() {
-      console.log("点击了编辑");
-    },
-    user_delete() {
-      console.log("点击了删除");
-    },
-    user_batchAdd() {
-      console.log("点击了批量添加");
-    },
+    user_update() {},
+    user_delete() {},
+    user_batchAdd() {},
     // 重置
     resetForm() {
       this.find_form = {
@@ -132,7 +162,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #order_check {
   // 查询表单
   form {

@@ -3,8 +3,7 @@
 import axios from "axios";
 
 // 设置基础地址
-// axios.defaults.baseURL = "https://backmanagewebapi.scmsar.com";
-axios.defaults.baseURL = "http://192.168.0.89:9007";
+axios.defaults.baseURL = "https://api.official.scmsar.com/";
 
 /*
  *  1.ClientPlatform     ---- web ios android
@@ -141,9 +140,8 @@ export const delManyList = (type, info) => {
 /* 媒体资源 */
 
 // 7.文件上传  place--上传目录  formdata--文件
-export const upLoadFiles = (remarks, hierarchy, formdata) => {
-  var url = `/f1/FileResources/AppWebUploadForm?Remarks=${remarks}`;
-  if (hierarchy) url + `& hierarchy=${hierarchy}`;
+export const upLoadFiles = (remarks, formdata) => {
+  var url = `https://api.resources.scmsar.com/f1/FileResources/WebUploadForm?Remarks=${remarks}`;
   return axios.post(url, formdata);
 };
 

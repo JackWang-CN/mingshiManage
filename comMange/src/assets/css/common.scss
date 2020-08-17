@@ -1,0 +1,51 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+/* 阴影容器 */
+.shadow_container {
+  background-color: #fff;
+  padding: 20px 20px 50px 20px;
+  box-shadow: 0 0 10px #747373;
+}
+
+/* 主标题 */
+.pageTitle {
+  font-size: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eaeefb;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 底部按钮组 */
+.bottom_btns {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+// 组件表格内容单元格样式
+.el-table {
+  .cell {
+    max-height: 80px;
+    span {
+      &.danger {
+        color: #f56c6c;
+      }
+      &.success {
+        color: #67c23a;
+      }
+      &.warning {
+        color: #e6a23c;
+      }
+      &.primary {
+        color: #409eff;
+      }
+    }
+  }
+}
+.btn_link {
+  margin-left: 10px;
+}

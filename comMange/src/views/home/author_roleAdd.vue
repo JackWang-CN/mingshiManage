@@ -6,7 +6,10 @@
     <el-form ref="add_role" :model="add_role" label-width="80px">
       <div>
         <el-form-item label="角色名称">
-          <el-input v-model="add_role.name" placeholder="请输入角色名称"></el-input>
+          <el-input
+            v-model="add_role.name"
+            placeholder="请输入角色名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="角色状态">
           <el-select v-model="add_role.status" placeholder="请选择角色状态">
@@ -21,7 +24,7 @@
         <el-tab-pane v-for="v in author_list" :key="v.type" :label="v.type">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              v-for="(item,index) in v.children_dom"
+              v-for="(item, index) in v.children_dom"
               :key="index"
               :name="v.type"
               :label="item"
@@ -33,7 +36,7 @@
       <div class="checkboxList">
         <el-form-item label="已选择：">
           <el-checkbox
-            v-for="(item,index) in checkList"
+            v-for="(item, index) in checkList"
             :key="index"
             :label="item"
             checked
@@ -45,7 +48,7 @@
       <el-form-item style="display:block;margin-top:30px" label="详细说明">
         <el-input
           type="textarea"
-          :autosize="{ minRows: 2, maxRows: 10}"
+          :autosize="{ minRows: 2, maxRows: 10 }"
           placeholder="请输入内容"
           v-model="add_role.description"
         ></el-input>
@@ -65,7 +68,7 @@ export default {
       add_role: {
         name: "",
         status: "",
-        description: ""
+        description: "",
       },
       author_list: [
         { type: "首页", children_dom: ["首页"] },
@@ -73,9 +76,9 @@ export default {
         { type: "权限管理", children_dom: ["角色管理", "后台管理"] },
         { type: "资源管理", children_dom: ["资源管理"] },
         { type: "商户管理", children_dom: ["商户列表", "商户审核"] },
-        { type: "客户管理", children_dom: ["客户管理"] }
+        { type: "客户管理", children_dom: ["客户管理"] },
       ],
-      checkList: []
+      checkList: [],
     };
   },
   methods: {
@@ -84,35 +87,33 @@ export default {
       this.checkList.splice(index, 1);
     },
     // 创建角色
-    createRole() {
-      console.log("立即创建");
-    },
+    createRole() {},
     // 取消创建
     cancleCreate() {
       this.$confirm("确认取消操作?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           this.$message({
             type: "info",
-            message: "已取消操作"
+            message: "已取消操作",
           });
           this.$router.push("author_roleList");
         })
         .catch(() => {
           this.$message({
             type: "success",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #author_roleAdd {
   // 查询表单
   form {

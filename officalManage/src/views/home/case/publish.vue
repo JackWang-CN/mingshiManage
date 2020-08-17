@@ -17,7 +17,7 @@
           ref="upload"
         >
           <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
+          <div slot="file" slot-scope="{ file }">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
               <span class="el-upload-list__item-preview" @click="previewImg(file)">
@@ -53,11 +53,9 @@ import tinymceEditor from "@/components/Tinymce/tinymce";
 import { addList, upLoadFiles } from "@/utils/api/api";
 
 export default {
-  mounted() {
-    this.upParams.upLoadId = sessionStorage.getItem("userId");
-  },
+  mounted() {},
   components: {
-    tinymceEditor
+    tinymceEditor,
   },
   data() {
     return {
@@ -65,15 +63,12 @@ export default {
       upParams: {
         upLoadId: "",
         typeName: "offical_case_article",
-        remarks: "产品案例-插图"
+        remarks: "产品案例-插图",
       },
       show_img: false,
       show_imgUrl: "", // 预览图地址
       fileList: [],
-
-      upLoadId: "",
-      typeName: "offical_case_article",
-      remarks: "产品案例-文章"
+      remarks: "产品案例-文章",
     };
   },
 
@@ -84,22 +79,20 @@ export default {
       var file = this.fileList;
       var formData = this.creatFormData(file);
 
-      upLoadFiles(this.upLoadId, this.typeName, this.remarks, formData).then(
-        res => {
-          this.form.mainMediaUrl = res.temp[0].resId;
-          addList("case", this.form)
-            .then(res => {
-              if (res) {
-                this.$message({
-                  type: "success",
-                  message: "发布成功！"
-                });
-                this.$router.push("case_list");
-              }
-            })
-            .catch(err => {});
-        }
-      );
+      upLoadFiles(this.remarks, formData).then((res) => {
+        this.form.mainMediaUrl = res.list[0].resId;
+        addList("case", this.form)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                type: "success",
+                message: "发布成功！",
+              });
+              this.$router.push("case_list");
+            }
+          })
+          .catch((err) => {});
+      });
     },
 
     // 取消
@@ -135,7 +128,9 @@ export default {
         formData.append("files" + index, item);
       });
       return formData;
-    }
-  }
+    },
+  },
 };
 </script>
+<style lang="scss">
+</style>

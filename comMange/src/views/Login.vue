@@ -37,7 +37,7 @@
 <script>
 import Verify from "@/components/verify.vue";
 import { sendLogin } from "@/api/api";
-import { spliceUrl } from "@/api/Common";
+import { spliceUrl } from "@/utils/common";
 export default {
   mounted() {},
   components: { Verify },
@@ -46,7 +46,7 @@ export default {
       // 输入框
       loginForm: {
         username: "",
-        password: ""
+        password: "",
       },
       // 验证规则
       loginRules: {
@@ -56,8 +56,8 @@ export default {
             min: 2,
             max: 12,
             message: "长度在 2 到 12 个字符",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -65,18 +65,18 @@ export default {
             min: 6,
             max: 16,
             message: "长度在 6 到 16 个字符",
-            trigger: "blur"
-          }
-        ]
+            trigger: "blur",
+          },
+        ],
       },
       // 滑动验证成功判断
-      confirmSuccess: false
+      confirmSuccess: false,
     };
   },
   methods: {
     // 登录
     submitLogin(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs[form].validate((valid) => {
         // 表单验证
         if (valid) {
           // 滑动验证
@@ -85,13 +85,12 @@ export default {
 
             var loginJson = {
               account: this.loginForm.username,
-              passWord: this.loginForm.password
+              passWord: this.loginForm.password,
             };
-            sendLogin(loginJson).then(res => {
-              console.log(res);
-              if (res != null) {
+            sendLogin(loginJson).then((res) => {
+              if (res) {
                 var token = res.accessToken;
-                var headImg = spliceUrl([res.user],'headIco');
+                var headImg = spliceUrl([res.user], "headIco");
                 var userName = res.user.userName;
                 sessionStorage.setItem("token", token);
                 sessionStorage.setItem("userName", userName);
@@ -115,8 +114,8 @@ export default {
     //滑动事件
     slideVerify(value) {
       this.confirmSuccess = value;
-    }
-  }
+    },
+  },
 };
 </script>
 

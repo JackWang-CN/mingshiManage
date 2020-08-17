@@ -4,7 +4,7 @@
     <h1>
       新闻列表
       <span class="btns">
-        <el-button type="success" @click="addOne">添加案例</el-button>
+        <el-button type="success" @click="addOne">添加新闻</el-button>
         <el-button type="danger" @click="deleteManyRows">删除</el-button>
       </span>
     </h1>
@@ -151,7 +151,7 @@ export default {
 
       news_list: [], // 新闻列表
 
-      select_list: [] // 选中的列表
+      select_list: [], // 选中的列表
     };
   },
   methods: {
@@ -159,7 +159,7 @@ export default {
     // 请求列表数据
     getNewsList(obj) {
       getList("case", obj)
-        .then(res => {
+        .then((res) => {
           if (res.data == null) {
             this.news_list = [];
           } else {
@@ -167,7 +167,7 @@ export default {
             this.totalDataNum = res.totalDataNum;
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 每页显示条数改变
@@ -206,18 +206,18 @@ export default {
       var obj = {};
       obj.caseId = caseId;
       delList("case", obj)
-        .then(res => {
+        .then((res) => {
           // 删除成功
           if (res) {
             this.$message({
               type: "success",
-              message: "删除成功！"
+              message: "删除成功！",
             });
           }
           // 重新加载列表
           this.getNewsList(this.get_form);
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 批量删除
@@ -228,17 +228,17 @@ export default {
       }
 
       delManyList("case", this.select_list)
-        .then(res => {
+        .then((res) => {
           console.log(res);
           if (res) {
             this.$message({
               type: "success",
-              message: "批量删除成功"
+              message: "批量删除成功",
             });
           }
           this.getNewsList(this.get_form);
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     /* ========================================改======================================== */
@@ -250,23 +250,23 @@ export default {
       status = !status - 0;
       obj.isDisable = status.toString();
       update("case", obj)
-        .then(res => {
+        .then((res) => {
           if (res == "1") {
             this.$message({
               type: "success",
-              message: "修改已生效"
+              message: "修改已生效",
             });
             this.getNewsList(this.get_form);
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 修改当前行
     changeRow(caseId) {
       this.$router.push({
         path: "news_change",
-        query: { caseId }
+        query: { caseId },
       });
     },
 
@@ -276,14 +276,14 @@ export default {
         currPage: 1,
         pageSize: 5,
         data: {
-          caseScene: "0" // 0--新闻 1--产品
-        }
+          caseScene: "0", // 0--新闻 1--产品
+        },
       };
     },
 
     // 勾选事件
     selectRows(selection) {
-      selection.forEach(item => {
+      selection.forEach((item) => {
         var obj = {};
         obj.caseId = item.caseId;
         this.select_list.push(obj);
@@ -293,8 +293,8 @@ export default {
     // 添加
     addOne() {
       this.$router.push("news_publish");
-    }
-  }
+    },
+  },
 };
 </script>
 

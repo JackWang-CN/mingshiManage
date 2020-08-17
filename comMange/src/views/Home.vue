@@ -31,15 +31,35 @@
           <el-menu-item index="author_roleList">角色管理</el-menu-item>
           <el-menu-item index="author_user">用户管理</el-menu-item>
         </el-submenu>
-        <!-- 资源管理 -->
 
+        <!-- 道具商城 -->
+        <el-submenu index="props">
+          <template slot="title">
+            <i class="el-icon-shopping-cart-2"></i>
+            <span>道具商城</span>
+          </template>
+          <el-menu-item index="props_list">道具列表</el-menu-item>
+          <el-menu-item index="props_records">交易记录</el-menu-item>
+        </el-submenu>
+
+        <!-- 拍卖行 -->
+        <el-submenu index="auction">
+          <template slot="title">
+            <i class="el-icon-office-building"></i>
+            <span>拍卖行管理</span>
+          </template>
+          <el-menu-item index="auction_list">拍卖列表</el-menu-item>
+          <el-menu-item index="auction_records">交易记录</el-menu-item>
+        </el-submenu>
+
+        <!-- 资源管理 -->
         <el-submenu index="resource">
           <template slot="title">
             <i class="el-icon-s-grid"></i>
             <span>资源管理</span>
           </template>
-          <el-menu-item index="resource_type">资源分类</el-menu-item>
-          <el-menu-item index="resource_list">资源列表</el-menu-item>
+          <el-menu-item index="normal_list">普通资源管理</el-menu-item>
+          <el-menu-item index="ar_list">AR资源管理</el-menu-item>
         </el-submenu>
         <!-- 商户管理 -->
         <el-submenu index="store">
@@ -50,11 +70,6 @@
           <el-menu-item index="store_list">商户列表</el-menu-item>
           <el-menu-item index="store_check">商户审核</el-menu-item>
         </el-submenu>
-        <!-- 客户管理 -->
-        <el-menu-item index="client">
-          <i class="el-icon-s-custom"></i>
-          <span slot="title">客户管理</span>
-        </el-menu-item>
 
         <el-submenu index="configure">
           <template slot="title">
@@ -79,18 +94,14 @@
           </template>
           <el-menu-item index="userdata_accFlow">帐户流水</el-menu-item>
           <el-menu-item index="userdata_assets">道具资产</el-menu-item>
-          <el-menu-item index="userdata_auctionData">拍卖行数据</el-menu-item>
-          <el-menu-item index="userdata_aucTradeRec">拍卖交易记录</el-menu-item>
           <el-menu-item index="userdata_chatRecord">聊天记录</el-menu-item>
-          <el-menu-item index="userdata_friendList">好友列表</el-menu-item>
           <el-menu-item index="userdata_fundAcc">资金帐户</el-menu-item>
           <el-menu-item index="userdata_groupBase">群组管理</el-menu-item>
-          <el-menu-item index="userdata_groupMembers">群成员管理</el-menu-item>
           <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
           <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
           <el-menu-item index="userdata_spaHouIndoor">道具数据管理</el-menu-item>
-          <el-menu-item index="userdata_spaHousePro">房产数据管理</el-menu-item>
-          <el-menu-item index="userdata_userInfo">用户个人信息管理</el-menu-item>
+          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>
+          <el-menu-item index="userdata_userList">用户列表</el-menu-item>
         </el-submenu>
 
         <el-submenu index="merchant">
@@ -110,13 +121,12 @@
           <el-menu-item index="merchant_roleGrAuth">角色组权限管理</el-menu-item>
           <el-menu-item index="merchant_roleGroup">角色组管理</el-menu-item>
           <el-menu-item index="merchant_userInfo">用户信息主表</el-menu-item>
-          </el-submenu>
+        </el-submenu>
 
-          
-          <el-menu-item index="fileresources_ResourceMapping">
-            <i class="el-icon-folder"></i>
-            <span slot="title">资源映射表</span>
-          </el-menu-item>
+        <el-menu-item index="fileresources_ResourceMapping">
+          <i class="el-icon-folder"></i>
+          <span slot="title">资源映射表</span>
+        </el-menu-item>
 
         <!-- 
           【无下拉菜单】
@@ -150,14 +160,18 @@
               style="margin-right:10px;font-weight:bold;font-size:15px;display:inline-block"
             >当前位置:</div>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(v,i) in this.$route.meta" :key="i">{{v}}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">
+            {{
+            v
+            }}
+          </el-breadcrumb-item>
         </el-breadcrumb>
 
         <!-- 下拉 -->
         <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
-          <span>尊敬的{{UserName}}，欢迎您！</span>
+          <span>尊敬的{{ UserName }}，欢迎您！</span>
           <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="circleUrl" ></el-avatar>
+            <el-avatar :size="40" :src="circleUrl"></el-avatar>
           </span>
           <el-dropdown-menu slot="dropdown" class="dropdown_menu">
             <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
@@ -201,15 +215,20 @@ export default {
       circleUrl:
         "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       dialogFormVisible: false,
-      UserName:"未登录",
+      UserName: "未登录",
       changePwd: {
         old_password: "",
         new_password: "",
-        check_password: ""
-      }
+        check_password: "",
+      },
     };
   },
-  mounted(){
+  created() {
+    var token = sessionStorage.getItem("token");
+    if (!token) {
+      this.$router.replace("/login");
+      this.$message.error("账号已注销，请重新登录！");
+    }
     this.UserName = sessionStorage.getItem("userName");
     this.circleUrl = sessionStorage.getItem("headImg");
   },
@@ -220,14 +239,14 @@ export default {
     },
     // 修改密码
     changePassword() {
-      console.log("修改密码");
       this.dialogFormVisible = true;
     },
     // 注销
     logout() {
+      sessionStorage.clear();
       this.$router.replace("/login");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -239,6 +258,9 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .logo {
       border-right: 1px solid #e6e6e6;
       padding: 0.5rem 0;
@@ -269,6 +291,9 @@ export default {
     // 主体
     .el-main {
       background-color: #f2f2f2;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }

@@ -21,36 +21,36 @@ export default {
     console.log("子组件");
   },
   components: {
-    Editor
+    Editor,
   },
   props: {
     value: {
       type: String,
-      default: ""
+      default: "",
     },
     // 基本路径，默认为空根目录，如果你的项目发布后的地址为目录形式，
     // 即abc.com/tinymce，baseUrl需要配置成tinymce，不然发布后资源会找不到
     baseUrl: {
       type: String,
-      default: ""
+      default: "",
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     plugins: {
       type: [String, Array],
-      default: "lists image"
+      default: "lists image",
     },
     // 在toolbar中添加工具栏相应按钮
     toolbar: {
       type: [String, Array],
       default:
-        "undo redo |  formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image table | removeformat"
+        "undo redo |  formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lists image table | removeformat",
     },
     params: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -68,22 +68,22 @@ export default {
         menubar: false, //顶部菜单栏显示
         // 此处为图片上传处理函数
         images_upload_handler: (blobInfo, success, failure) => {
-          var { upLoadId, typeName, remarks } = this.params;
+          var { remarks } = this.params;
           let formdata = new FormData();
           formdata.set("file", blobInfo.blob());
-          upLoadFiles(upLoadId, typeName, remarks, formdata)
-            .then(res => {
+          upLoadFiles(remarks, formdata)
+            .then((res) => {
               var url =
                 "http://192.168.0.89:9007/f1/FileResources/AppWebDownLoad?pathtemp=" +
                 res.temp[0].resId;
               success(url);
             })
-            .catch(res => {
+            .catch((res) => {
               failure("error");
             });
-        }
+        },
       },
-      myValue: this.value
+      myValue: this.value,
     };
   },
   mounted() {
@@ -99,7 +99,7 @@ export default {
     // 可以添加一些自己的自定义事件，如清空内容
     clear() {
       this.myValue = "";
-    }
+    },
   },
   watch: {
     value(newValue) {
@@ -107,7 +107,7 @@ export default {
     },
     myValue(newValue) {
       this.$emit("input", newValue);
-    }
-  }
+    },
+  },
 };
 </script>

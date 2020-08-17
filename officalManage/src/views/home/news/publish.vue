@@ -16,13 +16,19 @@
           ref="upload"
         >
           <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
+          <div slot="file" slot-scope="{ file }">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="previewImg(file)">
+              <span
+                class="el-upload-list__item-preview"
+                @click="previewImg(file)"
+              >
                 <i class="el-icon-zoom-in"></i>
               </span>
-              <span class="el-upload-list__item-delete" @click="removeImg(file)">
+              <span
+                class="el-upload-list__item-delete"
+                @click="removeImg(file)"
+              >
                 <i class="el-icon-delete"></i>
               </span>
             </span>
@@ -37,7 +43,10 @@
       </el-form-item>
 
       <el-form-item label="新闻正文">
-        <tinymceEditor v-model="form.content" :params="upParams"></tinymceEditor>
+        <tinymceEditor
+          v-model="form.content"
+          :params="upParams"
+        ></tinymceEditor>
       </el-form-item>
 
       <!-- 按钮组 -->
@@ -54,20 +63,16 @@ import tinymceEditor from "@/components/Tinymce/tinymce";
 import { addList, upLoadFiles } from "@/utils/api/api";
 
 export default {
-  mounted() {
-    this.upParams.upLoadId = sessionStorage.getItem("userId");
-  },
   components: {
-    tinymceEditor
+    tinymceEditor,
   },
   data() {
     return {
       form: {},
       upParams: {
-        upLoadId: "",
-        typeName: "offical_news_article",
-        remarks: "新闻中心-文章"
-      }
+        remarks: "新闻中心-文章",
+      },
+      remarks: "新闻中心-文章",
     };
   },
 
@@ -77,22 +82,21 @@ export default {
       this.form.caseScene = "0";
       var file = this.fileList;
       var formData = this.creatFormData(file);
-      upLoadFiles(this.upLoadId, this.typeName, this.remarks, formData).then(
-        res => {
-          this.form.mainMediaUrl = res.temp[0].resId;
-          addList("case", this.form)
-            .then(res => {
-              if (res) {
-                this.$message({
-                  type: "success",
-                  message: "发布成功！"
-                });
-                this.$router.push("news_list");
-              }
-            })
-            .catch(err => {});
-        }
-      );
+      console.log(1);
+      upLoadFiles(this.remarks, formData).then((res) => {
+        this.form.mainMediaUrl = res.list[0].resId;
+        addList("case", this.form)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                type: "success",
+                message: "发布成功！",
+              });
+              this.$router.push("news_list");
+            }
+          })
+          .catch((err) => {});
+      });
     },
 
     // 取消
@@ -128,7 +132,7 @@ export default {
         formData.append("files" + index, item);
       });
       return formData;
-    }
-  }
+    },
+  },
 };
 </script>

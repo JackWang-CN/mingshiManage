@@ -8,9 +8,6 @@
       <el-form-item label="用户名">
         <el-input v-model="find_form.data._like_userName" placeholder="请输入用户名"></el-input>
       </el-form-item>
-      <el-form-item label="用户ID">
-        <el-input v-model="find_form.data._like_userId" placeholder="请输入用户ID"></el-input>
-      </el-form-item>
       <el-form-item label="用户状态">
         <el-select v-model="find_form.data.isEnable" placeholder="请选择状态">
           <el-option label="启用" value="0"></el-option>
@@ -40,30 +37,49 @@
       <el-form-item>
         <el-button type="primary" @click="queryData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="success" style="margin-left:50px" @click="dialogFormVisible = true">添加类别</el-button>
+        <el-button type="success" style="margin-left:50px" @click="dialogFormVisible = true">添加用户</el-button>
         <el-button type="danger" @click="delete_list">批量删除</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 角色列表 -->
-    <el-table ref="user_list" :data="user_list" tooltip-effect="dark" :border="true"   @selection-change="handleSelectionChange">
+    <el-table
+      ref="user_list"
+      :data="user_list"
+      tooltip-effect="dark"
+      :border="true"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="userName" label="用户名" width="200"></el-table-column>
       <el-table-column prop="isEnable" label="用户状态" width="100">
-        <template slot-scope="scope">{{scope.row.isEnable == '1'?'禁用':'启用'}}</template>
+        <template slot-scope="scope">
+          {{
+          scope.row.isEnable == "1" ? "禁用" : "启用"
+          }}
+        </template>
       </el-table-column>
       <el-table-column prop="groupName" label="所属用户组" width="150"></el-table-column>
       <el-table-column prop="email" label="安全邮箱" width="250"></el-table-column>
       <el-table-column prop="userId" label="用户ID" width="150"></el-table-column>
       <el-table-column prop="isAdministrator" label="是否超级管理员" width="150">
-        <template slot-scope="scope">{{scope.row.isAdministrator == '1'?'是':'否'}}</template>
+        <template slot-scope="scope">
+          {{
+          scope.row.isAdministrator == "1" ? "是" : "否"
+          }}
+        </template>
       </el-table-column>
       <el-table-column prop="realName" label="真实姓名" width="100"></el-table-column>
       <el-table-column prop="idCard" label="身份证号" width="250"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="user_update(scope.row)" type="text" size="small">编辑</el-button>
-          <el-button @click="user_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
+          <el-button @click="user_update(scope.row)" type="primary" size="small">编辑</el-button>
+          <el-button
+            @click="user_delete(scope.row)"
+            type="danger"
+            size="small"
+            class="btns_delete"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -124,27 +140,19 @@
 </template>
 
 <script>
-import { creatGet, createObj,deletcondition } from "@/api/Common";
-import { getDataList,putcreate,deletelist,deleteuser } from "@/api/api";
+import { creatGet, createObj, deletcondition } from "@/api/Common";
+import { getDataList, putcreate, deletelist, deleteuser } from "@/api/api";
 export default {
   data() {
     return {
       find_form: {
         currPage: 1,
         pageSize: 10,
-        data: {
-          // userName: "",
-          // userId:"",
-          // isEnable:"",
-          // RoleGroupId: "",
-          // email: "",
-          // realName: "",
-          // idCard: ""
-        },
+        data: {},
       },
       add_form: {},
       dialogFormVisible: false,
-      select_list:[],
+      select_list: [],
       user_list: [],
       role_Group: [],
       multipleSelection: [],
@@ -153,7 +161,6 @@ export default {
   mounted() {
     var get_form = creatGet();
     getDataList("c1", "Userinfo", get_form, "user_list", this);
-console.log(this.user_list)
     var get_role = creatGet();
     getDataList("c1", "Rolegroup", get_role, "role_Group", this);
   },
@@ -163,8 +170,7 @@ console.log(this.user_list)
       getDataList("c1", "Userinfo", this.find_form, "user_list", this);
     },
     user_add() {
-      putcreate("c1","Userinfo",this.add_form).then((res) => {
-        console.log(res);
+      putcreate("c1", "Userinfo", this.add_form).then((res) => {
         if (res != null) {
           this.$message.success("添加成功");
           this.resetForm();
@@ -176,18 +182,14 @@ console.log(this.user_list)
       });
     },
     // 修改当前
-    user_update() {
-      console.log("点击了编辑");
-    },
+    user_update() {},
     // 删除当前
     user_delete(val) {
-      console.log(val);
       var del = {
-            "tableId":val["tableId"],
-            "userId":val["userId"]
-        }
-      deleteuser("c1","Userinfo",del).then((res) => {
-        console.log(res);
+        tableId: val["tableId"],
+        userId: val["userId"],
+      };
+      deleteuser("c1", "Userinfo", del).then((res) => {
         if (res != null) {
           this.$message.success("删除成功");
           this.resetForm();
@@ -198,15 +200,11 @@ console.log(this.user_list)
       });
     },
     // 批量添加
-    user_batchAdd() {
-      console.log("点击了批量添加");
-    },
+    user_batchAdd() {},
     // 批量删除
-    delete_list(){
-      console.log(this.select_list);
-      var dellist = deletcondition(this.select_list)
-      deletelist("c1","Userinfo",dellist).then((res) => {
-        console.log(res);
+    delete_list() {
+      var dellist = deletcondition(this.select_list);
+      deletelist("c1", "Userinfo", dellist).then((res) => {
         if (res != null) {
           this.$message.success("删除成功");
           this.resetForm();
@@ -229,9 +227,7 @@ console.log(this.user_list)
           });
           this.dialogFormVisible = false;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     },
     // 提交新增
     sendAdd() {
@@ -250,22 +246,23 @@ console.log(this.user_list)
         _like_idCard: "",
       };
     },
-    handleSelectionChange(val){
+    handleSelectionChange(val) {
       this.select_list = val;
-      console.log(val);
-    }
-
-
+    },
   },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #author_user {
   // 查询表单
   form {
     .el-form-item {
       display: inline-block;
+      .el-input,
+      .el-select {
+        width: 200px;
+      }
     }
   }
   // 角色列表

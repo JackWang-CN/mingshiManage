@@ -23,18 +23,41 @@
     </el-form>
 
     <!-- 角色列表 -->
-    <el-table ref="role_list" :data="role_list" tooltip-effect="dark" :border="true">
+    <el-table
+      ref="role_list"
+      :data="role_list"
+      tooltip-effect="dark"
+      :border="true"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="roleGrName" label="角色名称" width="150"></el-table-column>    
+      <el-table-column
+        prop="roleGrName"
+        label="角色名称"
+        width="150"
+      ></el-table-column>
       <el-table-column label="角色权限" width="300">
         <template slot-scope="scope">{{ scope.row.roleList }}</template>
-      </el-table-column>  
-      <el-table-column prop="creationTime" label="创建时间" width="180"></el-table-column>
+      </el-table-column>
+      <el-table-column
+        prop="creationTime"
+        label="创建时间"
+        width="180"
+      ></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="role_update(scope.row)" type="text" size="small">编辑</el-button>
-          <el-button @click="role_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
-          <el-button @click="role_batchAdd(scope.row)" type="text" size="small">批量添加成员</el-button>
+          <el-button @click="role_update(scope.row)" type="text" size="small"
+            >编辑</el-button
+          >
+          <el-button
+            @click="role_delete(scope.row)"
+            type="text"
+            size="small"
+            class="btns_delete"
+            >删除</el-button
+          >
+          <el-button @click="role_batchAdd(scope.row)" type="text" size="small"
+            >批量添加成员</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -51,17 +74,16 @@ export default {
         currPage: 1,
         pageSize: 10,
         data: {
-          RoleGrName: ""
-        }
+          RoleGrName: "",
+        },
       },
       role_list: [],
-      multipleSelection: []
+      multipleSelection: [],
     };
   },
   mounted() {
     var get_form = creatGet();
     getDataList("c1", "Rolegroup", get_form, "role_list", this);
-    console.log(this.role_list);
   },
   methods: {
     queryData() {
@@ -71,20 +93,14 @@ export default {
     role_add() {
       this.$router.push("author_roleAdd");
     },
-    role_update() {
-      console.log("点击了编辑");
-    },
-    role_delete() {
-      console.log("点击了删除");
-    },
-    role_batchAdd() {
-      console.log("点击了批量添加");
-    }
-  }
+    role_update() {},
+    role_delete() {},
+    role_batchAdd() {},
+  },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #author_roleList {
   // 查询表单
   form {

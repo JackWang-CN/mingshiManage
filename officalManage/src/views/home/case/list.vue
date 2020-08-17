@@ -137,20 +137,20 @@ export default {
         currPage: 1,
         pageSize: 10,
         data: {
-          caseScene: "1" // 0--新闻 1--产品
-        }
+          caseScene: "1", // 0--新闻 1--产品
+        },
       },
 
       case_list: [], // 案例列表
 
-      select_list: [] // 选中的列表
+      select_list: [], // 选中的列表
     };
   },
   methods: {
     // 请求列表数据
     getCaseList() {
       getList("case", this.get_form)
-        .then(res => {
+        .then((res) => {
           if (!res) {
             this.case_list = [];
           } else {
@@ -158,7 +158,7 @@ export default {
             this.totalDataNum = res.totalDataNum;
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 每页显示条数改变
@@ -197,18 +197,18 @@ export default {
       var obj = {};
       obj.caseId = caseId;
       delList("case", obj)
-        .then(res => {
+        .then((res) => {
           // 删除成功
           if (res == "1") {
             this.$message({
               type: "success",
-              message: "删除成功！"
+              message: "删除成功！",
             });
           }
           // 重新加载列表
           this.getCaseList(this.get_form);
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 批量删除
@@ -218,16 +218,16 @@ export default {
         return;
       }
       delManyList("case", this.select_list)
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.$message({
               type: "success",
-              message: "批量删除成功"
+              message: "批量删除成功",
             });
             this.getCaseList(this.get_form);
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     /* ========================================改======================================== */
@@ -239,23 +239,23 @@ export default {
       status = !status - 0;
       obj.isDisable = status.toString();
       update("case", obj)
-        .then(res => {
+        .then((res) => {
           if (res == "1") {
             this.$message({
               type: "success",
-              message: "修改已生效"
+              message: "修改已生效",
             });
             this.getCaseList(this.get_form);
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 修改当前行
     changeRow(caseId) {
       this.$router.push({
         path: "case_change",
-        query: { caseId }
+        query: { caseId },
       });
     },
 
@@ -265,8 +265,8 @@ export default {
         currPage: 1,
         pageSize: 5,
         data: {
-          caseScene: "1" // 0--新闻 1--产品
-        }
+          caseScene: "1", // 0--新闻 1--产品
+        },
       };
     },
 
@@ -278,8 +278,8 @@ export default {
     // 添加
     addOne() {
       this.$router.push("case_publish");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -298,7 +298,7 @@ export default {
   .el-table__body-wrapper {
     .el-table__row {
       .cell {
-        height: 140px;
+        max-height: 140px;
       }
     }
   }

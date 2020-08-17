@@ -2,7 +2,7 @@
 
 /* 上传文件返回的数据为一个数组,需将每个文件的字段resId变为mediaId以进行文件的场景分配 */
 export const switchKeyName = (obj = {}, oldName, newName, scene) => {
-  var arr = obj.temp;
+  var arr = obj.list;
   var newArr = [];
   arr.forEach((item) => {
     var obj = { scene };
@@ -16,7 +16,7 @@ export const switchKeyName = (obj = {}, oldName, newName, scene) => {
 export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     item[imgKey] =
-      "http://192.168.0.89:9007/f1/FileResources/AppWebDownLoad?pathtemp=" +
+      "https://api.resources.scmsar.com/f1/FileResources/downLoad?pathtemp=" +
       item[imgKey];
   });
   return arr;

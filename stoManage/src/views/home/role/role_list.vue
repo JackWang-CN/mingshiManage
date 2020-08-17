@@ -22,34 +22,68 @@
     </el-form>
 
     <!-- 角色列表 -->
-    <el-table ref="role_list" :data="role_list" tooltip-effect="dark" :border="true">
+    <el-table
+      ref="role_list"
+      :data="role_list"
+      tooltip-effect="dark"
+      :border="true"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="roleId" label="角色编号" width="100"></el-table-column>
+      <el-table-column
+        prop="roleId"
+        label="角色编号"
+        width="100"
+      ></el-table-column>
       <el-table-column prop="roleGrName" label="角色名称" width="150">
         <template slot-scope="scope">
           <i
-            :class="scope.row.roleGrName=='管理组'?'el-icon-user-solid gold': 'el-icon-user-solid blue' "
+            :class="
+              scope.row.roleGrName == '管理组'
+                ? 'el-icon-user-solid gold'
+                : 'el-icon-user-solid blue'
+            "
           ></i>
-          {{scope.row.roleGrName}}
+          {{ scope.row.roleGrName }}
         </template>
       </el-table-column>
       <el-table-column label="角色权限" width="300">
         <template slot-scope="scope">
           <span
             class="jurisdiction"
-            v-for="(item,index) in scope.row.rolegrauth"
+            v-for="(item, index) in scope.row.rolegrauth"
             :key="index"
-          >{{index+1+'、'+item}}</span>
+            >{{ index + 1 + "、" + item }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="creationTime" label="创建时间" width="200"></el-table-column>
+      <el-table-column
+        prop="creationTime"
+        label="创建时间"
+        width="200"
+      ></el-table-column>
 
-      <el-table-column prop="message" label="详细说明" width="500"></el-table-column>
+      <el-table-column
+        prop="message"
+        label="详细说明"
+        width="500"
+      ></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.roleId)" type="primary" size="small">修改</el-button>
-          <el-button @click="delRow(scope.row.roleId)" type="danger" size="small">删除</el-button>
-          <el-button @click="role_batchAdd(scope.row)" type="text" size="small">批量添加成员</el-button>
+          <el-button
+            @click="toDetails(scope.row.roleId)"
+            type="primary"
+            size="small"
+            >修改</el-button
+          >
+          <el-button
+            @click="delRow(scope.row.roleId)"
+            type="danger"
+            size="small"
+            >删除</el-button
+          >
+          <el-button @click="role_batchAdd(scope.row)" type="text" size="small"
+            >批量添加成员</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -106,14 +140,12 @@ export default {
       //   }
       // });
     },
-    role_batchAdd() {
-      console.log("点击了批量添加");
-    },
+    role_batchAdd() {},
   },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #author_roleList {
   // 查询表单
   form {

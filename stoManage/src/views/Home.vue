@@ -96,12 +96,16 @@
               style="margin-right:10px;font-weight:bold;font-size:15px;display:inline-block"
             >当前位置:</div>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">{{ v }}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">
+            {{
+            v
+            }}
+          </el-breadcrumb-item>
         </el-breadcrumb>
 
         <!-- 下拉 -->
         <div class="dropdown">
-          <span>尊敬的{{userName}}，欢迎您！</span>
+          <span>尊敬的{{ userName }}，欢迎您！</span>
           <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
             <span class="el-dropdown-link">
               <el-avatar :size="40" :src="circleUrl" alt="用户头像"></el-avatar>
@@ -145,9 +149,15 @@
 <script>
 export default {
   mounted() {
+    var token = sessionStorage.getItem("token");
+    if (!token) {
+      this.$router.replace("/login");
+      this.$message.error("账号已注销，请重新登录！");
+    }
     this.circleUrl = sessionStorage.getItem("headImg"); //获取头像
     this.userName = sessionStorage.getItem("userName"); //获取用户名
   },
+
   data() {
     return {
       circleUrl:
@@ -168,7 +178,6 @@ export default {
     },
     // 修改密码
     changePassword() {
-      console.log("修改密码");
       this.dialogFormVisible = true;
     },
     // 注销

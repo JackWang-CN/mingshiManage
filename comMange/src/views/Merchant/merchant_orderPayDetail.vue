@@ -5,78 +5,160 @@
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="订单号id" label-width="100px">
-        <el-input v-model="find_form.data.orderId" placeholder="请输入订单号id"></el-input>
+        <el-input
+          v-model="find_form.data.orderId"
+          placeholder="请输入订单号id"
+        ></el-input>
       </el-form-item>
       <el-form-item label="优惠券号id" label-width="100px">
-        <el-input v-model="find_form.data.couponId" placeholder="请输入优惠券号id"></el-input>
+        <el-input
+          v-model="find_form.data.couponId"
+          placeholder="请输入优惠券号id"
+        ></el-input>
       </el-form-item>
       <el-form-item label="优惠券编号" label-width="100px">
-        <el-input v-model="find_form.data.couponNum" placeholder="请输入优惠券编号"></el-input>
+        <el-input
+          v-model="find_form.data.couponNum"
+          placeholder="请输入优惠券编号"
+        ></el-input>
       </el-form-item>
       <el-form-item label="券使用" label-width="100px">
-        <el-input v-model="find_form.data.couponUse" placeholder="请输入券使用"></el-input>
+        <el-input
+          v-model="find_form.data.couponUse"
+          placeholder="请输入券使用"
+        ></el-input>
       </el-form-item>
       <el-form-item label="金币使用量" label-width="100px">
-        <el-input v-model="find_form.data.goldCoinAmount" placeholder="请输入金币使用量"></el-input>
+        <el-input
+          v-model="find_form.data.goldCoinAmount"
+          placeholder="请输入金币使用量"
+        ></el-input>
       </el-form-item>
-        <el-form-item label="创建时间" label-width="100px">
-          <el-date-picker
-            v-model="find_form.data.creationTime"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions"
-          ></el-date-picker>
-        </el-form-item>
+      <el-form-item label="创建时间" label-width="100px">
+        <el-date-picker
+          v-model="find_form.data.creationTime"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+        ></el-date-picker>
+      </el-form-item>
       <!-- 日期查询 -->
       <div class="date_btn">
         <el-form-item class="btns_find">
           <el-button type="primary" @click="queryData">查询</el-button>
           <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="success" style="margin-left:50px" @click="dialogFormVisibleOfAdd = true">添加</el-button>
-        <el-button type="danger" @click="delete_list">批量删除</el-button>
+          <el-button
+            type="success"
+            style="margin-left:50px"
+            @click="dialogFormVisibleOfAdd = true"
+            >添加</el-button
+          >
+          <el-button type="danger" @click="delete_list">批量删除</el-button>
         </el-form-item>
       </div>
     </el-form>
     <!-- 商户列表 -->
-    <el-table :data="store_list" border style="width: 100%"  @selection-change="handleSelectionChange">
+    <el-table
+      :data="store_list"
+      border
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column fixed prop="orderId" label="订单号id" width="80"></el-table-column>
-      <el-table-column prop="couponId" label="优惠券号id" width="120"></el-table-column>
-      <el-table-column fixed prop="couponNum" label="优惠券编号" width="80"></el-table-column>
-      <el-table-column prop="couponUse" label="券使用" width="120"></el-table-column>
-      <el-table-column prop="goldCoinAmount" label="金币使用量" width="120"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="120"></el-table-column>
+      <el-table-column
+        fixed
+        prop="orderId"
+        label="订单号id"
+        width="80"
+      ></el-table-column>
+      <el-table-column
+        prop="couponId"
+        label="优惠券号id"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        fixed
+        prop="couponNum"
+        label="优惠券编号"
+        width="80"
+      ></el-table-column>
+      <el-table-column
+        prop="couponUse"
+        label="券使用"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="goldCoinAmount"
+        label="金币使用量"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="creationtime"
+        label="创建时间"
+        width="120"
+      ></el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="show_edit(scope.row)"  type="text" size="small">编辑</el-button>
-          <el-button @click="user_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
+          <el-button @click="show_edit(scope.row)" type="text" size="small"
+            >编辑</el-button
+          >
+          <el-button
+            @click="user_delete(scope.row)"
+            type="text"
+            size="small"
+            class="btns_delete"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
-    
     <!-- 添加弹出框(添加) -->
-    <el-dialog title="添加类别" :visible.sync="dialogFormVisibleOfAdd" width="40%">
+    <el-dialog
+      title="添加类别"
+      :visible.sync="dialogFormVisibleOfAdd"
+      width="40%"
+    >
       <!-- 新增表单 -->
       <el-form ref="add_form" :model="add_form" label-width="120px">
         <el-form-item label="订单号id">
-          <el-input v-model="add_form.orderId" placeholder="请输入订单号id" autocomplete="off"></el-input>
+          <el-input
+            v-model="add_form.orderId"
+            placeholder="请输入订单号id"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="优惠券号id">
-          <el-input v-model="add_form.couponId" placeholder="请输入优惠券号id" autocomplete="off"></el-input>
+          <el-input
+            v-model="add_form.couponId"
+            placeholder="请输入优惠券号id"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="优惠券编号">
-          <el-input v-model="add_form.couponNum" placeholder="请输入优惠券编号" autocomplete="off"></el-input>
+          <el-input
+            v-model="add_form.couponNum"
+            placeholder="请输入优惠券编号"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="券使用">
-          <el-input v-model="add_form.couponUse" placeholder="请输入券使用" autocomplete="off"></el-input>
+          <el-input
+            v-model="add_form.couponUse"
+            placeholder="请输入券使用"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="金币使用量">
-          <el-input v-model="add_form.goldCoinAmount" placeholder="请输入金币使用量" autocomplete="off"></el-input>
+          <el-input
+            v-model="add_form.goldCoinAmount"
+            placeholder="请输入金币使用量"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -85,22 +167,41 @@
       </div>
     </el-dialog>
 
-    
     <!-- 添加弹出框(修改) -->
-    <el-dialog title="修改类别" :visible.sync="dialogFormVisibleOfEdit" width="40%">
+    <el-dialog
+      title="修改类别"
+      :visible.sync="dialogFormVisibleOfEdit"
+      width="40%"
+    >
       <!-- 修改表单 -->
       <el-form ref="edit_form" :model="edit_form" label-width="120px">
         <el-form-item label="优惠券号id">
-          <el-input v-model="edit_form.couponId" placeholder="请输入优惠券号id" autocomplete="off"></el-input>
+          <el-input
+            v-model="edit_form.couponId"
+            placeholder="请输入优惠券号id"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="优惠券编号">
-          <el-input v-model="edit_form.couponNum" placeholder="请输入优惠券编号" autocomplete="off"></el-input>
+          <el-input
+            v-model="edit_form.couponNum"
+            placeholder="请输入优惠券编号"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="券使用">
-          <el-input v-model="edit_form.couponUse" placeholder="请输入券使用" autocomplete="off"></el-input>
+          <el-input
+            v-model="edit_form.couponUse"
+            placeholder="请输入券使用"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item label="金币使用量">
-          <el-input v-model="edit_form.goldCoinAmount" placeholder="请输入金币使用量" autocomplete="off"></el-input>
+          <el-input
+            v-model="edit_form.goldCoinAmount"
+            placeholder="请输入金币使用量"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,13 +209,23 @@
         <el-button type="primary" @click="user_update">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { creatGet, createObj, spliceKey, deletconditionofbusiness} from "@/api/Common";
-import { getDataList,putcreate,deletelist,deleteuser,patchedit  } from "@/api/api";
+import {
+  creatGet,
+  createObj,
+  spliceKey,
+  deletconditionofbusiness,
+} from "@/api/Common";
+import {
+  getDataList,
+  putcreate,
+  deletelist,
+  deleteuser,
+  patchedit,
+} from "@/api/api";
 export default {
   data() {
     return {
@@ -122,14 +233,13 @@ export default {
       find_form: {
         currPage: 1,
         pageSize: 10,
-        data: {
-        },
+        data: {},
       },
-      select_list:[],//已选表单
-      add_form: {},//添加表单内容
-      edit_form:{},//修改表单内容
-      dialogFormVisibleOfAdd: false,//添加表单弹窗
-      dialogFormVisibleOfEdit:false,//修改表单弹窗
+      select_list: [], //已选表单
+      add_form: {}, //添加表单内容
+      edit_form: {}, //修改表单内容
+      dialogFormVisibleOfAdd: false, //添加表单弹窗
+      dialogFormVisibleOfEdit: false, //修改表单弹窗
       // 日期选择
       pickerOptions: {
         shortcuts: [
@@ -140,7 +250,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "最近一个月",
@@ -149,7 +259,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "最近三个月",
@@ -158,12 +268,12 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
               picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       // 商户列表
-      store_list: []
+      store_list: [],
     };
   },
   mounted() {
@@ -172,16 +282,15 @@ export default {
   },
   methods: {
     queryData() {
-      var get_form = {...this.find_form};
+      var get_form = { ...this.find_form };
       get_form.data = createObj(get_form.data);
-      get_form.data = spliceKey(get_form.data)
+      get_form.data = spliceKey(get_form.data);
       getDataList("m1", "Orderpaydetail", get_form, "store_list", this);
     },
     // 添加当前
     user_add() {
       var add_form = createObj(this.add_form);
-      putcreate("m1", "Orderpaydetail",add_form).then((res) => {
-        console.log(res);
+      putcreate("m1", "Orderpaydetail", add_form).then((res) => {
         if (res != null) {
           this.$message.success("添加成功");
           this.resetForm();
@@ -194,8 +303,7 @@ export default {
     },
     // 修改当前
     user_update() {
-      patchedit("m1", "Orderpaydetail",this.edit_form).then((res) => {
-        console.log(res);
+      patchedit("m1", "Orderpaydetail", this.edit_form).then((res) => {
         if (res != null) {
           this.$message.success("修改成功");
           this.resetForm();
@@ -214,55 +322,47 @@ export default {
         type: "warning",
       })
         .then(() => {
-        console.log(val);
-        var del = {
-              "tableId":val["tableId"],
-              "orderId":val["orderId"]
-          }
-        deleteuser("m1", "Orderpaydetail",del).then((res) => {
-          console.log(res);
-          if (res != null) {
-            this.$message.success("删除成功");
-            this.resetForm();
-            this.queryData();
-          } else {
-            this.$message.success("删除失败");
-          }
-        });
-      })
-        .catch((err) => {
-          console.log(err);
-        });
+          var del = {
+            tableId: val["tableId"],
+            orderId: val["orderId"],
+          };
+          deleteuser("m1", "Orderpaydetail", del).then((res) => {
+            if (res != null) {
+              this.$message.success("删除成功");
+              this.resetForm();
+              this.queryData();
+            } else {
+              this.$message.success("删除失败");
+            }
+          });
+        })
+        .catch((err) => {});
     },
     // 批量删除
-    delete_list(){
+    delete_list() {
       this.$confirm("确定要删除吗(｀・ω・´)", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-        console.log(this.select_list);
-        var dellist = this.deletcondition(this.select_list)
-        deletelist("m1", "Orderpaydetail",dellist).then((res) => {
-          console.log(res);
-          if (res != null) {
-            this.$message.success("删除成功");
-            this.resetForm();
-            this.queryData();
-          } else {
-            this.$message.success("删除失败");
-          }
-        });
-      })
-        .catch((err) => {
-          console.log(err);
-        });
+          var dellist = this.deletcondition(this.select_list);
+          deletelist("m1", "Orderpaydetail", dellist).then((res) => {
+            if (res != null) {
+              this.$message.success("删除成功");
+              this.resetForm();
+              this.queryData();
+            } else {
+              this.$message.success("删除失败");
+            }
+          });
+        })
+        .catch((err) => {});
     },
     // 显示修改弹窗
-    show_edit(val){
+    show_edit(val) {
       this.dialogFormVisibleOfEdit = true;
-      this.edit_form = {...val};
+      this.edit_form = { ...val };
     },
     // 取消新增
     cancelAdd() {
@@ -277,9 +377,7 @@ export default {
           });
           this.dialogFormVisibleOfAdd = false;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     },
     // 取消修改
     cancelEdit() {
@@ -294,37 +392,33 @@ export default {
           });
           this.dialogFormVisibleOfEdit = false;
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     },
     // 重置
     resetForm() {
-      this.find_form.data = {
-      };
+      this.find_form.data = {};
     },
     //已选表单增减
-    handleSelectionChange(val){
+    handleSelectionChange(val) {
       this.select_list = val;
-      console.log(val);
     },
-    deletcondition(list){      
-      var newObj = [];    
-      list.forEach(item => {
-          var json = {
-              "tableId":item["tableId"],
-              "orderId":item["orderId"]
-          }
-          newObj.push(json);
+    deletcondition(list) {
+      var newObj = [];
+      list.forEach((item) => {
+        var json = {
+          tableId: item["tableId"],
+          orderId: item["orderId"],
+        };
+        newObj.push(json);
       });
 
       return newObj;
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #store {
   form {
     .el-form-item {

@@ -18,32 +18,28 @@
             </template>
           </el-table-column>
           <el-table-column prop="isDisable" label="状态" sortable width="100">
-            <template slot-scope="scope">{{
+            <template slot-scope="scope">
+              {{
               scope.row.isDisable == "1" ? "禁用" : "启用"
-            }}</template>
+              }}
+            </template>
           </el-table-column>
           <el-table-column prop="caseId" label="图片编号" sortable width="250">
-            <template slot-scope="scope">{{
+            <template slot-scope="scope">
+              {{
               scope.row.mediaId.substring(6)
-            }}</template>
+              }}
+            </template>
           </el-table-column>
-          <el-table-column
-            prop="creationtime"
-            label="上传时间"
-            sortable
-            width="180"
-          ></el-table-column>
+          <el-table-column prop="creationtime" label="上传时间" sortable width="180"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="deleteRow(scope.row)"
-                >删除</el-button
-              >
+              <el-button type="text" size="small" @click="deleteRow(scope.row)">删除</el-button>
               <el-button
                 :type="scope.row.isDisable - 0 ? 'success' : 'danger'"
                 size="small"
                 @click="switchSta(scope.row)"
-                >{{ scope.row.isDisable - 0 ? "启用" : "禁用" }}</el-button
-              >
+              >{{ scope.row.isDisable - 0 ? "启用" : "禁用" }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -75,16 +71,10 @@
           <div slot="file" slot-scope="{ file }">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="previewImg(file)"
-              >
+              <span class="el-upload-list__item-preview" @click="previewImg(file)">
                 <i class="el-icon-zoom-in"></i>
               </span>
-              <span
-                class="el-upload-list__item-delete"
-                @click="removeImg(file)"
-              >
+              <span class="el-upload-list__item-delete" @click="removeImg(file)">
                 <i class="el-icon-delete"></i>
               </span>
             </span>
@@ -163,10 +153,8 @@ export default {
         formData.append("files" + index, item);
       });
 
-      var upLoadId = sessionStorage.getItem("userId"),
-        typeName = "offical_aboutUs_photo",
-        remarks = "关于我们-照片墙";
-      upLoadFiles(upLoadId, typeName, remarks, formData)
+      var remarks = "关于我们-照片墙";
+      upLoadFiles(remarks, formData)
         .then((res) => {
           // 返回上传后的文件数组后转译成新数组作为参数继续调用接口
           var arr = switchKeyName(res, "resId", "mediaUrl", "2");

@@ -5,9 +5,13 @@
 
     <!-- 表单 -->
     <el-form label-width="100px">
-      <el-form-item label="广告编号" v-if="type=='update'">{{data_info.reqId}}</el-form-item>
-      <el-form-item label="创建时间" v-if="type=='update'">{{data_info.creationTime}}</el-form-item>
-      <el-form-item label="资源预览" v-if="type=='update'">
+      <el-form-item label="广告编号" v-if="type == 'update'">{{
+        data_info.reqId
+      }}</el-form-item>
+      <el-form-item label="创建时间" v-if="type == 'update'">{{
+        data_info.creationTime
+      }}</el-form-item>
+      <el-form-item label="资源预览" v-if="type == 'update'">
         <img :src="data_info.adUrl" alt height="300" />
       </el-form-item>
 
@@ -20,11 +24,17 @@
       </el-form-item>
 
       <el-form-item label="满减金额">
-        <el-input v-model="data_info.eXchangeMoney" placeholder="请输入金额"></el-input>
+        <el-input
+          v-model="data_info.eXchangeMoney"
+          placeholder="请输入金额"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="面值金额">
-        <el-input v-model="data_info.couponValue" placeholder="请输入金额"></el-input>
+        <el-input
+          v-model="data_info.couponValue"
+          placeholder="请输入金额"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="有效日期" label-width="100px">
@@ -67,13 +77,12 @@ export default {
     sendSubmit() {
       this.data_info.startTime = this.validTime[0].toJSON();
       this.data_info.endTime = this.validTime[1].toJSON();
-      console.log(this.data_info);
     },
   },
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #coupon_details {
   .el-form {
     .el-form-item__content {

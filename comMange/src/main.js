@@ -12,8 +12,17 @@ import "element-ui/lib/theme-chalk/index.css";
 // 引入拦截器
 import "./utils/axiosUtil";
 
+// 引入样式重置
 import "./assets/css/reset.css";
+import "./assets/css/common.scss";
+
 Vue.use(ElementUI);
+
+Vue.prototype.$vision = {
+  merchant: "m1",
+  company: "c1",
+  user: "u1",
+};
 
 new Vue({
   router,

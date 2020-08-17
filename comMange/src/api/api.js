@@ -3,8 +3,8 @@
 import axios from "axios";
 
 // 配置默认端口
+// axios.defaults.baseURL = "https://api.company.scmsar.com:4430";
 axios.defaults.baseURL = "http://192.168.0.89:9011";
-// axios.defaults.baseURL = "https://localhost:44360";
 
 /* 登录 */
 export const sendLogin = (info) => axios.post("/c1/Userinfo/pwdLogin", info);

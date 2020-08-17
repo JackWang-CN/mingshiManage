@@ -140,7 +140,7 @@ import {
   delList, // 删
   delManyList,
   upLoadFiles,
-  classifyFiles
+  classifyFiles,
 } from "@/utils/api/api";
 import { switchKeyName, spliceUrl } from "@/utils/utils";
 export default {
@@ -160,7 +160,7 @@ export default {
         { value: "0", label: "首页" },
         { value: "1", label: "关于我们" },
         { value: "3", label: "招聘信息" },
-        { value: "4", label: "联系我们" }
+        { value: "4", label: "联系我们" },
       ],
 
       show_img: false,
@@ -176,15 +176,15 @@ export default {
         currPage: 1,
         pageSize: 10,
         data: {
-          scene: "0"
-        }
+          scene: "0",
+        },
       },
 
       // 修改请求表单
       change_form: { data: {} },
 
       select_list: [], // 选中的列表
-      fileList: [] // 上传的文件列表
+      fileList: [], // 上传的文件列表
     };
   },
   methods: {
@@ -192,15 +192,16 @@ export default {
     getDataList() {
       this.banner = [];
       getList("media", this.get_form)
-        .then(res => {
+        .then((res) => {
           if (res == null) {
             this.banner = [];
           } else {
             this.banner = spliceUrl(res.data, "mediaUrl");
+            console.log(this.banner);
             this.totalDataNum = res.totalDataNum;
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 处理操作类型：新增||修改
@@ -224,10 +225,10 @@ export default {
       status = !status - 0;
       obj.isDisable = status.toString();
       update("media", obj)
-        .then(res => {
+        .then((res) => {
           this.getDataList();
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 删除
@@ -235,17 +236,17 @@ export default {
       var obj = {};
       obj.mediaId = mediaId;
       delList("media", obj)
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.$message({
               type: "success",
-              message: "删除成功"
+              message: "删除成功",
             });
           }
           this.get_form.data.scene = this.activeName;
           this.getDataList();
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 批量删除
@@ -255,16 +256,16 @@ export default {
         return;
       }
       delManyList("media", this.select_list)
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.$message({
               type: "success",
-              message: "批量删除成功"
+              message: "批量删除成功",
             });
             this.getDataList();
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
 
     // 勾选事件
@@ -284,12 +285,13 @@ export default {
         var formData = this.creatFormData(file);
         this.show_Dialog = false;
         this.$refs.upload.uploadFiles = [];
-        upLoadFiles(this.remarks, this.typeName, formData)
-          .then(res => {
+
+        upLoadFiles(this.remarks, formData)
+          .then((res) => {
             var arr = switchKeyName(res, "resId", "mediaUrl", this.upScene);
             arr[0].title = this.change_form.title;
             arr[0].jumpUrl = this.change_form.jumpUrl;
-            classifyFiles(arr).then(res => {
+            classifyFiles(arr).then((res) => {
               if (res.length) {
                 this.$message.success("添加成功");
               }
@@ -297,26 +299,26 @@ export default {
               this.switchList();
             });
           })
-          .catch(err => {});
+          .catch((err) => {});
       } else {
         // 修改 --1 先判断是否上传图片 2-1 是则先上传，拿到resId再修改 2-2 否则直接修改
         if (file.length < 1) {
           update("media", this.change_form)
-            .then(res => {
+            .then((res) => {
               if (res) {
                 this.$message.success("修改成功");
               }
               this.getDataList();
             })
-            .catch(err => {});
+            .catch((err) => {});
         } else {
           var formData = this.creatFormData(file);
           this.$refs.upload.uploadFiles = [];
-          upLoadFiles(this.upLoadId, this.typeName, this.remarks, formData)
-            .then(res => {
+          upLoadFiles(this.remarks, formData)
+            .then((res) => {
               this.change_form.mediaUrl = res[0].resId;
 
-              update("media", this.change_form).then(res => {
+              update("media", this.change_form).then((res) => {
                 switch (res) {
                   case 1:
                     this.$message.success("修改成功！");
@@ -324,7 +326,7 @@ export default {
                 this.getDataList();
               });
             })
-            .catch(err => {});
+            .catch((err) => {});
         }
       }
     },
@@ -381,24 +383,20 @@ export default {
       this.upScene = v;
       switch (v) {
         case "0":
-          this.hierarchy = "offical_index_banner";
           this.remarks = "首页-轮播图";
           break;
         case "1":
-          this.hierarchy = "offical_about_banner";
           this.remarks = "关于-轮播图";
           break;
         case "3":
-          this.hierarchy = "offical_recruit_banner";
           this.remarks = "招聘-轮播图";
           break;
         case "0":
-          this.hierarchy = "offical_contact_banner";
           this.remarks = "联系-轮播图";
           break;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

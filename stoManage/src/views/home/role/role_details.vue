@@ -1,12 +1,15 @@
 <!-- 新增角色 -->
 <template>
   <div id="author_roleAdd" class="shadow_container">
-    <div class="pageTitle">{{type?'修改角色':'新增角色'}}</div>
+    <div class="pageTitle">{{ type ? "修改角色" : "新增角色" }}</div>
     <!-- 表单 -->
     <el-form ref="data_info" :model="data_info" label-width="80px">
       <div>
         <el-form-item label="角色名称">
-          <el-input v-model="data_info.roleGrName" placeholder="请输入角色名称"></el-input>
+          <el-input
+            v-model="data_info.roleGrName"
+            placeholder="请输入角色名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="角色状态">
           <el-select v-model="data_info.isDisable" placeholder="请选择角色状态">
@@ -21,7 +24,7 @@
         <el-tab-pane v-for="v in author_list" :key="v.type" :label="v.type">
           <el-checkbox-group v-model="checkList">
             <el-checkbox
-              v-for="(item,index) in v.children_dom"
+              v-for="(item, index) in v.children_dom"
               :key="index"
               :name="v.type"
               :label="item"
@@ -35,19 +38,20 @@
       <div class="checkboxList">
         <h5>已选择</h5>
         <el-tag
-          v-for="(tag,index) in checkList"
+          v-for="(tag, index) in checkList"
           :key="index"
           type="primary"
           closable
           @close="delTag(index)"
-        >{{tag}}</el-tag>
+          >{{ tag }}</el-tag
+        >
       </div>
 
       <!-- 详细说明 -->
       <el-form-item style="display:block;margin-top:30px" label="详细说明">
         <el-input
           type="textarea"
-          :autosize="{ minRows: 2, maxRows: 10}"
+          :autosize="{ minRows: 2, maxRows: 10 }"
           placeholder="请输入内容"
           v-model="data_info.description"
         ></el-input>
@@ -102,7 +106,6 @@ export default {
 
     // 提交
     sendSubmit() {
-      console.log("立即创建");
       switch (this.type) {
         case 0:
           addDataList(
@@ -144,7 +147,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 #author_roleAdd {
   // 查询表单
   form {

@@ -5,7 +5,7 @@ export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
       item[imgKey] =
-        "http://192.168.0.89:9001/f1/FileResources/DownLoad?pathtemp=" +
+        "https://api.resources.scmsar.com/f1/FileResources/DownLoad?pathtemp=" +
         item[imgKey];
     }
   });
