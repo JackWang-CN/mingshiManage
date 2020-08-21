@@ -144,6 +144,7 @@ export default {
               this.$vision.merchant,
               "Meraddata",
               this.data_info,
+
               this,
               "advertising"
             );

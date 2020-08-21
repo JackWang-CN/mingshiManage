@@ -99,7 +99,6 @@
           <el-menu-item index="userdata_groupBase">群组管理</el-menu-item>
           <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
           <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
-          <el-menu-item index="userdata_spaHouIndoor">道具数据管理</el-menu-item>
           <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>
           <el-menu-item index="userdata_userList">用户列表</el-menu-item>
         </el-submenu>
@@ -168,17 +167,17 @@
         </el-breadcrumb>
 
         <!-- 下拉 -->
-        <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
+        <div class="dropdown">
           <span>尊敬的{{ UserName }}，欢迎您！</span>
-          <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="circleUrl"></el-avatar>
-          </span>
-          <el-dropdown-menu slot="dropdown" class="dropdown_menu">
-            <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
-            <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
-            <el-dropdown-item @click.native="logout">注销登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+          <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
+            <el-avatar :size="50" :src="circleUrl"></el-avatar>
+            <el-dropdown-menu slot="dropdown" class="dropdown_menu">
+              <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
+              <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
+              <el-dropdown-item @click.native="logout">注销登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
 
         <!-- 弹出框 -->
         <el-dialog title="修改密码" :visible.sync="dialogFormVisible" id="change_password" width="30%">
@@ -281,6 +280,12 @@ export default {
       // 面包屑
       .breadcrumb {
         display: inline-block;
+      }
+      .dropdown {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #606266;
       }
       // 修改密码
       .el-dropdown {

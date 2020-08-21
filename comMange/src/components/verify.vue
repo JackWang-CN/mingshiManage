@@ -21,17 +21,20 @@ export default {
       mouseMoveStata: false /*触发拖动状态  判断*/,
       maxwidth: "" /*拖动最大宽度，依据滑块宽度算出来的*/,
       confirmWords: "拖动滑块验证" /*滑块文字*/,
-      confirmSuccess: false /*验证成功判断*/
+      confirmSuccess: false /*验证成功判断*/,
     };
   },
   methods: {
-    mousedownFn: function(e) {
+    //mousedoen 事件
+    mousedownFn: function (e) {
       if (!this.confirmSuccess) {
         e.preventDefault && e.preventDefault(); //阻止文字选中等 浏览器默认事件
         this.mouseMoveStata = true;
         this.beginClientX = e.clientX;
       }
-    }, //mousedoen 事件
+    },
+
+    //验证成功函数
     successFunction() {
       this.confirmSuccess = true;
       this.confirmWords = "验证通过";
@@ -53,7 +56,9 @@ export default {
       document.getElementsByClassName("drag_bg")[0].style.width =
         this.maxwidth + "px";
       this.$emit("slideSuc", this.mouseMoveStata);
-    }, //验证成功函数
+    },
+
+    //mousemove事件
     mouseMoveFn(e) {
       if (this.mouseMoveStata) {
         let width = e.clientX - this.beginClientX;
@@ -66,7 +71,9 @@ export default {
           this.successFunction();
         }
       }
-    }, //mousemove事件
+    },
+
+    //mouseup事件
     moseUpFn(e) {
       this.mouseMoveStata = false;
       var width = e.clientX - this.beginClientX;
@@ -74,8 +81,9 @@ export default {
         document.getElementsByClassName("handler")[0].style.left = 0 + "px";
         document.getElementsByClassName("drag_bg")[0].style.width = 0 + "px";
       }
-    } //mouseup事件
+    },
   },
+
   mounted() {
     this.maxwidth =
       this.$refs.dragDiv.clientWidth - this.$refs.moveDiv.clientWidth;
@@ -85,7 +93,7 @@ export default {
     document
       .getElementsByTagName("html")[0]
       .addEventListener("mouseup", this.moseUpFn);
-  }
+  },
 };
 </script>
 

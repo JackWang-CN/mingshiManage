@@ -133,22 +133,3 @@ body,
 #app {
   height: 100%;
 }
-
-/* 阴影盒子容器 */
-.shadow_container {
-  background-color: #fff;
-  padding: 20px 20px 50px 20px;
-  box-shadow: 0 0 10px #747373;
-}
-
-/* 页标题 */
-.pageTitle {
-  font-size: 18px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eaeefb;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}

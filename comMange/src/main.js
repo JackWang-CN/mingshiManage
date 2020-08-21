@@ -8,6 +8,7 @@ import "./assets/font/iconfont.css";
 // 引入element组件
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
+Vue.use(ElementUI);
 
 // 引入拦截器
 import "./utils/axiosUtil";
@@ -16,7 +17,23 @@ import "./utils/axiosUtil";
 import "./assets/css/reset.css";
 import "./assets/css/common.scss";
 
-Vue.use(ElementUI);
+//路由守卫
+router.beforeEach((to, from, next) => {
+  if (to.meta.notNeed) {
+    // 判断该路由是否需要登录权限
+    next();
+  } else {
+    if (sessionStorage.getItem("token")) {
+      //判断本地是否存在token
+      next();
+    } else {
+      new Vue().$message.error("请先登录再操作！");
+      next({
+        path: "/login",
+      });
+    }
+  }
+});
 
 Vue.prototype.$vision = {
   merchant: "m1",

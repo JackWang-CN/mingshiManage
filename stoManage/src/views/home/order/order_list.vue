@@ -3,41 +3,21 @@
   <div id="order_list" class="shadow_container">
     <div class="pageTitle">订单记录</div>
     <!-- 查询条件 -->
-    <el-form
-      ref="find_form"
-      :model="find_form"
-      label-width="80px"
-      class="find_form"
-    >
-      <el-form-item label="订单编号" label-width="100px">
-        <el-input
-          v-model="find_form.data.orderId"
-          placeholder="请输入订单编号"
-        ></el-input>
+    <el-form ref="find_form" :model="find_form" label-width="100px" class="find_form">
+      <el-form-item label="订单编号">
+        <el-input v-model="find_form.data.orderId" placeholder="请输入订单编号"></el-input>
       </el-form-item>
-      <el-form-item label="商品ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.orderId"
-          placeholder="请输入商品ID"
-        ></el-input>
+      <el-form-item label="商品ID">
+        <el-input v-model="find_form.data.orderId" placeholder="请输入商品ID"></el-input>
       </el-form-item>
-      <el-form-item label="用户ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.userId"
-          placeholder="请输入用户ID"
-        ></el-input>
+      <el-form-item label="用户ID">
+        <el-input v-model="find_form.data.userId" placeholder="请输入用户ID"></el-input>
       </el-form-item>
-      <el-form-item label="订单金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.amount"
-          placeholder="请输入订单金额"
-        ></el-input>
+      <el-form-item label="订单金额">
+        <el-input v-model="find_form.data.amount" placeholder="请输入订单金额"></el-input>
       </el-form-item>
-      <el-form-item label="实付金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.paidAmount"
-          placeholder="请输入实付金额"
-        ></el-input>
+      <el-form-item label="实付金额">
+        <el-input v-model="find_form.data.paidAmount" placeholder="请输入实付金额"></el-input>
       </el-form-item>
 
       <el-form-item label="订单状态">
@@ -74,9 +54,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="findList" :disabled="btn_status"
-          >查询</el-button
-        >
+        <el-button type="primary" @click="findList" :disabled="btn_status">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
@@ -84,77 +62,28 @@
     <!-- 订单列表 -->
     <el-table :data="order_list" border style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        fixed
-        prop="orderId"
-        label="订单编号"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="goodsName"
-        label="商品名称"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="number"
-        label="商品数量"
-        width="120"
-      ></el-table-column>
+      <el-table-column fixed prop="orderId" label="订单编号" width="150"></el-table-column>
+      <el-table-column prop="goodsName" label="商品名称" width="150"></el-table-column>
+      <el-table-column prop="number" label="商品数量" width="120"></el-table-column>
       <el-table-column prop="goodsIco" label="商品图片" width="200">
         <template slot-scope="scope">
           <img :src="scope.row.goodsIco" height="100" alt />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="paidAmount"
-        label="实付金额"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="amount"
-        label="订单金额"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="customerInfo"
-        label="客户昵称"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="userId"
-        label="客户ID"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="orderTime"
-        label="下单日期"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="details"
-        label="订单详情"
-        width="250"
-      ></el-table-column>
+      <el-table-column prop="paidAmount" label="实付金额" width="120"></el-table-column>
+      <el-table-column prop="amount" label="订单金额" width="120"></el-table-column>
+      <el-table-column prop="customerInfo" label="客户昵称" width="120"></el-table-column>
+      <el-table-column prop="userId" label="客户ID" width="200"></el-table-column>
+      <el-table-column prop="orderTime" label="下单日期" width="200"></el-table-column>
+      <el-table-column prop="details" label="订单详情" width="250"></el-table-column>
       <el-table-column prop="orderStatus" label="订单状态" width="120">
         <!-- <template slot-scope="scope">{{scope.row.orderStatus}}</template> -->
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button
-            @click="toDetails(scope.row.orderId)"
-            type="primary"
-            size="small"
-            >详细</el-button
-          >
-          <el-button @click="remark(scope.row)" type="warning" size="small"
-            >备注</el-button
-          >
-          <el-button
-            @click="delRow(scope.row.orderId)"
-            type="danger"
-            size="small"
-            >删除</el-button
-          >
+          <el-button @click="toDetails(scope.row.orderId)" type="primary" size="small">详细</el-button>
+          <el-button @click="remark(scope.row)" type="warning" size="small">备注</el-button>
+          <el-button @click="delRow(scope.row.orderId)" type="danger" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -170,18 +99,18 @@
     <el-dialog title="订单备注" :visible.sync="show_remark">
       <el-form label-width="100px">
         <el-form-item label="订单编号">{{ remark_data.orderId }}</el-form-item>
-        <el-form-item label="下单日期">{{
+        <el-form-item label="下单日期">
+          {{
           remark_data.orderTime
-        }}</el-form-item>
-        <el-form-item label="商品名称">{{
+          }}
+        </el-form-item>
+        <el-form-item label="商品名称">
+          {{
           remark_data.goodsName
-        }}</el-form-item>
+          }}
+        </el-form-item>
         <el-form-item label="添加备注">
-          <el-input
-            type="textarea"
-            v-model="remark_data.remark"
-            :rows="3"
-          ></el-input>
+          <el-input type="textarea" v-model="remark_data.remark" :rows="3"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="small">保存</el-button>

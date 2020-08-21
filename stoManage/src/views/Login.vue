@@ -43,6 +43,7 @@
 <script>
 import Verify from "@/components/verify.vue";
 import { sendLogin } from "@/utils/api/api";
+
 import { spliceUrl } from "@/utils/common";
 export default {
   components: { Verify },
@@ -94,7 +95,7 @@ export default {
             var timer = setTimeout(() => {
               this.loading = false;
               this.$message.error("登录超时，请重试");
-            }, 5000);
+            }, 10000);
             sendLogin(this.loginForm).then((res) => {
               if (res) {
                 clearTimeout(timer);
@@ -110,6 +111,7 @@ export default {
                 sessionStorage.setItem("merchantname", merchantname);
                 this.loading = false;
                 this.$message.success("登录成功");
+
                 this.$router.replace("home");
               }
             });

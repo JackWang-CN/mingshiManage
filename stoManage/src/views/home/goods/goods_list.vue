@@ -72,11 +72,10 @@
         <template slot-scope="scope">{{scope.row.isDisable?'是':'否'}}</template>
       </el-table-column>
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="160px" fixed="right">
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row.productId)" type="primary" size="small">编辑</el-button>
           <el-button @click="delRow(scope.row.productId)" type="danger" size="small">删除</el-button>
-          <el-button @click="resource_batchAdd(scope.row)" type="text" size="small">添加优惠券</el-button>
         </template>
       </el-table-column>
     </el-table>

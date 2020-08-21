@@ -17,24 +17,24 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <!-- 广告 -->
-        <el-submenu index="advertising">
+        <!-- 商家活动 -->
+        <el-submenu index="activity">
           <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>广告管理</span>
+            <i class="el-icon-message-solid"></i>
+            <span>商家活动</span>
           </template>
-          <el-menu-item index="advertising">我的广告</el-menu-item>
-          <el-menu-item index="entrust">我的委托</el-menu-item>
+          <el-menu-item index="publish">我需要援助</el-menu-item>
+          <el-menu-item index="underway">进行中活动</el-menu-item>
+          <el-menu-item index="history">历史活动</el-menu-item>
         </el-submenu>
 
-        <!-- 权限管理 -->
-        <el-submenu index="roles">
+        <!-- 广告管理 -->
+        <el-submenu index="advertising">
           <template slot="title">
-            <i class="el-icon-s-check"></i>
-            <span>权限管理</span>
+            <i class="el-icon-s-management"></i>
+            <span>广告管理</span>
           </template>
-          <el-menu-item index="role_list">角色管理</el-menu-item>
-          <el-menu-item index="user_list">用户管理</el-menu-item>
+          <el-menu-item index="advertising">广告管理</el-menu-item>
         </el-submenu>
 
         <!-- 商品管理 -->
@@ -45,25 +45,41 @@
           </template>
           <el-menu-item index="goods_type">商品分类</el-menu-item>
           <el-menu-item index="goods_list">商品列表</el-menu-item>
-          <el-menu-item index="coupon_list">优惠券管理</el-menu-item>
         </el-submenu>
 
         <!-- 订单管理 -->
-        <el-submenu index="order">
-          <template slot="title">
-            <i class="el-icon-s-shop"></i>
-            <span>订单管理</span>
-          </template>
-          <el-menu-item index="order_list">订单明细</el-menu-item>
-          <el-menu-item index="order_check">商户审核</el-menu-item>
-        </el-submenu>
-
-        <!-- 客户管理 -->
-        <el-menu-item index="customer">
-          <i class="el-icon-s-custom"></i>
-          <span slot="title">客户管理</span>
+        <el-menu-item index="order_list">
+          <i class="el-icon-s-claim"></i>
+          <span slot="title">订单管理</span>
         </el-menu-item>
 
+        <!-- 我的收益 -->
+        <el-menu-item index="earnings">
+          <i class="el-icon-s-finance"></i>
+          <span slot="title">我的收益</span>
+        </el-menu-item>
+
+        <!-- 客户管理 -->
+        <el-submenu index="customer">
+          <template slot="title">
+            <i class="el-icon-s-custom"></i>
+            <span>客户管理</span>
+          </template>
+          <el-menu-item index="message_center">消息中心</el-menu-item>
+          <el-menu-item index="message_group">消息群发</el-menu-item>
+          <el-menu-item index="friend_list">好友列表</el-menu-item>
+        </el-submenu>
+
+        <!-- 店铺管理 -->
+        <el-submenu index="store">
+          <template slot="title">
+            <i class="el-icon-s-shop"></i>
+            <span>店铺管理</span>
+          </template>
+          <el-menu-item index="info">基础信息</el-menu-item>
+          <el-menu-item index="role_list">角色管理</el-menu-item>
+          <el-menu-item index="user_list">账号管理</el-menu-item>
+        </el-submenu>
         <!-- 
           【无下拉菜单】
           <el-menu-item index="4">
@@ -108,7 +124,7 @@
           <span>尊敬的{{ userName }}，欢迎您！</span>
           <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
             <span class="el-dropdown-link">
-              <el-avatar :size="40" :src="circleUrl" alt="用户头像"></el-avatar>
+              <el-avatar :size="50" :src="circleUrl" shape="square"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown" class="dropdown_menu">
               <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
@@ -132,8 +148,8 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
           </div>
         </el-dialog>
       </el-header>
@@ -147,9 +163,23 @@
 </template>
 
 <script>
+import { ws, sendIm } from "@/utils/api/imApi";
 export default {
-  mounted() {
+  created() {
     var token = sessionStorage.getItem("token");
+    var merchantname = sessionStorage.getItem("merchantname");
+
+    ws.onopen = () => {
+      // 1.创建IM报文
+      var imObj = {
+        Authorization: token,
+        Type: "6",
+        MerchantsId: merchantname,
+      };
+      // 2.发送
+      sendIm(imObj);
+    };
+
     if (!token) {
       this.$router.replace("/login");
       this.$message.error("账号已注销，请重新登录！");
@@ -160,8 +190,7 @@ export default {
 
   data() {
     return {
-      circleUrl:
-        "http://192.168.0.89:9007/f1/FileResources/DownLoad?pathtemp=20072113532290945590491030009020853708",
+      circleUrl: "",
       userName: "",
       dialogFormVisible: false,
       changePwd: {

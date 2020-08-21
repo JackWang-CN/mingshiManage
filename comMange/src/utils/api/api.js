@@ -142,7 +142,7 @@ export const upLoadFiles = (remarks, formdata) => {
 
 // 8.U3D文件上传
 export const uploadArFiles = (hierarchy, Remarks, formdata) => {
-  var url = fileUrl + `WebUploadForm?hierarchy=${hierarchy}&Remarks=${Remarks}`;
+  var url = fileUrl + `U3DUploadForm?hierarchy=${hierarchy}&Remarks=${Remarks}`;
   return axios.post(url, formdata);
 };
 

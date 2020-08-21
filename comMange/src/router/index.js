@@ -9,7 +9,7 @@ export default new VueRouter({
     { path: "/", redirect: "/login" },
 
     // 登录页
-    { path: "/login", component: Login },
+    { path: "/login", component: Login, meta: { notNeed: true } },
 
     // 管理系统页
     {
@@ -227,14 +227,6 @@ export default new VueRouter({
           component: () =>
             import("../views/UserData/userdata_spaEstLicense.vue"),
           meta: ["用户管理", "地产数据管理"],
-        },
-
-        // 道具数据管理
-        {
-          path: "userdata_spaHouIndoor",
-          component: () =>
-            import("../views/UserData/userdata_spaHouIndoor.vue"),
-          meta: ["用户管理", "道具数据管理"],
         },
 
         // 房产列表

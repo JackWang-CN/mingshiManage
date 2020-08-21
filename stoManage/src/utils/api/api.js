@@ -105,7 +105,7 @@ export const addDataList = (vision, control, info, _this, path) => {
 };
 
 // 5.更新数据
-export const updateDataList = (vision, control, info, _this, path, fn) => {
+export const updateDataList = (vision, control, info, _this, path) => {
   var action = "edit";
   updateData(vision, control, action, info).then((res) => {
     switch (res) {
@@ -114,11 +114,6 @@ export const updateDataList = (vision, control, info, _this, path, fn) => {
 
         if (path) {
           _this.$router.push(path);
-        }
-
-        if (fn) {
-          debugger;
-          // fn();
         }
     }
   });

@@ -9,7 +9,7 @@ export default new VueRouter({
     { path: "/", redirect: "/login" },
 
     // 登录页
-    { path: "/login", component: Login },
+    { path: "/login", component: Login, meta: { notNeed: true } },
 
     // 管理系统页
     {
@@ -25,6 +25,25 @@ export default new VueRouter({
           meta: ["首页"],
         },
 
+        // 商家活动-我需要援助
+        {
+          path: "publish",
+          component: () => import("../views/home/activity/publish.vue"),
+          meta: ["商家活动", "我需要援助"],
+        },
+        // 商家活动-进行中活动
+        {
+          path: "underway",
+          component: () => import("../views/home/activity/underway.vue"),
+          meta: ["商家活动", "进行中活动"],
+        },
+        // 商家活动-历史活动
+        {
+          path: "history",
+          component: () => import("../views/home/activity/history.vue"),
+          meta: ["商家活动", "历史活动"],
+        },
+
         // 广告管理-我的广告
         {
           path: "advertising",
@@ -36,44 +55,6 @@ export default new VueRouter({
           path: "adv_details",
           component: () => import("../views/home/advertising/adv_details.vue"),
           meta: ["广告管理", "修改"],
-        },
-        // 广告管理-我的委托
-        {
-          path: "entrust",
-          component: () => import("../views/home/advertising/entrust.vue"),
-          meta: ["广告管理", "我的委托"],
-        },
-        // 广告管理-修改&新增委托
-        {
-          path: "entrust_details",
-          component: () =>
-            import("../views/home/advertising/entrust_details.vue"),
-          meta: ["广告管理", "我的委托"],
-        },
-
-        // 权限管理-角色管理
-        {
-          path: "role_list",
-          component: () => import("../views/home/role/role_list.vue"),
-          meta: ["权限管理", "角色管理"],
-        },
-        // 权限管理-角色新增
-        {
-          path: "role_details",
-          component: () => import("../views/home/role/role_details.vue"),
-          meta: ["权限管理", "新增角色"],
-        },
-        // 权限管理-用户管理
-        {
-          path: "user_list",
-          component: () => import("../views/home/role/user_list.vue"),
-          meta: ["权限管理", "用户管理"],
-        },
-        // 权限管理-用户详情
-        {
-          path: "user_details",
-          component: () => import("../views/home/role/user_details.vue"),
-          meta: ["权限管理", "用户管理"],
         },
 
         // 商品管理-商品分类
@@ -120,17 +101,61 @@ export default new VueRouter({
           meta: ["订单管理", "订单审核"],
         },
 
-        // 客户管理
+        // 我的收益
         {
-          path: "customer",
-          component: () => import("../views/home/customer/customer.vue"),
-          meta: ["客户管理"],
+          path: "earnings",
+          component: () => import("../views/home/earnings/earnings.vue"),
+          meta: ["我的收益"],
         },
 
-        // 个人中心
+        // 客户管理-消息中心
         {
-          path: "personal_center",
-          component: () => import("../views/home/personal/personal_center.vue"),
+          path: "message_center",
+          component: () => import("../views/home/customer/message_center.vue"),
+          meta: ["客户管理", "消息中心"],
+        },
+        // 客户管理-消息群发
+        {
+          path: "message_group",
+          component: () => import("../views/home/customer/message_group.vue"),
+          meta: ["客户管理", "消息群发"],
+        },
+        // 客户管理-好友列表
+        {
+          path: "friend_list",
+          component: () => import("../views/home/customer/friend_list.vue"),
+          meta: ["客户管理", "好友列表"],
+        },
+
+        // 店铺管理-角色管理
+        {
+          path: "role_list",
+          component: () => import("../views/home/store/role_list.vue"),
+          meta: ["店铺管理", "角色管理"],
+        },
+
+        // 店铺管理-角色新增
+        {
+          path: "role_details",
+          component: () => import("../views/home/store/role_details.vue"),
+          meta: ["店铺管理", "新增角色"],
+        },
+        // 店铺管理-账号管理
+        {
+          path: "user_list",
+          component: () => import("../views/home/store/user_list.vue"),
+          meta: ["店铺管理", "账号管理"],
+        },
+        // 店铺管理-账号详情
+        {
+          path: "user_details",
+          component: () => import("../views/home/store/user_details.vue"),
+          meta: ["店铺管理", "账号详情"],
+        },
+        // 店铺管理-个人中心
+        {
+          path: "info",
+          component: () => import("../views/home/store/info.vue"),
           meta: ["个人中心"],
         },
       ],

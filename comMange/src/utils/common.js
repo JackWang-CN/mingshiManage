@@ -3,7 +3,7 @@
 const fileUrl = "http://192.168.0.89:9001/f1/FileResources/";
 
 // 拼接文件URL
-export const spliceUrl = (arr, imgKey, type) => {
+export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
       item.originally = item[imgKey];
