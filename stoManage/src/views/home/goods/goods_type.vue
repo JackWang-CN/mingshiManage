@@ -1,61 +1,51 @@
-<!-- 资源类型 -->
+<!-- 商品分类 -->
 <template>
-  <div id="resource_type" class="shadow_container">
+  <div id="goods_type" class="shadow_container">
     <div class="pageTitle">商品分类</div>
     <!-- 查询表单 -->
-    <el-form ref="find_form" :model="find_form" label-width="100px" id="find_form">
-      <!-- 查询条件 -->
-      <el-form-item label="商品类型">
-        <el-select v-model="find_form.secondary_name" placeholder="请选择分类">
-          <el-option
-            v-for="(item, index) in find_form.secondary_list[find_form.index]"
-            :key="index"
-            :label="item"
-            :value="item"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <!-- 按钮组 -->
-      <el-form-item>
-        <el-button type="primary">查询分类</el-button>
-        <el-button type="success" @click="dialogFormVisible = true">新增类型</el-button>
-        <el-button type="danger" style="margin-left:50px">批量删除</el-button>
-      </el-form-item>
-    </el-form>
 
-    <!-- 资源列表 -->
-    <el-table ref="type_list" :data="type_list" tooltip-effect="dark" :border="true">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="primary_name" label="主类名称" width="150"></el-table-column>
-      <el-table-column prop="secondary_name" label="次类名称" width="150"></el-table-column>
-      <el-table-column prop="code" label="类型ID" width="150"></el-table-column>
-      <el-table-column prop="message" label="详细说明" width="500"></el-table-column>
-      <el-table-column label="操作" width="200">
+    <!-- 查询条件 -->
+    <div class="search">
+      <el-input v-model="find_form.info" placeholder="主题、描述、客户经理" prefix-icon="el-icon-search"></el-input>
+      <el-button type="primary" @click="showDetails">创建分类</el-button>
+    </div>
+
+    <!-- 类型列表 -->
+    <el-table
+      :data="type_list"
+      row-key="code"
+      border
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
+      <el-table-column prop="name" label="分类名称" sortable width="200"></el-table-column>
+      <el-table-column prop="code" label="分类编号" sortable width="180"></el-table-column>
+      <el-table-column prop="design" label="描述说明"></el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="type_update(scope.row)" type="text" size="small">编辑</el-button>
-          <el-button @click="type_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
-          <el-button @click="type_batchAdd(scope.row)" type="text" size="small">批量添加资源</el-button>
+          <el-button size="small" type="primary" @click="showDetails(scope.row)">操作</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 添加类型 -->
-    <el-dialog title="添加类型" :visible.sync="dialogFormVisible" id="dialog" width="30%">
+    <!-- 弹出框 -->
+    <el-dialog title="添加类型" :visible.sync="show_details" id="dialog" width="30%">
       <el-form>
-        <el-form-item label-width="80px">
-          <el-select v-model="add_form.primary_name" placeholder="请选择分类">
+        <el-form-item label-width="80px" label="所属分类">
+          <el-select v-model="add_form.large_name" placeholder="请选择分类">
             <el-option label="食品" value="1"></el-option>
             <el-option label="日用" value="2"></el-option>
-            <el-option label="请选择" value="0"></el-option>
+            <el-option label="新增父类" value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label-width="80px">
-          <el-input v-model="add_form.secondary_name" placeholder="请输入分类名称"></el-input>
+
+        <el-form-item label-width="80px" :label="add_form.large_name=='0'?'父类名称':'分类名称'">
+          <el-input v-model="add_form.type_name" placeholder="请输入分类名称"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="sendAdd">确 定</el-button>
-        <el-button @click="cancelAdd">取 消</el-button>
+        <el-button type="primary" @click="sendSubmit">确 定</el-button>
+        <el-button @click="show_details=false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -66,91 +56,74 @@ export default {
   data() {
     return {
       // 查询条件
-      find_form: {
-        primary_list: ["美食", "交通"],
-        secondary_list: [
-          ["火锅", "烤肉", "中餐", "西餐", "海鲜"],
-          ["公交", "地铁", "飞机", "火车", "轻轨"],
-        ],
-        type: "",
-        index: -1,
-      },
+      find_form: {},
       // 类型新增
-      add_form: {
-        primary_name: "",
-        secondary_name: "",
-      },
-      dialogFormVisible: false, // 弹出框隐藏显示
+      add_form: {},
 
       type_list: [
         {
-          primary_name: "美食",
-          secondary_name: "火锅",
-          code: "001",
-          message: "可以吃火锅啦",
+          name: "食品",
+          code: "1",
+          design: "包含柴米油盐姜醋茶、速食、零食",
+          children: [
+            {
+              name: "康师傅红烧牛肉面",
+              code: "1-1",
+              design: "就是这个味儿！",
+            },
+            {
+              name: "统一老痰酸菜牛肉面",
+              code: "1-2",
+              design: "有人模仿我的脸",
+            },
+          ],
         },
         {
-          primary_name: "美食",
-          secondary_name: "烤肉",
-          code: "002",
-          message: "可以吃烤肉啦",
+          name: "日用",
+          code: "2",
+          design: "卫生纸、日用护肤品、洗衣粉等",
         },
         {
-          primary_name: "美食",
-          secondary_name: "中餐",
-          code: "003",
-          message: "可以吃中餐啦",
+          name: "厨具",
+          code: "3",
+          design: "锅碗瓢盆等",
         },
         {
-          primary_name: "美食",
-          secondary_name: "西餐",
-          code: "004",
-          message: "可以吃西餐啦",
+          name: "电器",
+          code: "4",
+          design: "电视冰箱等",
         },
       ],
-      multipleSelection: [],
+
+      show_details: false, // 弹出框隐藏显示
     };
   },
   methods: {
-    type_add() {
-      this.$router.push("author_typeAdd");
-    },
-    type_update(row) {},
-    type_delete(row) {},
-    type_batchAdd(row) {},
-    // 获得一级菜单索引
-    getIndex() {
-      this.find_form.secondary_name = ""; // 清空次类
-      var index = this.find_form.primary_list.indexOf(
-        this.find_form.primary_name
-      );
-      this.find_form.index = index;
-    },
-    // 取消新增
-    cancelAdd() {
-      this.dialogFormVisible = false;
+    // 发送提交请求
+    sendSubmit() {
+      console.log("提交");
     },
 
-    // 发送新增
-    sendAdd() {
-      this.dialogFormVisible = false;
+    // 创建分类
+    showDetails() {
+      this.show_details = true;
     },
   },
 };
 </script>
 
 <style lang="scss">
-#resource_type {
-  // 查询表单
-  form {
-    .el-form-item {
-      display: inline-block;
-      .el-input,
-      .el-select {
-        width: 200px;
-      }
-    }
+#goods_type {
+  .el-input {
+    width: 300px;
   }
+
+  .search {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
   // 资源列表
   .el-table {
     display: inline-block;

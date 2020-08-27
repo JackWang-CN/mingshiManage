@@ -1,51 +1,38 @@
 <!-- 商品列表 -->
 <template>
   <div id="goods_list" class="shadow_container">
-    <div class="pageTitle">
-      商品列表
-      <el-button type="success" style="margin-left:50px" @click="toDetails()">添加商品</el-button>
-    </div>
+    <div class="pageTitle">商品列表</div>
     <!-- 查询表单 -->
     <el-form ref="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
-      <el-form-item label="商品名称">
-        <el-input v-model="find_form.productName" placeholder="请输入商品名称"></el-input>
-      </el-form-item>
-      <el-form-item label="商品ID">
-        <el-input v-model="find_form.productId" placeholder="请输入商品ID"></el-input>
-      </el-form-item>
-      <el-form-item label="商品类型">
-        <el-select v-model="find_form.productType" placeholder="请选择商品类型">
-          <el-option label="大类一" value="大类一"></el-option>
-          <el-option label="大类二" value="大类二"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否禁用">
-        <el-select v-model="find_form.isDisable" placeholder="请选择商品状态">
-          <el-option label="禁用" :value="false"></el-option>
-          <el-option label="启用" :value="true"></el-option>
-        </el-select>
-      </el-form-item>
+      <div class="search">
+        <el-input v-model="find_form.info" placeholder="主题、描述、客户经理" prefix-icon="el-icon-search"></el-input>
+        <div class="btns">
+          <el-button type="success" style="margin-left:50px" @click="toDetails()">添加商品</el-button>
+          <el-button type="danger" @click="delList" size="medium">删除商品</el-button>
+          <el-button type="text" @click="switchMore">{{showMore?'收起∧':'筛选∨'}}</el-button>
+        </div>
+      </div>
 
-      <!-- 日期查询 -->
-      <el-form-item label="到期时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.dismountTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
+      <!-- 高级筛选 -->
+      <div class="more">
+        <el-form-item label="商品类型" v-if="showMore">
+          <el-select v-model="find_form.productType" placeholder="请选择商品类型">
+            <el-option label="大类一" value="大类一"></el-option>
+            <el-option label="大类二" value="大类二"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="上架状态" v-if="showMore">
+          <el-select v-model="find_form.isDisable" placeholder="请选择商品状态">
+            <el-option label="上架中" :value="false"></el-option>
+            <el-option label="已下架" :value="true"></el-option>
+          </el-select>
+        </el-form-item>
 
-      <!-- 按钮组 -->
-      <el-form-item>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="danger" @click="delList">批量删除</el-button>
-      </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="medium" v-if="showMore">搜索</el-button>
+        </el-form-item>
+      </div>
     </el-form>
 
     <!-- 商品列表 -->
@@ -119,6 +106,7 @@ export default {
         totalDataNum: 0,
       },
 
+      showMore: false,
       // 数据列表
       goods_list: [],
 
@@ -210,6 +198,11 @@ export default {
       });
     },
 
+    // 隐藏&收起筛选条件
+    switchMore() {
+      this.showMore = !this.showMore;
+    },
+
     // 重置
     resetForm() {
       this.find_form = {
@@ -230,6 +223,19 @@ export default {
     .el-form-item {
       display: inline-block;
     }
+    .el-input {
+      width: 200px;
+    }
+    .search {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    // .more {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: space-between;
+    // }
   }
   // 商品列表
   .el-table {
