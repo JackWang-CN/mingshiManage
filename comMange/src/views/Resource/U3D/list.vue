@@ -13,7 +13,7 @@
         <el-input v-model="find_form.data.resExtName" placeholder="如：jpg"></el-input>
       </el-form-item>
       <el-form-item label="是否禁用">
-        <el-select v-model="find_form.data.isDelete" placeholder="请选择主分类">
+        <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
         </el-select>

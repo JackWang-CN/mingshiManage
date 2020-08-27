@@ -39,6 +39,7 @@
             <span>道具商城</span>
           </template>
           <el-menu-item index="props_list">道具列表</el-menu-item>
+          <el-menu-item index="props_type">道具类型</el-menu-item>
           <el-menu-item index="props_records">交易记录</el-menu-item>
         </el-submenu>
 
@@ -46,7 +47,7 @@
         <el-submenu index="auction">
           <template slot="title">
             <i class="el-icon-office-building"></i>
-            <span>拍卖行管理</span>
+            <span>拍卖行</span>
           </template>
           <el-menu-item index="auction_list">拍卖列表</el-menu-item>
           <el-menu-item index="auction_records">交易记录</el-menu-item>
@@ -61,28 +62,13 @@
           <el-menu-item index="normal_list">普通资源管理</el-menu-item>
           <el-menu-item index="ar_list">AR资源管理</el-menu-item>
         </el-submenu>
-        <!-- 商户管理 -->
-        <el-submenu index="store">
-          <template slot="title">
-            <i class="el-icon-s-shop"></i>
-            <span>商户管理</span>
-          </template>
-          <el-menu-item index="store_list">商户列表</el-menu-item>
-          <el-menu-item index="store_check">商户审核</el-menu-item>
-        </el-submenu>
 
         <el-submenu index="configure">
           <template slot="title">
             <i class="el-icon-s-tools"></i>
             <span>配置管理</span>
           </template>
-          <el-menu-item index="configure_business">经营类别</el-menu-item>
-          <el-menu-item index="configure_dbRelation">数据库关联</el-menu-item>
-          <el-menu-item index="configure_merInfoAttach">商家信息附件</el-menu-item>
           <el-menu-item index="configure_noticerecord">公告记录</el-menu-item>
-          <el-menu-item index="configure_propsApproach">道具途径</el-menu-item>
-          <el-menu-item index="configure_pushmegs">推送信息</el-menu-item>
-          <el-menu-item index="configure_pushTemplate">推送模板</el-menu-item>
           <el-menu-item index="configure_roleGrauth">角色权限</el-menu-item>
           <el-menu-item index="configure_verControl">版本控制</el-menu-item>
         </el-submenu>
@@ -92,40 +78,29 @@
             <i class="el-icon-user-solid"></i>
             <span>用户管理</span>
           </template>
-          <el-menu-item index="userdata_accFlow">帐户流水</el-menu-item>
-          <el-menu-item index="userdata_assets">道具资产</el-menu-item>
-          <el-menu-item index="userdata_chatRecord">聊天记录</el-menu-item>
-          <el-menu-item index="userdata_fundAcc">资金帐户</el-menu-item>
-          <el-menu-item index="userdata_groupBase">群组管理</el-menu-item>
+          <el-menu-item index="user_list">用户列表</el-menu-item>
+          <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
+          <el-menu-item index="user_group">群组管理</el-menu-item>
           <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
           <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
           <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>
-          <el-menu-item index="userdata_userList">用户列表</el-menu-item>
         </el-submenu>
 
         <el-submenu index="merchant">
           <template slot="title">
             <i class="el-icon-s-goods"></i>
-            <span>商家管理</span>
+            <span>商户管理</span>
           </template>
+          <el-menu-item index="merchant_list">商户列表</el-menu-item>
           <el-menu-item index="merchant_busReqTrace">业务请求跟踪</el-menu-item>
           <el-menu-item index="merchant_couponProduc">优惠券量产管理</el-menu-item>
           <el-menu-item index="merchant_entrustReqData">委托请求数据管理</el-menu-item>
           <el-menu-item index="merchant_merAdData">商户广告数据管理</el-menu-item>
           <el-menu-item index="merchant_order">订单管理</el-menu-item>
-          <el-menu-item index="merchant_orderPayDetail">订单支付详情管理</el-menu-item>
-          <el-menu-item index="merchant_personalConf">枚举配置管理</el-menu-item>
           <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item>
           <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item>
-          <el-menu-item index="merchant_roleGrAuth">角色组权限管理</el-menu-item>
-          <el-menu-item index="merchant_roleGroup">角色组管理</el-menu-item>
           <el-menu-item index="merchant_userInfo">用户信息主表</el-menu-item>
         </el-submenu>
-
-        <el-menu-item index="fileresources_ResourceMapping">
-          <i class="el-icon-folder"></i>
-          <span slot="title">资源映射表</span>
-        </el-menu-item>
 
         <!-- 
           【无下拉菜单】

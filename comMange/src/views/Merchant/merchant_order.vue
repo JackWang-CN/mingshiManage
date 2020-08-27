@@ -4,47 +4,11 @@
     <div class="pageTitle">订单管理</div>
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
-      <el-form-item label="订单号" label-width="100px">
-        <el-input
-          v-model="find_form.data.orderId"
-          placeholder="请输入订单号"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="商品ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.productId"
-          placeholder="请输入商品ID"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="用户ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.userId"
-          placeholder="请输入用户ID"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="数量" label-width="100px">
-        <el-input
-          v-model="find_form.data.number"
-          placeholder="请输入数量"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.amount"
-          placeholder="请输入金额"
-        ></el-input>
-      </el-form-item>
       <el-form-item label="实付金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.details"
-          placeholder="请输入实付金额"
-        ></el-input>
+        <el-input v-model="find_form.data.details" placeholder="请输入实付金额"></el-input>
       </el-form-item>
       <el-form-item label="订单状态" label-width="100px">
-        <el-select
-          v-model="find_form.data.orderStatus"
-          placeholder="请选择订单状态"
-        >
+        <el-select v-model="find_form.data.orderStatus" placeholder="请选择订单状态">
           <el-option label="未支付" value="0"></el-option>
           <el-option label="支付成功" value="1"></el-option>
           <el-option label="支付中(等待回调)" value="2"></el-option>
@@ -72,8 +36,7 @@
             type="success"
             style="margin-left:50px"
             @click="dialogFormVisibleOfAdd = true"
-            >添加</el-button
-          >
+          >添加</el-button>
           <el-button type="danger" @click="delete_list">批量删除</el-button>
         </el-form-item>
       </div>
@@ -86,131 +49,60 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        fixed
-        prop="orderId"
-        label="订单号"
-        width="80"
-      ></el-table-column>
-      <el-table-column
-        prop="productId"
-        label="商品ID"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="userId"
-        label="用户ID"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="details"
-        label="详情描述"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop label="商户名称" width="120"></el-table-column>
+      <el-table-column prop label="商品名称" width="120"></el-table-column>
+      <el-table-column prop label="用户昵称" width="120"></el-table-column>
       <el-table-column prop="number" label="数量" width="120"></el-table-column>
       <el-table-column prop="amount" label="金额" width="120"></el-table-column>
-      <el-table-column
-        prop="paidAmount"
-        label="实付金额"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="orderTime"
-        label="下单时间"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="payTime"
-        label="支付时间"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="paidAmount" label="实付金额" width="120"></el-table-column>
+      <el-table-column prop="details" label="详情描述" width="120"></el-table-column>
+      <el-table-column prop="orderTime" label="下单时间" width="170"></el-table-column>
+      <el-table-column prop="payTime" label="支付时间" width="170"></el-table-column>
       <el-table-column prop="orderStatus" label="订单状态" width="120">
-        <template slot-scope="scope">{{
-          scope.row.orderStatus == "0"
-            ? "未支付"
-            : scope.row.orderStatus == "1"
-            ? "支付成功"
-            : scope.row.orderStatus == "2"
-            ? "支付中(等待回调)"
-            : "支付失败"
-        }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="creationtime"
-        label="创建时间"
-        width="120"
-      ></el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="show_edit(scope.row)" type="text" size="small"
-            >编辑</el-button
-          >
-          <el-button
-            @click="user_delete(scope.row)"
-            type="text"
-            size="small"
-            class="btns_delete"
-            >删除</el-button
-          >
+          {{
+          scope.row.orderStatus == "0"
+          ? "未支付"
+          : scope.row.orderStatus == "1"
+          ? "支付成功"
+          : scope.row.orderStatus == "2"
+          ? "支付中(等待回调)"
+          : "支付失败"
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button @click="show_edit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="user_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加弹出框(添加) -->
-    <el-dialog
-      title="添加类别"
-      :visible.sync="dialogFormVisibleOfAdd"
-      width="40%"
-    >
+    <el-dialog title="添加类别" :visible.sync="dialogFormVisibleOfAdd" width="40%">
       <!-- 新增表单 -->
       <el-form ref="add_form" :model="add_form" label-width="120px">
         <el-form-item label="商品ID">
-          <el-input
-            v-model="add_form.productId"
-            placeholder="请输入商品ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.productId" placeholder="请输入商品ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="用户ID">
-          <el-input
-            v-model="add_form.userId"
-            placeholder="请输入用户ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.userId" placeholder="请输入用户ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="详情描述">
-          <el-input
-            v-model="add_form.details"
-            placeholder="请输入详情描述"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.details" placeholder="请输入详情描述" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="数量">
-          <el-input
-            v-model="add_form.number"
-            placeholder="请输入数量"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.number" placeholder="请输入数量" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="金额">
-          <el-input
-            v-model="add_form.amount"
-            placeholder="请输入金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.amount" placeholder="请输入金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="实付金额">
-          <el-input
-            v-model="add_form.paidAmount"
-            placeholder="请输入实付金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.paidAmount" placeholder="请输入实付金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="订单状态">
-          <el-select
-            v-model="add_form.orderStatus"
-            placeholder="请选择请求状态"
-          >
+          <el-select v-model="add_form.orderStatus" placeholder="请选择请求状态">
             <el-option label="未支付" value="0"></el-option>
             <el-option label="支付成功" value="1"></el-option>
             <el-option label="支付中(等待回调)" value="2"></el-option>
@@ -225,60 +117,29 @@
     </el-dialog>
 
     <!-- 添加弹出框(修改) -->
-    <el-dialog
-      title="修改类别"
-      :visible.sync="dialogFormVisibleOfEdit"
-      width="40%"
-    >
+    <el-dialog title="修改类别" :visible.sync="dialogFormVisibleOfEdit" width="40%">
       <!-- 修改表单 -->
       <el-form ref="edit_form" :model="edit_form" label-width="120px">
         <el-form-item label="商品ID">
-          <el-input
-            v-model="edit_form.productId"
-            placeholder="请输入商品ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.productId" placeholder="请输入商品ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="用户ID">
-          <el-input
-            v-model="edit_form.userId"
-            placeholder="请输入用户ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.userId" placeholder="请输入用户ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="详情描述">
-          <el-input
-            v-model="edit_form.details"
-            placeholder="请输入详情描述"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.details" placeholder="请输入详情描述" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="数量">
-          <el-input
-            v-model="edit_form.number"
-            placeholder="请输入数量"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.number" placeholder="请输入数量" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="金额">
-          <el-input
-            v-model="edit_form.amount"
-            placeholder="请输入金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.amount" placeholder="请输入金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="实付金额">
-          <el-input
-            v-model="edit_form.paidAmount"
-            placeholder="请输入实付金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.paidAmount" placeholder="请输入实付金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="订单状态">
-          <el-select
-            v-model="edit_form.orderStatus"
-            placeholder="请选择请求状态"
-          >
+          <el-select v-model="edit_form.orderStatus" placeholder="请选择请求状态">
             <el-option label="未支付" :value="0"></el-option>
             <el-option label="支付成功" :value="1"></el-option>
             <el-option label="支付中(等待回调)" :value="2"></el-option>

@@ -121,7 +121,7 @@ export default {
 
     // 取消
     cancel() {
-      this.$router.push("userdata_userList");
+      this.$router.push("user_list");
     },
 
     // 跳转到详情页

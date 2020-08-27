@@ -8,8 +8,8 @@
 
     <!-- 标签页 -->
     <el-tabs type="card" v-model="activeName">
-      <el-tab-pane label="我上架的" name="Auctiondata"></el-tab-pane>
-      <el-tab-pane label="我购买的" name="Auctraderec"></el-tab-pane>
+      <el-tab-pane label="用户上架道具" name="Auctiondata"></el-tab-pane>
+      <el-tab-pane label="用户购买道具" name="Auctraderec"></el-tab-pane>
       <!-- <el-tab-pane label="交易记录" name="Auctraderec"></el-tab-pane> -->
     </el-tabs>
 
@@ -17,9 +17,6 @@
     <el-table :data="data_list" border style="width: 100%" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="aname" label="物品名称" width="120"></el-table-column>
-      <el-table-column prop="dataId" label="拍卖数据ID" width="120"></el-table-column>
-      <el-table-column prop="assetsId" label="道具资产id或个人优惠卷表id" width="120"></el-table-column>
-      <el-table-column prop="resId" label="资源ID" width="120"></el-table-column>
       <el-table-column label="道具类型" width="120">
         <template slot-scope="scope">
           <span v-if="scope.row.rpmtype == 1">优惠券</span>
@@ -32,11 +29,10 @@
           <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="anum" label="剩余数量" width="90"></el-table-column>
+      <el-table-column prop="anum" label="数量" width="90"></el-table-column>
       <el-table-column prop="aunitp" label="单价" width="90"></el-table-column>
       <el-table-column prop="infoDes" label="信息简述" width="200"></el-table-column>
       <el-table-column prop="expireTime" label="到期时间" width="180"></el-table-column>
-      <el-table-column prop="owner" label="卖家id" width="150"></el-table-column>
       <el-table-column prop="tradePrice" label="交易价格" width="120"></el-table-column>
       <el-table-column prop="listingTime" label="上架时间" width="180"></el-table-column>
       <el-table-column prop="dismountTime" label="下架时间" width="180"></el-table-column>
@@ -47,7 +43,6 @@
           <span v-else-if="scope.row.currentState == 2" class="success">已卖出</span>
         </template>
       </el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="180"></el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
           <el-button type="warning" size="small" @click="showDetails(scope.row.dataId)">详情</el-button>
@@ -70,7 +65,7 @@
 
     <!-- 按钮 -->
     <div class="bottom_btns">
-      <el-button type="info" @click="cancel('userdata_userDetails')">返回</el-button>
+      <el-button type="info" @click="cancel('user_details')">返回</el-button>
     </div>
 
     <!-- 弹出框 -->

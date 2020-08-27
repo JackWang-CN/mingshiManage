@@ -41,7 +41,7 @@
 
     <!-- 按钮 -->
     <div class="bottom_btns">
-      <el-button type="info" @click="cancel('userdata_userDetails')">返回</el-button>
+      <el-button type="info" @click="cancel('user_details')">返回</el-button>
     </div>
   </div>
 </template>

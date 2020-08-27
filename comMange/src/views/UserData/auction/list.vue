@@ -9,25 +9,15 @@
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
+          <el-option label="全部" value></el-option>
           <el-option label="优惠券" value="1"></el-option>
           <el-option label="道具" value="2"></el-option>
           <el-option label="虚拟房产" value="3"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="拍品单价" label-width="100px">
-        <el-input v-model="find_form.data.aunitp" placeholder="请输入拍卖品单价"></el-input>
-      </el-form-item>
       <el-form-item label="卖家昵称" label-width="100px">
         <el-input v-model="find_form.data.owner"></el-input>
-      </el-form-item>
-
-      <el-form-item label="当前状态" label-width="100px">
-        <el-select v-model="find_form.data.currentState">
-          <el-option label="拍卖中" :value="0"></el-option>
-          <el-option label="已下架" :value="1"></el-option>
-          <el-option label="已卖出" :value="2"></el-option>
-        </el-select>
       </el-form-item>
 
       <!-- 日期查询 -->
@@ -50,13 +40,12 @@
     </el-form>
 
     <!-- 数据列表 -->
-    <el-table :data="data_list" border style="width: 100%">
+    <el-table :data="data_list" border>
       <el-table-column prop="aname" label="拍品名称" width="150"></el-table-column>
-      <el-table-column prop="currentState" label="当前状态" width="100">
+
+      <el-table-column prop="rpmico" label="拍品图片" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.currentState==0">拍卖中</span>
-          <span v-else-if="scope.row.currentState==1">已下架</span>
-          <span v-else-if="scope.row.currentState==2">已卖出</span>
+          <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
         </template>
       </el-table-column>
       <el-table-column prop="rpmtype" label="道具类型" width="100">
@@ -66,19 +55,13 @@
           <span v-else-if="scope.row.rpmtype==3">虚拟房产</span>
         </template>
       </el-table-column>
-      <el-table-column prop="rpmico" label="拍品图片" width="120">
-        <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
-        </template>
-      </el-table-column>
-      <el-table-column prop="anum" label="剩余数量" width="120"></el-table-column>
-      <el-table-column prop="aunitp" label="单价" width="120"></el-table-column>
+      <el-table-column prop="anum" label="数量" width="120"></el-table-column>
+      <el-table-column prop="aunitp" label="价格" width="120"></el-table-column>
       <el-table-column prop="infoDes" label="拍品描述" width="200"></el-table-column>
       <el-table-column prop="listingTime" label="上架时间" width="160"></el-table-column>
-      <el-table-column prop="dismountTime" label="下架时间" width="160"></el-table-column>
       <el-table-column prop="expireTime" label="到期时间" width="160"></el-table-column>
       <el-table-column prop="creationtime" label="创建时间" width="160"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="150">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
           <el-button @click="switchState(scope.row)" type="warning" size="small">下架</el-button>

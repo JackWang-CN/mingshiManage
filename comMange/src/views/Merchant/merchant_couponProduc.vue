@@ -4,18 +4,6 @@
     <div class="pageTitle">优惠券量产管理</div>
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
-      <el-form-item label="优惠券id" label-width="100px">
-        <el-input
-          v-model="find_form.data.couponId"
-          placeholder="请输入优惠券id"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="优惠券批次号" label-width="100px">
-        <el-input
-          v-model="find_form.data.batchNum"
-          placeholder="请输入优惠券批次号"
-        ></el-input>
-      </el-form-item>
       <el-form-item label="券类型" label-width="100px">
         <el-select v-model="find_form.data.isBind" placeholder="请选择券类型">
           <el-option label="折扣券" value="0"></el-option>
@@ -23,29 +11,11 @@
           <el-option label="兑换券" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="资源id" label-width="100px">
-        <el-input
-          v-model="find_form.data.resId"
-          placeholder="请输入资源id"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="商家id" label-width="100px">
-        <el-input
-          v-model="find_form.data.storeId"
-          placeholder="请输入商家id"
-        ></el-input>
-      </el-form-item>
       <el-form-item label="满减金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.eXchangeMoney"
-          placeholder="请输入满减金额"
-        ></el-input>
+        <el-input v-model="find_form.data.eXchangeMoney" placeholder="请输入满减金额"></el-input>
       </el-form-item>
       <el-form-item label="面值" label-width="100px">
-        <el-input
-          v-model="find_form.data.couponValue"
-          placeholder="请输入面值"
-        ></el-input>
+        <el-input v-model="find_form.data.couponValue" placeholder="请输入面值"></el-input>
       </el-form-item>
       <el-form-item label="状态" label-width="100px">
         <el-select v-model="find_form.data.status" placeholder="请选择状态">
@@ -70,13 +40,6 @@
         <el-form-item class="btns_find">
           <el-button type="primary" @click="queryData">查询</el-button>
           <el-button type="info" @click="resetForm">重置</el-button>
-          <el-button
-            type="success"
-            style="margin-left:50px"
-            @click="dialogFormVisibleOfAdd = true"
-            >添加</el-button
-          >
-          <el-button type="danger" @click="delete_list">批量删除</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -88,108 +51,47 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        fixed
-        prop="couponId"
-        label="优惠券id"
-        width="80"
-      ></el-table-column>
-      <el-table-column
-        prop="batchNum"
-        label="优惠券批次号"
-        width="120"
-      ></el-table-column>
       <el-table-column fixed prop="couponType" label="券类型" width="80">
-        <template slot-scope="scope">{{
+        <template slot-scope="scope">
+          {{
           scope.row.couponType == "0"
-            ? "折扣券"
-            : scope.row.couponType == "1"
-            ? "抵扣券"
-            : "兑换券"
-        }}</template>
+          ? "折扣券"
+          : scope.row.couponType == "1"
+          ? "抵扣券"
+          : "兑换券"
+          }}
+        </template>
       </el-table-column>
-      <el-table-column
-        prop="resId"
-        label="资源id"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="storeId"
-        label="商家id"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="eXchangeMoney"
-        label="满减金额"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="couponValue"
-        label="面值"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="startTime"
-        label="有效时间"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="endTime"
-        label="过期时间"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="resId" label="资源id" width="120"></el-table-column>
+      <el-table-column prop="eXchangeMoney" label="满减金额" width="120"></el-table-column>
+      <el-table-column prop="couponValue" label="面值" width="120"></el-table-column>
+      <el-table-column prop="startTime" label="有效时间" width="120"></el-table-column>
+      <el-table-column prop="endTime" label="过期时间" width="120"></el-table-column>
       <el-table-column prop="status" label="状态" width="120">
-        <template slot-scope="scope">{{
+        <template slot-scope="scope">
+          {{
           scope.row.status == "0" ? "未领取" : "已领取"
-        }}</template>
+          }}
+        </template>
       </el-table-column>
-      <el-table-column
-        prop="supId"
-        label="叠加策略模板"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="creationtime"
-        label="创建时间"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="creationtime" label="创建时间" width="120"></el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="show_edit(scope.row)" type="text" size="small"
-            >编辑</el-button
-          >
-          <el-button
-            @click="user_delete(scope.row)"
-            type="text"
-            size="small"
-            class="btns_delete"
-            >删除</el-button
-          >
+          <el-button @click="show_edit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="user_delete(scope.row)" type="text" size="small" class="btns_delete">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加弹出框(添加) -->
-    <el-dialog
-      title="添加类别"
-      :visible.sync="dialogFormVisibleOfAdd"
-      width="40%"
-    >
+    <el-dialog title="添加类别" :visible.sync="dialogFormVisibleOfAdd" width="40%">
       <!-- 新增表单 -->
       <el-form ref="add_form" :model="add_form" label-width="120px">
         <el-form-item label="优惠券id">
-          <el-input
-            v-model="add_form.couponId"
-            placeholder="请输入优惠券id"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.couponId" placeholder="请输入优惠券id" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="优惠券批次号">
-          <el-input
-            v-model="add_form.batchNum"
-            placeholder="请输入优惠券批次号"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.batchNum" placeholder="请输入优惠券批次号" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="券类型">
           <el-select v-model="add_form.couponType" placeholder="请选择券类型">
@@ -199,32 +101,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="资源id">
-          <el-input
-            v-model="add_form.resId"
-            placeholder="请输入资源id"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.resId" placeholder="请输入资源id" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="商家id">
-          <el-input
-            v-model="add_form.storeId"
-            placeholder="请输入商家id"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.storeId" placeholder="请输入商家id" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="满减金额">
-          <el-input
-            v-model="add_form.eXchangeMoney"
-            placeholder="请输入满减金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.eXchangeMoney" placeholder="请输入满减金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="面值">
-          <el-input
-            v-model="add_form.couponValue"
-            placeholder="请输入面值"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.couponValue" placeholder="请输入面值" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="add_form.status" placeholder="请选择状态">
@@ -233,11 +119,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="叠加策略模板">
-          <el-input
-            v-model="add_form.supId"
-            placeholder="请输入叠加策略模板"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.supId" placeholder="请输入叠加策略模板" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -247,11 +129,7 @@
     </el-dialog>
 
     <!-- 添加弹出框(修改) -->
-    <el-dialog
-      title="修改类别"
-      :visible.sync="dialogFormVisibleOfEdit"
-      width="40%"
-    >
+    <el-dialog title="修改类别" :visible.sync="dialogFormVisibleOfEdit" width="40%">
       <!-- 修改表单 -->
       <el-form ref="edit_form" :model="edit_form" label-width="120px">
         <el-form-item label="券类型">
@@ -262,32 +140,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="资源id">
-          <el-input
-            v-model="edit_form.resId"
-            placeholder="请输入资源id"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.resId" placeholder="请输入资源id" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="商家id">
-          <el-input
-            v-model="edit_form.storeId"
-            placeholder="请输入商家id"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.storeId" placeholder="请输入商家id" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="满减金额">
-          <el-input
-            v-model="edit_form.eXchangeMoney"
-            placeholder="请输入满减金额"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.eXchangeMoney" placeholder="请输入满减金额" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="面值">
-          <el-input
-            v-model="edit_form.couponValue"
-            placeholder="请输入面值"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.couponValue" placeholder="请输入面值" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="edit_form.status" placeholder="请选择状态">
@@ -296,11 +158,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="叠加策略模板">
-          <el-input
-            v-model="edit_form.supId"
-            placeholder="请输入叠加策略模板"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.supId" placeholder="请输入叠加策略模板" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

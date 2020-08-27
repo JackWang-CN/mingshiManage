@@ -1,7 +1,7 @@
 <!-- 用户管理-用户列表 -->
 <template>
   <div id="userInfo_list" class="shadow_container">
-    <div class="pageTitle">用户个人信息管理</div>
+    <div class="pageTitle">用户列表</div>
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="用户昵称" label-width="100px">
@@ -9,9 +9,6 @@
       </el-form-item>
       <el-form-item label="手机号码" label-width="100px">
         <el-input v-model="find_form.data.mobileNum" placeholder="请输入手机号（帐号）"></el-input>
-      </el-form-item>
-      <el-form-item label="用户邮箱" label-width="100px">
-        <el-input v-model="find_form.data.userEmail" placeholder="请输入用户邮箱"></el-input>
       </el-form-item>
       <el-form-item label="是否实名" label-width="100px">
         <el-select v-model="find_form.data.isRealNameSys" placeholder="请选择是否实名制">
@@ -27,9 +24,6 @@
           <el-option label="男" value="1"></el-option>
           <el-option label="女" value="0"></el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="身份证号" label-width="100px">
-        <el-input v-model="find_form.data.iDCard" placeholder="请输入身份证号"></el-input>
       </el-form-item>
       <el-form-item label="是否禁用" label-width="100px">
         <el-select v-model="find_form.data.isDisable" placeholder="请选择是否禁用">
@@ -182,7 +176,7 @@ export default {
     // 跳转到详情
     toDetails(id) {
       this.$router.push({
-        path: "userdata_userDetails",
+        path: "user_details",
         query: { id },
       });
     },

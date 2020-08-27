@@ -10,13 +10,13 @@
         <el-input v-model="find_form.data.resExtName" placeholder="如：jpg"></el-input>
       </el-form-item>
       <el-form-item label="是否禁用" v-if="activeName!='company'">
-        <el-select v-model="find_form.data.isDelete" placeholder="请选择主分类">
+        <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="上传用户" placeholder="请输入上传用户ID">
-        <el-input v-model="find_form.data.uploadId"></el-input>
+      <el-form-item label="上传用户">
+        <el-input v-model="find_form.data.uploadId" placeholder="上传用户ID"></el-input>
       </el-form-item>
 
       <!-- 日期查询 -->
