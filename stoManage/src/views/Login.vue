@@ -2,7 +2,7 @@
   <div id="login" v-loading="loading" element-loading-text="登录中,请稍候...">
     <div class="top">
       <img src="../assets/images/icon/logo1.png" alt />
-      四川名视人工智能商户后台管理系统
+      名视商户营销平台
     </div>
     <div class="center">
       <el-form class="loginForm" :model="loginForm" :rules="loginRules" ref="loginForm">
@@ -86,45 +86,43 @@ export default {
   methods: {
     // 登录
     submitLogin(form) {
-      // this.$refs[form].validate((valid) => {
-      //   // 表单验证
-      //   if (valid) {
-      //     // 滑动验证
-      //     if (this.confirmSuccess) {
-      //       this.loading = true;
-      //       var timer = setTimeout(() => {
-      //         this.loading = false;
-      //         this.$message.error("登录超时，请重试");
-      //       }, 10000);
-      //       sendLogin(this.loginForm).then((res) => {
-      //         if (res) {
-      //           clearTimeout(timer);
-      //           var token = res.accessToken,
-      //             headImg = spliceUrl([res.user], "headIco")[0].headIco,
-      //             userName = res.user.userName,
-      //             userId = res.user.userId,
-      //             merchantname = res.user.merchantname;
-      //           sessionStorage.setItem("token", token);
-      //           sessionStorage.setItem("headImg", headImg);
-      //           sessionStorage.setItem("userName", userName);
-      //           sessionStorage.setItem("userId", userId);
-      //           sessionStorage.setItem("merchantname", merchantname);
-      //           this.loading = false;
-      //           this.$message.success("登录成功");
+      this.$refs[form].validate((valid) => {
+        // 表单验证
+        if (valid) {
+          // 滑动验证
+          if (this.confirmSuccess) {
+            this.loading = true;
+            var timer = setTimeout(() => {
+              this.loading = false;
+              this.$message.error("登录超时，请重试");
+            }, 10000);
+            sendLogin(this.loginForm).then((res) => {
+              if (res) {
+                clearTimeout(timer);
+                var token = res.accessToken,
+                  headImg = spliceUrl([res.user], "headIco")[0].headIco,
+                  userName = res.user.userName,
+                  userId = res.user.userId,
+                  merchantname = res.user.merchantname;
+                sessionStorage.setItem("token", token);
+                sessionStorage.setItem("headImg", headImg);
+                sessionStorage.setItem("userName", userName);
+                sessionStorage.setItem("userId", userId);
+                sessionStorage.setItem("merchantname", merchantname);
+                this.loading = false;
+                this.$message.success("登录成功");
 
-      //           this.$router.replace("home");
-      //         }
-      //       });
-      //     } else {
-      //       this.$message.error("请进行验证！");
-      //     }
-      //   } else {
-      //     this.$message.error("请检查用户名及密码");
-      //     return false;
-      //   }
-      // });
-      sessionStorage.setItem("token", "111");
-      this.$router.replace("home");
+                this.$router.replace("home");
+              }
+            });
+          } else {
+            this.$message.error("请进行验证！");
+          }
+        } else {
+          this.$message.error("请检查用户名及密码");
+          return false;
+        }
+      });
     },
 
     //滑动事件
