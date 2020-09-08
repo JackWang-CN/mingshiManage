@@ -3,102 +3,29 @@
   <el-container id="home">
     <!-- 左侧栏 -->
     <el-aside width="200px" class="left_wrap">
-      <div class="logo">
-        <img src="../assets/images/icon/logo1.png" alt />
-      </div>
-      <el-menu
-        :default-active="$route.path.substring(6)"
-        class="el-menu-vertical-demo"
-        :router="true"
-        :unique-opened="true"
-      >
-        <!-- 首页 -->
-        <el-menu-item index="index">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">首页</span>
-        </el-menu-item>
-        <!-- 商家活动 -->
-        <el-submenu index="activity">
-          <template slot="title">
-            <i class="el-icon-message-solid"></i>
-            <span>商家活动</span>
-          </template>
-          <el-menu-item index="publish">我需要援助</el-menu-item>
-          <el-menu-item index="underway">进行中活动</el-menu-item>
-          <el-menu-item index="history">历史活动</el-menu-item>
-        </el-submenu>
-
-        <!-- 广告管理 -->
-        <el-submenu index="advertising">
-          <template slot="title">
-            <i class="el-icon-s-management"></i>
-            <span>广告管理</span>
-          </template>
-          <el-menu-item index="advertising">广告管理</el-menu-item>
-        </el-submenu>
-
-        <!-- 商品管理 -->
-        <el-submenu index="goods">
-          <template slot="title">
-            <i class="el-icon-s-grid"></i>
-            <span>商品管理</span>
-          </template>
-          <el-menu-item index="goods_type">商品分类</el-menu-item>
-          <el-menu-item index="goods_list">商品列表</el-menu-item>
-        </el-submenu>
-
-        <!-- 订单管理 -->
-        <el-menu-item index="order_list">
-          <i class="el-icon-s-claim"></i>
-          <span slot="title">订单管理</span>
-        </el-menu-item>
-
-        <!-- 我的收益 -->
-        <el-menu-item index="earnings">
-          <i class="el-icon-s-finance"></i>
-          <span slot="title">我的收益</span>
-        </el-menu-item>
-
-        <!-- 客户管理 -->
-        <el-submenu index="customer">
-          <template slot="title">
-            <i class="el-icon-s-custom"></i>
-            <span>客户管理</span>
-          </template>
-          <el-menu-item index="message_center">消息中心</el-menu-item>
-          <el-menu-item index="message_group">消息群发</el-menu-item>
-          <el-menu-item index="friend_list">好友列表</el-menu-item>
-        </el-submenu>
-
-        <!-- 店铺管理 -->
-        <el-submenu index="store">
-          <template slot="title">
-            <i class="el-icon-s-shop"></i>
-            <span>店铺管理</span>
-          </template>
-          <el-menu-item index="info">基础信息</el-menu-item>
-          <el-menu-item index="role_list">角色管理</el-menu-item>
-          <el-menu-item index="user_list">账号管理</el-menu-item>
-        </el-submenu>
-        <!-- 
-          【无下拉菜单】
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
-          </el-menu-item>
-          
-          【带下拉菜单】
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
-            </template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-submenu>
-        -->
-      </el-menu>
+      <div class="title">名视商户营销平台</div>
+      <ul id="navigation">
+        <li v-for="(item,index) in nav_list" :key="item.name">
+          <!-- 有下拉 -->
+          <div class="nav_item" v-if="item.haveChildren">
+            <div @click="showChildren(index,$event)">
+              {{item.name}}
+              <i class="triangle close"></i>
+            </div>
+            <span
+              v-for="(child,childIndex) in  item.children"
+              v-show="item.showChildren"
+              :class="child.isActive?'active':''"
+              :key="child.name"
+              @click="toPage(index,childIndex)"
+            >{{child.name}}</span>
+          </div>
+          <!-- 无下拉 -->
+          <div class="nav_item" v-else-if="!item.haveChildren" @click="toPage(index)">
+            <div :class="item.isActive?'active':''">{{item.name}}</div>
+          </div>
+        </li>
+      </ul>
     </el-aside>
 
     <!-- 右栏 -->
@@ -112,19 +39,14 @@
               style="margin-right:10px;font-weight:bold;font-size:15px;display:inline-block"
             >当前位置:</div>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">
-            {{
-            v
-            }}
-          </el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">{{v}}</el-breadcrumb-item>
         </el-breadcrumb>
 
         <!-- 下拉 -->
         <div class="dropdown">
-          <span>尊敬的{{ userName }}，欢迎您！</span>
           <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
             <span class="el-dropdown-link">
-              <el-avatar :size="50" :src="circleUrl" shape="square"></el-avatar>
+              <el-avatar :size="45" :src="circleUrl"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown" class="dropdown_menu">
               <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
@@ -132,6 +54,7 @@
               <el-dropdown-item @click.native="logout">注销登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+          <span>尊敬的{{ userName }}，欢迎您！</span>
         </div>
 
         <!-- 弹出框 -->
@@ -188,6 +111,10 @@ export default {
     this.userName = sessionStorage.getItem("userName"); //获取用户名
   },
 
+  mounted() {
+    this.nav_list[this.activeIndex].isActive = true;
+  },
+
   data() {
     return {
       circleUrl: "",
@@ -198,6 +125,64 @@ export default {
         new_password: "",
         check_password: "",
       },
+
+      // 导航列表
+      nav_list: [
+        { name: "首页", haveChildren: false, url: "index", isActive: false },
+        {
+          name: "商家活动",
+          haveChildren: true,
+          showChildren: false,
+          children: [
+            { name: "我需要援助", url: "publish", isActive: false },
+            { name: "进行中活动", url: "underway", isActive: false },
+            { name: "历史活动", url: "history", isActive: false },
+          ],
+        },
+        {
+          name: "商品管理",
+          haveChildren: true,
+          showChildren: false,
+          children: [
+            { name: "商品分类", url: "goods_type", isActive: false },
+            { name: "商品列表", url: "goods_list", isActive: false },
+          ],
+        },
+        {
+          name: "订单管理",
+          haveChildren: false,
+          url: "order_list",
+          isActive: false,
+        },
+        {
+          name: "我的收益",
+          haveChildren: false,
+          url: "earnings",
+          isActive: false,
+        },
+        {
+          name: "客户管理",
+          haveChildren: true,
+          showChildren: false,
+          children: [
+            { name: "消息中心", url: "message_center", isActive: false },
+            { name: "消息群发", url: "message_group", isActive: false },
+            { name: "好友列表", url: "friend_list", isActive: false },
+          ],
+        },
+        {
+          name: "店铺管理",
+          haveChildren: true,
+          showChildren: false,
+          children: [
+            { name: "基础信息", url: "info", isActive: false },
+            { name: "角色管理", url: "role_list", isActive: false },
+            { name: "账号管理", url: "user_list", isActive: false },
+          ],
+        },
+      ],
+      // 激活导航的路径
+      activeIndex: 0,
     };
   },
   methods: {
@@ -214,6 +199,60 @@ export default {
       sessionStorage.clear(); // 清空用户缓存
       this.$router.replace("/login");
     },
+
+    // 显示子节点
+    showChildren(index, e) {
+      this.nav_list[index].showChildren = !this.nav_list[index].showChildren;
+      var flag = this.nav_list[index].showChildren;
+      console.dir(e.target.children[0]);
+      if (flag) {
+        e.target.children[0].className = "triangle open";
+      } else {
+        e.target.children[0].className = "triangle close";
+      }
+    },
+
+    // 跳转对应页面
+    toPage(index, childIndex) {
+      // 1.取消激活
+      this.switchActive(this.activeIndex, false);
+
+      // 2.新激活的菜单数据
+      if (childIndex == undefined) {
+        this.activeIndex = index;
+      } else {
+        this.activeIndex = { parentIndex: index, childIndex };
+      }
+    },
+
+    // 切换激活 model：数据模型   isActive：布尔值，true表示激活，false表示取消激活
+    switchActive(model, isActive) {
+      var type = typeof model;
+      switch (type) {
+        case "object":
+          var { parentIndex, childIndex } = model;
+          this.nav_list[parentIndex].children[childIndex].isActive = isActive;
+          if (isActive) {
+            var { url } = this.nav_list[parentIndex].children[childIndex];
+            this.$router.push(url);
+          }
+          break;
+        case "number":
+          this.nav_list[model].isActive = isActive;
+          if (isActive) {
+            var { url } = this.nav_list[model];
+            this.$router.push(url);
+          }
+          break;
+      }
+    },
+  },
+
+  watch: {
+    // 监听激活目标切换
+    activeIndex() {
+      this.switchActive(this.activeIndex, true);
+    },
   },
 };
 </script>
@@ -226,15 +265,87 @@ export default {
     height: 100%;
     display: flex;
     flex-direction: column;
-    .logo {
-      border-right: 1px solid #e6e6e6;
-      padding: 0.5rem 0;
-      text-align: center;
+    background-image: linear-gradient(#0195eb, #00e7d6);
+    color: #fff;
+    &::-webkit-scrollbar {
+      display: none;
     }
+    .title {
+      padding: 25px 0;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    // 导航
     ul {
-      flex: 1 0 auto;
+      li {
+        .nav_item {
+          display: flex;
+          flex-direction: column;
+          font-size: 16px;
+          text-align: left;
+          :first-child {
+            position: relative;
+            padding: 12px 20px 12px 40px;
+            cursor: pointer;
+            &.active {
+              background-color: rgba($color: #fff, $alpha: 0.3);
+            }
+            &:hover {
+              background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+            &::after {
+              display: block;
+              content: "";
+              border: 5px solid #fff;
+              width: 0;
+              border-radius: 5px;
+              position: absolute;
+              top: 50%;
+              left: 20px;
+              margin-top: -5px;
+            }
+            .triangle {
+              display: inline-block;
+              border: 5px solid transparent;
+              padding: 0;
+              height: 0;
+              position: absolute;
+              left: 150px;
+              &::after {
+                display: none;
+              }
+              &:hover {
+                background-color: rgba($color: #fff, $alpha: 0);
+              }
+              &.close {
+                border-top-color: #fff;
+                top: 50%;
+              }
+              &.open {
+                border-bottom-color: #fff;
+                bottom: 50%;
+                margin-bottom: -5px;
+              }
+            }
+          }
+          span {
+            display: block;
+            padding: 12px 0 12px 50px;
+            cursor: pointer;
+            &.active {
+              background-color: rgba($color: #fff, $alpha: 0.3);
+            }
+            &:hover {
+              background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+          }
+        }
+      }
     }
   }
+
   // 右栏
   .right_wrap {
     // 头部
@@ -246,22 +357,27 @@ export default {
       // 面包屑
       .breadcrumb {
         display: inline-block;
+        min-width: 800px;
       }
       .dropdown {
         display: flex;
         align-items: center;
         font-size: 14px;
         color: #606266;
+        .el-dropdown {
+          margin-right: 5px;
+        }
       }
       // 修改密码
-      .el-dropdown {
-        display: flex;
-        align-items: center;
-      }
+      // .el-dropdown {
+      //   display: flex;
+      //   align-items: center;
+      // }
     }
     // 主体
     .el-main {
-      background-color: #f2f2f2;
+      background-color: #f8f8f8;
+      padding: 30px;
     }
   }
 }

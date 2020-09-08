@@ -1,41 +1,64 @@
 <!-- 首页 -->
 <template>
-  <div id="index" class="shadow_container">
+  <div id="index">
     <!-- 上方盒子 -->
     <div class="top">
-      <!-- 消息通知 -->
-      <div class="left">
-        <h6>我的收益:</h6>
-        <div class="today">当日收益:5435</div>
-        <div class="total">总金币:3450</div>
-        <h6>消息通知:</h6>
-        <ul class="notice">
-          <li v-for="(item,index) in message_list" :key="index">
-            <p>{{item.title}}</p>
-            <div>{{item.creationTime}}</div>
-          </li>
-        </ul>
+      <!-- 左边 -->
+      <div class="left card_container">
+        <h3 class="title_first">我的收益</h3>
+        <!-- 收益数 -->
+        <div class="earnings">
+          <span class="num">5435</span>
+          <span>当日收益</span>
+        </div>
+        <!-- 总金币数 -->
+        <div class="gold">
+          <span>总金币</span>
+          <span class="num">3450</span>
+        </div>
       </div>
-      <!-- 官方公告 -->
+
+      <!-- 右边 -->
       <div class="right">
-        <h6>
-          官方公告:
-          <el-button type="primary" size="small" @click="showNotice('list')">更多</el-button>
-        </h6>
-        <ul class="notice">
-          <li v-for="(item,index) in notice_list" :key="index" @click="showNotice('details')">
-            <p>{{item.title}}</p>
-            <div>
-              <span>{{item.creationTime}}</span>
+        <!-- 官网公告 -->
+        <div class="card_container">
+          <h3 class="title_second">
+            <img width="23" height="23" src="@/assets/images/icon/notice.png" alt />
+            官方公告
+            <div class="btn">
+              <button>更多</button>
             </div>
-          </li>
-        </ul>
+          </h3>
+          <ul class="list">
+            <li v-for="(item,index) in notice_list" :key="index" @click="showNotice('details')">
+              <p>{{item.title}}</p>
+              <span>{{item.creationTime}}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 消息通知 -->
+        <div class="card_container">
+          <h3 class="title_second">
+            <img width="23" height="23" src="@/assets/images/icon/message.png" alt />
+            消息通知
+            <div class="btn">
+              <button>更多</button>
+            </div>
+          </h3>
+          <ul class="list">
+            <li v-for="(item,index) in message_list" :key="index" @click="showNotice('details')">
+              <p>{{item.title}}</p>
+              <span>{{item.creationTime}}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- 下方盒子 -->
-    <div class="bottom">
-      <h6>当前订单:</h6>
+    <div class="bottom card_container">
+      <h3 class="title_first">当前订单:</h3>
       <el-table :data="order_list" style="width: 100%">
         <el-table-column prop="creationTime" label="日期" width="180"></el-table-column>
         <el-table-column prop="aName" label="商品名称" width="180"></el-table-column>
@@ -85,10 +108,6 @@ export default {
           title: "江苏盐城一面包车内发现女尸",
           creationTime: "2天前",
         },
-        {
-          title: "初中生把西游记画成81难通关图",
-          creationTime: "2天前",
-        },
       ],
       // 官方公告
       notice_list: [
@@ -108,22 +127,6 @@ export default {
           title: "特朗普所乘专机险与无人机相撞特朗普所乘专机险与无人机相撞",
           creationTime: "1小时前",
         },
-        {
-          title: "京雄城际年底贯通京雄城际年底贯通",
-          creationTime: "1小时前",
-        },
-        {
-          title: "24岁抗洪牺牲消防员赵丹被评烈士24岁抗洪牺牲消防员赵丹被评烈士",
-          creationTime: "1小时前",
-        },
-        {
-          title: "全球新冠累计超2199万例",
-          creationTime: "1小时前",
-        },
-        {
-          title: "航班延误100多名中国乘客滞留美国",
-          creationTime: "1小时前",
-        },
       ],
       // 当前订单
       order_list: [
@@ -131,6 +134,16 @@ export default {
           aName: "巧乐兹",
           creationTime: "2020-08-18 12:00",
           price: "50",
+        },
+        {
+          aName: "冰工厂",
+          creationTime: "2020-08-18 13:00",
+          price: "25",
+        },
+        {
+          aName: "冰工厂",
+          creationTime: "2020-08-18 13:00",
+          price: "25",
         },
         {
           aName: "冰工厂",
@@ -163,7 +176,6 @@ export default {
 
 <style lang='scss'>
 #index {
-  padding-left: 50px;
   h6 {
     font-size: 20px;
     margin: 20px 0 30px 0;
@@ -175,52 +187,65 @@ export default {
   .top {
     display: flex;
     margin-bottom: 50px;
-    .notice {
-      width: 80%;
-      padding: 0 15px;
-      li {
-        margin: 20px 0;
-        p {
-          cursor: pointer;
-          line-height: 20px;
-          &:hover {
-            color: #409eff;
+    // 我的收益
+    .left {
+      min-width: 400px;
+      margin-right: 20px;
+      height: 100%;
+      .title_one {
+        margin-bottom: 40px;
+      }
+      .earnings {
+        border-radius: 12px;
+        padding: 90px 0;
+        background-color: #dce5ff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 40px;
+        span {
+          color: #6e6e6e;
+          &.num {
+            font-size: 32px;
+            color: #ff4715;
+            margin-bottom: 12px;
           }
         }
-        div {
-          font-size: 14px;
-          color: rgb(153, 152, 152);
-          margin-top: 8px;
+      }
+      .gold {
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        span {
+          color: #6e6e6e;
+          &.num {
+            color: #fcba72;
+            font-size: 20px;
+            margin-top: 10px;
+          }
         }
-      }
-    }
-    // 左
-    .left {
-      width: 50%;
-      .today {
-        font-size: 45px;
-        margin-left: 10%;
-      }
-      .total {
-        margin: 50px 10%;
-        font-size: 17px;
-      }
-      .notice {
-        border: 1px solid #000;
       }
     }
     // 右
     .right {
-      width: 30%;
-      .notice {
-        width: 100%;
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      > :first-child {
+        margin-bottom: 15px;
+      }
+      .card_container {
+        flex: 1 0 auto;
       }
     }
   }
 
   // 下方盒子
   .bottom {
-    width: 80%;
+    .el-table {
+      margin-top: 30px;
+    }
   }
 }
 </style>

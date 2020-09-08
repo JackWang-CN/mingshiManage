@@ -1,8 +1,82 @@
 /* 阴影盒子容器 */
 .shadow_container {
-  background-color: #fff;
   padding: 20px 20px 50px 20px;
   box-shadow: 0 0 10px #747373;
+  min-width: 1200px;
+}
+
+// 卡片容器
+.card_container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px -8px #272e2e;
+}
+
+// 一类标题
+.title_first {
+  text-indent: 40px;
+  color: #333333;
+  font-size: 18px;
+  position: relative;
+  &::before {
+    display: block;
+    content: "";
+    border: 6px solid #7282ec;
+    border-radius: 6px;
+    width: 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 10px;
+  }
+}
+
+// 二类标题
+.title_second {
+  padding: 10px 0;
+  color: #343434;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #e9e9e9;
+  display: flex;
+  align-items: center;
+  img {
+    margin-right: 10px;
+  }
+  .btn {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    button {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      color: #5e5e5e;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// 列表
+ul.list {
+  margin-top: 10px;
+  li {
+    display: flex;
+    margin: 15px 0;
+    font-size: 15px;
+    color: #6e6e6e;
+    justify-content: space-between;
+    p {
+      width: 500px;
+    }
+    span {
+      margin-right: 10px;
+    }
+  }
 }
 
 /* 页标题 */

@@ -1,27 +1,8 @@
 <template>
   <!-- 我需要援助 -->
-  <div id="entrust_details" class="shadow_container">
-    <div class="pageTitle">我需要援助</div>
-    <el-tabs v-model="activeName" type="border-card">
-      <!-- 我需要援助 -->
-      <el-tab-pane label="申请援助" name="apply">
-        <el-form label-width="100px">
-          <el-form-item label="援助主题:">
-            <el-input v-model="apply_form.title"></el-input>
-          </el-form-item>
-          <el-form-item label="内容描述:">
-            <el-input type="textarea" v-model="apply_form.content" :rows="20"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary">提交申请</el-button>
-            <el-button type="danger">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-
-      <!-- 历史援助 -->
-      <el-tab-pane label="历史援助" name="history">
-        <!-- 表单 -->
+  <div id="entrust_details" class="card_container">
+    <!-- <el-tabs v-model="activeName" type="border-card"> -->
+    <!-- <el-tab-pane label="历史援助" name="history">
         <el-form class="find_form">
           <div class="search">
             <el-input
@@ -49,7 +30,6 @@
           </el-form-item>
         </el-form>
 
-        <!-- 表格 -->
         <el-table :data="data_list" max-height="250">
           <el-table-column fixed prop="subject" label="主题" width="150"></el-table-column>
           <el-table-column prop="desInfo" label="描述" width="300"></el-table-column>
@@ -60,7 +40,28 @@
           <el-table-column prop="finishTime" label="完成时间" width="150"></el-table-column>
         </el-table>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs>-->
+    <div class="tabs">
+      <span :class="activeName=='apply'?'active':''" @click="switchTabs('apply')">申请援助</span>
+      <span :class="activeName=='history'?'active':''" @click="switchTabs('history')">历史援助</span>
+    </div>
+    <!-- 申请援助 -->
+    <div class="apply" v-show="activeName=='apply'">
+      <el-form label-width="100px">
+        <el-form-item label="援助主题:">
+          <el-input v-model="apply_form.title"></el-input>
+        </el-form-item>
+        <el-form-item label="内容描述:">
+          <el-input type="textarea" v-model="apply_form.content" :rows="20"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">提交申请</el-button>
+          <el-button type="danger">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 历史援助 -->
+    <div class="history"></div>
   </div>
 </template>
 
@@ -118,8 +119,8 @@ export default {
   },
 
   methods: {
-    switchMore() {
-      this.showMore = !this.showMore;
+    switchTabs(name) {
+      this.activeName = name;
     },
   },
 };
@@ -127,21 +128,27 @@ export default {
 
 <style lang='scss'>
 #entrust_details {
-  .find_form {
-    width: 50%;
-    .el-input {
-      width: 300px;
-      height: 24px;
-    }
-    .search {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .el-form-item {
+  color: #666666;
+  .tabs {
+    font-size: 14px;
+    padding-left: 30px;
+    margin-bottom: 20px;
+    span {
       display: inline-block;
-      margin-right: 50px;
+      width: 100px;
+      text-align: center;
+      padding: 10px 0;
+      background-color: #f7f7f7;
+      margin-right: 10px;
+      cursor: pointer;
+      &.active {
+        color: #00b3e4;
+      }
+      &:hover {
+        color: #00b3e4;
+      }
     }
   }
+  // 申请援助
 }
 </style>
