@@ -48,7 +48,7 @@ export const updateData = (model, control, version, info, operate = "edit") => {
 };
 
 // 5.删除数据（单行）
-export const delData = (model, control, version, info, operate = "del") => {
+export const delData = (model, control, version, info, operate = "delete") => {
   var url = `${model}/${control}/${operate}/v${version}`;
   return axios.delete(url, { data: info });
 };
@@ -106,25 +106,45 @@ export const getDataList = (
     if (!key) {
       key = "data_list";
     }
-    _this[key] = res.resultObject.data;
+
+    if (operate == "flowList") {
+      _this[key] = res.resultObject.data;
+      return;
+    }
+
+    _this[key] = res.resultObject;
   });
 };
 
 // 2) 创建数据
-export const addDataList = (model, control, version, info, _this, key) => {
+export const addDataList = (model, control, version, info, _this, path) => {
   addData(model, control, version, info).then((res) => {
-    console.log(res);
     switch (res.code) {
       case "000000":
         _this.$message.success("创建成功！");
+        _this.$router.push(path);
         break;
     }
   });
 };
 
 // 3) 获取详情
-export const getDataDetail = (model, control, version, info, _this, key) => {
-  getDetail(model, control, version, info, _this).then((res) => {
-    _this[key] = res.resultObject;
+export const getDataDetail = (
+  model,
+  control,
+  version,
+  info,
+  _this,
+  key,
+  operate
+) => {
+  getDetail(model, control, version, info, operate).then((res) => {
+    switch (res.code) {
+      case "000000":
+        if (!key) {
+          key = "data_info";
+        }
+        _this[key] = res.resultObject;
+    }
   });
 };

@@ -1,45 +1,42 @@
 <template>
   <!-- 个人中心 -->
-  <div id="personal_center" class="shadow_container">
-    <div class="pageTitle">个人中心</div>
+  <div id="merchant_info" class="shadow_container">
+    <div class="pageTitle">店铺信息</div>
     <el-form label-width="100px">
-      <el-form-item label="用户ID">
-        <span>{{data_info.userId}}</span>
+      <el-form-item label="店铺名称">
+        <span>{{data_info.name}}</span>
       </el-form-item>
-      <el-form-item label="用户名">
-        <span>{{data_info.userName}}</span>
-      </el-form-item>
-      <el-form-item label="商户名称">
-        <span>{{data_info.merchantname}}</span>
-      </el-form-item>
-      <el-form-item label="角色组">
-        <span v-if="data_info.roleGroupId==1">财务组</span>
-        <span v-else-if="data_info.roleGroupId==2">开发组</span>
-      </el-form-item>
-      <el-form-item label="安全邮箱">
-        <span v-show="mode">{{data_info.email}}</span>
-        <el-input v-model="data_info.email" v-show="!mode"></el-input>
+      <el-form-item label="店铺类型">{{data_info.manageTypeID}}</el-form-item>
+      <el-form-item label="手机号">
+        <span v-show="mode">{{data_info.tel}}</span>
+        <el-input v-model="data_info.tel" v-show="!mode"></el-input>
       </el-form-item>
       <el-form-item label="状态">
-        <span>{{data_info.isEnable-0?'启用':'禁用'}}</span>
+        <span>{{data_info.isEnable?'启用':'禁用'}}</span>
       </el-form-item>
-      <el-form-item label="权限等级">
-        <span>{{data_info.isAdministrator-0?'超级管理员':'普通管理员'}}</span>
+      <el-form-item label="身份证正面">
+        <span v-show="mode">{{data_info.iDdFacePhoto}}</span>
+        <el-input v-model="data_info.iDdFacePhoto" v-show="!mode"></el-input>
       </el-form-item>
-      <el-form-item label="真实姓名">
-        <span v-show="mode">{{data_info.realName}}</span>
-        <el-input v-model="data_info.realName" v-show="!mode"></el-input>
-      </el-form-item>
-      <el-form-item label="身份证号">
-        <span v-show="mode">{{data_info.idCard}}</span>
-        <el-input v-model="data_info.idCard" v-show="!mode"></el-input>
+      <el-form-item label="身份证反面">
+        <span v-show="mode">{{data_info.idBackPhoto}}</span>
+        <el-input v-model="data_info.idBackPhoto" v-show="!mode"></el-input>
       </el-form-item>
       <el-form-item label="创建时间">
-        <span>{{data_info.creationTime}}</span>
+        <span>{{data_info.createTime}}</span>
+      </el-form-item>
+      <el-form-item label="审核状态">
+        <span>{{data_info.checkStatus}}</span>
+      </el-form-item>
+      <el-form-item label="审核人员">
+        <span>{{data_info.checker}}</span>
+      </el-form-item>
+      <el-form-item label="审核时间">
+        <span>{{data_info.checkTime}}</span>
       </el-form-item>
 
-      <el-form-item label="用户头像">
-        <el-avatar :src="data_info.headIco" :size="90"></el-avatar>
+      <el-form-item label="商户头像">
+        <el-avatar :src="data_info.headImage" :size="90"></el-avatar>
       </el-form-item>
       <el-form-item label="上传头像" v-show="!mode">
         <el-upload
@@ -56,6 +53,10 @@
         </el-upload>
       </el-form-item>
 
+      <el-form-item label="商户地址">
+        <span>{{data_info.address}}</span>
+      </el-form-item>
+
       <!-- 按钮组 -->
       <el-form-item>
         <el-button type="primary" @click="switchModel(0)" v-show="mode">编辑</el-button>
@@ -67,22 +68,14 @@
 </template>
 
 <script>
-import { getDetailsInfo, updateDataList, upLoadFiles } from "@/utils/api/api";
-import { creatFormData, spliceUrl } from "@/utils/common";
+import { getDataList } from "@/utils/api/apis";
+import { createGet, creatFormData, spliceUrl } from "@/utils/common";
 export default {
-  inject: ["reload"],
   mounted() {
-    var userId = sessionStorage.getItem("userId"),
-      merchantname = sessionStorage.getItem("merchantname");
-    this.get_form = { userId, merchantname };
-    getDetailsInfo(
-      this.$vision.merchant,
-      "Userinfo",
-      this.get_form,
-      "data_info",
-      this,
-      "headIco"
-    );
+    var form = createGet();
+    console.log(1);
+    // 请求公告列表
+    getDataList("global", "merchant", 1, form, this, "data_info", "info");
   },
 
   data() {
@@ -151,7 +144,7 @@ export default {
 </script>
 
 <style lang='scss'>
-#personal_center {
+#merchant_info {
   .el-form {
     .el-form-item {
       .el-form-item__label {

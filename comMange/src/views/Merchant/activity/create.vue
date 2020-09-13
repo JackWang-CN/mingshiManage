@@ -77,15 +77,15 @@
     <!-- 弹出框-模型列表 -->
     <el-dialog title="选择模型" :visible.sync="show_model">
       <el-form>
-        <!-- 具体的模型名称 -->
         <el-form-item>
+          <!-- 模型列表 -->
           <ul>
             <li>最近上传模型：</li>
             <li
               v-for="(item,index) in model_list"
               :key="index"
               @click="selectModel(item.resID)"
-            >{{item.resID}}</li>
+            >{{item.resID}}1</li>
           </ul>
         </el-form-item>
         <el-form-item>
@@ -121,7 +121,7 @@ export default {
       apply_form: {},
       // 搜索数据对象
       find_form: {},
-      // 文件列表
+      // 上传的图片列表
       img_list: [],
 
       // 模型列表
@@ -134,7 +134,6 @@ export default {
       preview_url: "", // 预览图地址
       show_model: false, // 3D模型列表
       normal_url: "#", // 普通资源上传地址
-      U3D_url: "#", // U3D资源上传地址
 
       select_date: [], // 有效日期
 
@@ -200,16 +199,20 @@ export default {
 
     // 点击上传文件（图片）
     uploadImg() {
-      uploadFiles("backWEB", 1, "测试活动图片1", "", this.img_list).then(
-        (res) => {
-          this.img_list = [];
-          switch (res.code) {
-            case "000000":
-              this.$message.success("上传成功！");
-              this.apply_form.activtyIcoID = res.resultObject;
-          }
+      // 非空判断
+      if (this.img_list.length < 1) {
+        this.$message.error("请先选择需上传的图片文件");
+        return;
+      }
+      // 执行上传
+      uploadFiles(2, 1, this.img_list, "创建活动-测试图片").then((res) => {
+        this.img_list = [];
+        switch (res.code) {
+          case "000000":
+            this.$message.success("上传成功！");
+            this.apply_form.activtyIcoID = res.resultObject;
         }
-      );
+      });
     },
 
     // 取消操作回到上一页

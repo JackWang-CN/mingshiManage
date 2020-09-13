@@ -5,14 +5,20 @@
 
     <!-- 上方盒子 -->
     <div class="top">
-      <h2>总金币：5435</h2>
+      <h2>总金币：{{gold_total}}</h2>
       <div class="btns">
         <el-button size="medium" type="primary">充值</el-button>
         <el-button size="medium">提现</el-button>
       </div>
       <div class="income">
-        <span>当月收入：3450</span>
-        <span>当月支出：1500</span>
+        <span>当日收入：{{income_day.incomeAmount}}</span>
+        <span>当日支出：{{income_day.expenditureAmount}}</span>
+        <span>总计收入：{{income_day.glodAmount}}</span>
+      </div>
+      <div class="income">
+        <span>当月收入：{{income_month.incomeAmount}}</span>
+        <span>当月支出：{{income_month.expenditureAmount}}</span>
+        <span>总计收入：{{income_month.glodAmount}}</span>
       </div>
     </div>
 
@@ -25,16 +31,19 @@
 
       <!-- 表格 -->
       <el-table :data="data_list" border>
-        <el-table-column prop="orderId" label="订单号" width="200"></el-table-column>
-        <el-table-column prop="customer" label="客户名称" width="180"></el-table-column>
-        <el-table-column prop="goldCoin" label="金币数量">
-          <template slot-scope="scope">+{{scope.row.goldCoin}}</template>
+        <el-table-column prop="accountFlowID" label="订单号" width="200"></el-table-column>
+        <el-table-column prop="traderName" label="客户名称" width="180"></el-table-column>
+        <el-table-column prop="goldAmount" label="金币数量">
+          <template
+            slot-scope="scope"
+          >{{scope.row.incomeExpensesType==0?'+':'-'}}{{scope.row.goldAmount}}</template>
         </el-table-column>
-        <el-table-column prop="type" label="收支类型">
-          <template slot-scope="scope">{{scope.row.type?'支出':'收入'}}</template>
+        <el-table-column prop="incomeExpensesType" label="收支类型">
+          <template slot-scope="scope">{{scope.row.incomeExpensesType==0?'收入':'支出'}}</template>
         </el-table-column>
-        <el-table-column prop="mark" label="备注"></el-table-column>
-        <el-table-column prop="creationTime" label="创建时间"></el-table-column>
+        <el-table-column prop="payMethod" label="支付方式"></el-table-column>
+        <el-table-column prop="describe" label="备注"></el-table-column>
+        <el-table-column prop="tradeTime" label="创建时间"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="warning" size="small" @click="addMark(scope.row)">备注</el-button>
@@ -59,10 +68,52 @@
 </template>
 
 <script>
+import { getDataList } from "@/utils/api/apis";
+import { createGet } from "@/utils/common";
 export default {
+  mounted() {
+    var form = createGet();
+    // 请求总金币数量
+    getDataList(this.model, this.control, 1, form, this, "gold_total", "Total");
+    // 请求当日收支
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      form,
+      this,
+      "income_day",
+      "dayIncomeExpenses"
+    );
+    // 请求当月收支
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      form,
+      this,
+      "income_month",
+      "MonthIncomeExpenses"
+    );
+
+    // 请求金币流水账单
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      form,
+      this,
+      "data_list",
+      "flowList"
+    );
+  },
+
   data() {
     return {
       showMark: false,
+      gold_total: 0,
+      income_day: {},
+      income_month: {},
       remark: "", // 备注
 
       data_list: [
@@ -75,6 +126,9 @@ export default {
           creationTime: "2020-08-19 12:00",
         },
       ],
+
+      model: "merProfit",
+      control: "glod",
     };
   },
 

@@ -5,56 +5,33 @@
 
     <el-form label-width="100px">
       <el-form-item label="道具名称">
-        <span v-if="!mode">{{data_info.aname}}</span>
-        <el-input v-else-if="mode" v-model="data_info.aname"></el-input>
+        <el-input v-model="data_info.name"></el-input>
       </el-form-item>
-      <el-form-item label="缩略图" v-if="type">
-        <el-avatar :size="100" :src="data_info.rpmico" shape="square"></el-avatar>
+      <el-form-item label="缩略图">
+        <el-avatar :size="100" :src="data_info.facadeImageID" shape="square"></el-avatar>
       </el-form-item>
-      <el-form-item label="图片上传" v-if="mode">
-        <el-upload
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="getFileList"
-          :limit="1"
-          action="#"
-        >
-          <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{ file }">
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-            <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="previewImg(file)">
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span class="el-upload-list__item-delete" @click="removeImg(file)">
-                <i class="el-icon-delete"></i>
-              </span>
-            </span>
-          </div>
+
+      <el-form-item label="图片上传">
+        <el-upload action="#" :auto-upload="false" :on-change="fileChange" :on-remove="removeFile">
+          <el-button size="small" type="primary">选择图片</el-button>
         </el-upload>
+        <el-button type="success" @click="uploadImg" size="small">上传</el-button>
       </el-form-item>
+
       <el-form-item label="数量">
-        <span v-if="!mode">{{data_info.anum}}</span>
-        <el-input v-else-if="mode" v-model="data_info.anum"></el-input>
+        <el-input v-model="data_info.anum"></el-input>
       </el-form-item>
       <el-form-item label="单价">
-        <span v-if="!mode">{{data_info.aunitp}}</span>
-        <el-input v-if="mode" v-model="data_info.aunitp"></el-input>
+        <el-input v-model="data_info.aunitp"></el-input>
       </el-form-item>
       <el-form-item label="道具状态">
-        <span v-if="!mode">{{data_info.currentState}}</span>
-        <el-select v-if="mode" v-model="data_info.currentState">
-          <el-option label="正在售卖" :value="0"></el-option>
-          <el-option label="已下架" :value="1"></el-option>
+        <el-select v-model="data_info.isEnable">
+          <el-option label="正在售卖" :value="1"></el-option>
+          <el-option label="已下架" :value="0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="道具类型">
-        <span v-if="!mode">
-          <i v-if="data_info.rpmtype==1">户型风格</i>
-          <i v-else-if="data_info.rpmtype==2">屋内道具</i>
-          <i v-else-if="data_info.rpmtype==3">AR宠物</i>
-        </span>
-        <el-select v-if="mode" v-model="data_info.rpmtype">
+        <el-select v-model="data_info.typeID">
           <el-option label="户型风格" :value="1"></el-option>
           <el-option label="屋内道具" :value="2"></el-option>
           <el-option label="AR宠物" :value="3"></el-option>
@@ -62,18 +39,15 @@
       </el-form-item>
 
       <el-form-item label="上架时间">
-        <el-date-picker v-if="mode" v-model="data_info.listingTime" type="date" placeholder="选择日期"></el-date-picker>
-        <span v-if="!mode">{{data_info.listingTime}}</span>
+        <el-date-picker v-model="data_info.listingTime" type="date" placeholder="选择日期"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="下架时间">
-        <el-date-picker v-if="mode" v-model="data_info.dismountTime" type="date" placeholder="选择日期"></el-date-picker>
-        <span v-if="!mode">{{data_info.dismountTime}}</span>
+        <el-date-picker v-model="data_info.dismountTime" type="date" placeholder="选择日期"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="道具说明">
-        <span v-if="!mode">{{data_info.infoDes}}</span>
-        <el-input v-if="mode" type="textarea" v-model="data_info.infoDes" :rows="3"></el-input>
+        <el-input type="textarea" v-model="data_info.describe" :rows="3"></el-input>
       </el-form-item>
 
       <el-form-item label="创建时间" v-if="type">{{data_info.creationTime}}</el-form-item>
@@ -91,42 +65,41 @@
 </template>
 
 <script>
+// import {
+//   getDetailsInfo,
+//   addDataList,
+//   updateDataList,
+//   upLoadFiles,
+// } from "@/utils/api/api";
 import {
-  getDetailsInfo,
-  addDataList,
-  updateDataList,
-  upLoadFiles,
-} from "@/utils/api/api";
+  getDataDetails,
+  updateDataDetails,
+  getFileList,
+  uploadFiles,
+} from "@/utils/api/apis";
 import { filteObj, createFormData } from "@/utils/common";
 export default {
   mounted() {
-    this.dataId = this.$route.query.id;
-    this.mode = this.$route.query.mode - 0;
-    delete this.$route.query.mode;
-    if (this.dataId) {
-      this.type = 1;
-      getDetailsInfo(
-        this.$vision.user,
-        this.control,
-        { dataId: this.dataId },
-        "data_info",
-        this,
-        "rpmico"
-      );
+    var propID = this.$route.query.id;
+    if (propID) {
+      getDataDetails(this.model, this.control, 1, { propID }, this);
     }
   },
 
   data() {
     return {
-      control: "PropsCenter",
       data_info: {},
-      dataId: "",
       type: 0, // 0新增 1修改
       mode: 0, // 0查看 1编辑
       show_imgUrl: "",
       show_img: false,
-      file_list: [],
+      // 上传的图片列表
+      img_list: [],
+
       remarks: "道具商城-道具缩略图",
+
+      model: "prop",
+      control: "prop",
     };
   },
 
@@ -166,25 +139,25 @@ export default {
       }
     },
 
-    // 上传图片
-    uploadImg(obj) {
-      var formData = createFormData(this.file_list);
-      upLoadFiles(this.remarks, formData, obj).then((res) => {
-        obj.rpmico = res.list[0].resId;
-        obj.resId = res.list[0].resId;
+    // 文件状态改变
+    fileChange(file, list) {
+      this.img_list = [...list];
+    },
 
-        if (this.type) {
-          // 若为修改
-          updateDataList(
-            this.$vision.user,
-            this.control,
-            obj,
-            this,
-            "props_list"
-          );
-        } else {
-          // 若为新增
-          addDataList(this.$vision.user, this.control, obj, this, "props_list");
+    // 点击上传文件（图片）
+    uploadImg() {
+      // 非空判断
+      if (this.img_list.length < 1) {
+        this.$message.error("请先选择需上传的图片文件");
+        return;
+      }
+      // 执行上传
+      uploadFiles(2, 1, this.img_list, "创建活动-测试图片").then((res) => {
+        this.img_list = [];
+        switch (res.code) {
+          case "000000":
+            this.$message.success("上传成功！");
+            this.data_info.facadeImageID = res.resultObject;
         }
       });
     },
@@ -197,6 +170,15 @@ export default {
     // 获取文件列表
     getFileList(file, list) {
       this.file_list = list;
+    },
+
+    // 文件移除
+    removeFile(file) {
+      this.img_list.forEach((item, index) => {
+        if (item.uid == file.uid) {
+          this.img_list.splice(index, 1);
+        }
+      });
     },
 
     // 切换模式（编辑、只读）

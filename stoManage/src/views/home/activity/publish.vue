@@ -34,19 +34,51 @@
         <el-table-column prop="completeTime" label="完成时间" width="180"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <el-button @click="showDetail(scope.row)" type="primary" size="small">详情</el-button>
+            <el-button @click="showDetail(scope.row.assistanceID)" type="primary" size="small">详情</el-button>
+            <el-button
+              v-if="scope.row.progressStatus=='完结待商户确认'"
+              @click="confirm(scope.row.assistanceID)"
+              type="success"
+              size="small"
+            >确认完结</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
     <!-- 弹出框 -->
-    <el-dialog title="详情内容" :visible.sync="show_detail"></el-dialog>
+    <el-dialog title="详情内容" :visible.sync="show_detail" @closed="clear">
+      <el-table :data="progress_list" style="width: 100%">
+        <el-table-column prop="customerManager" label="业务经理" width="180"></el-table-column>
+        <el-table-column prop="describe" label="阶段描述" width="180"></el-table-column>
+        <el-table-column prop="phaseStatus" label="阶段状态"></el-table-column>
+        <el-table-column prop="time" label="更新时间"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              @click="showFiles(scope.row.entrustProgressID)"
+              size="small"
+              type="primary"
+            >查看附件</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 嵌套的弹出框 -->
+      <el-dialog width="30%" title="附件列表" :visible.sync="show_files" append-to-body>
+        <ul class="file_list">
+          <li v-for="(item,index) in file_list" :key="index" style="margin:10px 0">
+            <el-link>{{item.name}}</el-link>
+          </li>
+        </ul>
+        <span v-if="file_list.length<1">暂无数据</span>
+      </el-dialog>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getData } from "@/utils/api/apis";
+import { getData, getDataList, addData } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {
@@ -62,9 +94,12 @@ export default {
       // 搜索数据对象
       find_form: {},
       data_list: [],
+      progress_list: [],
+      file_list: [{ name: "文件1" }, { name: "文件2" }, { name: "文件3" }],
 
       activeName: "",
       show_detail: false,
+      show_files: false,
       model: "MerActivity",
       control: "Assistance",
     };
@@ -73,18 +108,10 @@ export default {
   watch: {
     // 监听激活页改变
     activeName() {
-      console.log(1);
       switch (this.activeName) {
         case "history":
           var form = { ...this.find_form };
-          getData(this.model, this.control, 1, form).then((res) => {
-            switch (res.code) {
-              case "000000":
-                this.data_list = res.resultObject.data;
-                console.log(this.data_list);
-                break;
-            }
-          });
+          getDataList(this.model, this.control, 1, form, this);
       }
     },
   },
@@ -109,18 +136,52 @@ export default {
     },
 
     // 点击查看详情
-    showDetail(row) {
+    showDetail(value) {
       this.show_detail = true;
-      var { assistanceID } = row;
-      console.log(assistanceID);
+      // 请求进度数据
+      getData(this.model, this.control, 1, { value }, "progress/list").then(
+        (res) => {
+          switch (res.code) {
+            case "000000":
+              this.progress_list = res.resultObject;
+          }
+        }
+      );
+    },
+
+    // 清空进度列表
+    clear() {
+      this.progress_list = [];
+    },
+
+    // 点击查看附件
+    showFiles(value) {
+      console.log(value);
+      this.show_files = true;
       getData(
         this.model,
         this.control,
         1,
-        { assistanceID },
-        "progress/list"
+        { value },
+        "progress/affixList"
       ).then((res) => {
-        console.log(res);
+        switch (res.code) {
+          case "000000":
+          // this.file_list = res.resultObject;
+        }
+      });
+    },
+
+    // 点击确认完结
+    confirm(value) {
+      console.log(value);
+      addData(this.model, this.control, 1, { value }, "confirm").then((res) => {
+        switch (res.code) {
+          case "000000":
+            this.$message.success("援助已完成！");
+        }
+        var form = { ...this.find_form };
+        getDataList(this.model, this.control, 1, form, this);
       });
     },
   },

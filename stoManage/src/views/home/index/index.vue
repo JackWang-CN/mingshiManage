@@ -8,13 +8,13 @@
         <h3 class="title_first">我的收益</h3>
         <!-- 收益数 -->
         <div class="earnings">
-          <span class="num">5435</span>
+          <span class="num">{{income_day.glodAmount}}</span>
           <span>当日收益</span>
         </div>
         <!-- 总金币数 -->
         <div class="gold">
           <span>总金币</span>
-          <span class="num">3450</span>
+          <span class="num">{{gold_total}}</span>
         </div>
       </div>
 
@@ -87,7 +87,29 @@
 </template>
 
 <script>
+import { getDataList } from "@/utils/api/apis";
+import { createGet } from "@/utils/common";
 export default {
+  mounted() {
+    var form = createGet();
+    // 请求总金币数量
+    getDataList(this.model, this.control, 1, form, this, "gold_total", "Total");
+
+    // 请求当日收支
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      form,
+      this,
+      "income_day",
+      "dayIncomeExpenses"
+    );
+
+    // 请求公告列表
+    getDataList("global", "notice", 1, form, this, "notice_list");
+  },
+
   data() {
     return {
       // 消息通知
@@ -156,6 +178,12 @@ export default {
 
       showNoticeDetails: false, // 官方公告详情框
       showNoticeList: false, // 官方公告列表框
+
+      gold_total: 0,
+      income_day: {},
+
+      model: "merProfit",
+      control: "glod",
     };
   },
 

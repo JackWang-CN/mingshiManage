@@ -17,19 +17,20 @@
     <!-- 委托列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="reqId" label="活动主题" width="200" sortable></el-table-column>
-      <el-table-column prop="desInfo" label="券名称" width="150"></el-table-column>
-      <el-table-column prop="reqStatus" label="持续天数" width="150">
-        <template slot-scope="scope">{{scope.row.reqStatus?'禁用':'启用'}}</template>
+      <el-table-column prop="activityTheme" label="活动主题" width="200" sortable></el-table-column>
+      <el-table-column prop="couponName" label="券名称" width="150"></el-table-column>
+      <el-table-column prop="validDay" label="持续天数" width="150"></el-table-column>
+      <el-table-column prop="total" label="总数" width="100"></el-table-column>
+      <el-table-column prop="receiveAmount" label="领取率" width="100">
+        <template slot-scope="scope">{{scope.row.receiveAmount/scope.row.total}}%</template>
       </el-table-column>
-      <el-table-column prop="creationTime" label="总数" width="100"></el-table-column>
-      <el-table-column prop="creationTime" label="领取率" width="100"></el-table-column>
-      <el-table-column prop="creationTime" label="使用率" width="100"></el-table-column>
-      <el-table-column prop="creationTime" label="券详情" width="300"></el-table-column>
+      <el-table-column label="使用率" width="100">
+        <template slot-scope="scope">{{scope.row.useAmount/scope.row.total}}%</template>
+      </el-table-column>
+      <el-table-column prop="describe" label="券详情" width="300"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.reqId)" type="primary" size="small">发布</el-button>
-          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small">取消</el-button>
+          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small">终止</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,18 +38,16 @@
 </template>
 
 <script>
-import { getDataList, delData } from "@/utils/api/api";
+import { getData, getDataList, delData } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   mounted() {
+    this.find_form = createGet();
+    var form = { ...this.find_form };
     // 首次加载
-    getDataList(
-      this.$vision.merchant,
-      "Entrustreqdata",
-      createGet(1, 10),
-      "data_list",
-      this
-    );
+    getData(this.model, this.control, 1, form).then((res) => {
+      this.data_list = res.data;
+    });
   },
 
   data() {
@@ -57,6 +56,9 @@ export default {
       data_list: [],
       select_list: [],
       btn_status: false,
+
+      model: "activity",
+      control: "ongoing",
     };
   },
 
@@ -71,14 +73,9 @@ export default {
       var form = { ...this.find_form };
       form.data = filteObj(form.data);
       form.data = spliceKey(form.data);
-      getDataList(
-        this.$vision.merchant,
-        "Entrustreqdata",
-        form,
-        "data_list",
-        this,
-        "btn_status"
-      );
+      getData(this.model, this.control, 1, form).then((res) => {
+        this.data_list = res.data;
+      });
     },
 
     // 删除当前
@@ -87,16 +84,13 @@ export default {
       delData(this.$vision.merchant, "Meraddata", "del", obj).then((res) => {
         if (res) {
           this.$message.success("删除成功！");
-          getDataList(
-            this.$vision.merchant,
-            "Meraddata",
-            createGet(1, 10),
-            "data_list",
-            this
-          );
+          getData(this.model, this.control, 1, form).then((res) => {
+            this.data_list = res.data;
+          });
         }
       });
     },
+
     // 删除批量
     delList() {
       if (this.select_list.length) {
@@ -108,13 +102,9 @@ export default {
         ).then((res) => {
           if (res) {
             this.$message.success("删除成功！");
-            getDataList(
-              this.$vision.merchant,
-              "Meraddata",
-              this.find_form,
-              "data_list",
-              this
-            );
+            getData(this.model, this.control, 1, form).then((res) => {
+              this.data_list = res.data;
+            });
           }
         });
       } else {
@@ -143,6 +133,16 @@ export default {
     // 获取选中项
     select(list) {
       this.select_list = list;
+    },
+  },
+
+  watch: {
+    // 监听数据列表
+    data_list() {
+      this.data_list.forEach((item) => {
+        var time = new Date(item.endTime) - new Date(item.startTime);
+        item.validDay = Math.floor(time / 1000 / 3600 / 24);
+      });
     },
   },
 };

@@ -28,23 +28,34 @@
 
     <!-- 表格 -->
     <el-table :data="data_list" max-height="250">
-      <el-table-column fixed prop="subject" label="主题" width="150"></el-table-column>
-      <el-table-column prop="desInfo" label="券名称" width="300"></el-table-column>
-      <el-table-column prop="reqStatus" label="持续天数" width="120"></el-table-column>
-      <el-table-column prop="progress" label="总数" width="120"></el-table-column>
-      <el-table-column prop="customManager" label="领取率" width="120"></el-table-column>
-      <el-table-column prop="creationTime" label="使用率" width="150"></el-table-column>
-      <el-table-column prop="finishTime" label="券详情" width="150"></el-table-column>
+      <el-table-column fixed prop="activityTheme" label="主题" width="150"></el-table-column>
+      <el-table-column prop="couponName" label="券名称" width="150"></el-table-column>
+      <el-table-column prop="validDay" label="持续天数" width="120">
+        <!-- <template slot-scope="scope">{{scope.row.endTime-scope.row.startTime}}</template> -->
+      </el-table-column>
+      <el-table-column prop="total" label="总数" width="120"></el-table-column>
+      <el-table-column prop="receiveAmount" label="领取率" width="120">
+        <template slot-scope="scope">{{scope.row.receiveAmount/scope.row.total}}%</template>
+      </el-table-column>
+      <el-table-column prop="useAmount" label="使用率" width="150">
+        <template slot-scope="scope">{{scope.row.useAmount/scope.row.total}}%</template>
+      </el-table-column>
+      <el-table-column prop="describe" label="券详情" width="300"></el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import { getData } from "@/utils/api/apis";
+import { getData, getDataList, delData } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {
     this.find_form = createGet();
+    var form = { ...this.find_form };
+    // 首次加载
+    getData(this.model, this.control, 1, form).then((res) => {
+      this.data_list = res.data;
+    });
   },
 
   data() {
@@ -53,6 +64,9 @@ export default {
       find_form: {},
 
       showMore: false,
+
+      model: "activity",
+      control: "history",
     };
   },
 
@@ -60,6 +74,16 @@ export default {
     // 隐藏&收起筛选条件
     switchMore() {
       this.showMore = !this.showMore;
+    },
+  },
+
+  watch: {
+    // 监听数据列表
+    data_list() {
+      this.data_list.forEach((item) => {
+        var time = new Date(item.endTime) - new Date(item.startTime);
+        item.validDay = Math.floor(time / 1000 / 3600 / 24);
+      });
     },
   },
 };

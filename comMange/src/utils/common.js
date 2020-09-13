@@ -1,13 +1,13 @@
 /* 公共方法 */
 
-const fileUrl = "https://api.resources.scmsar.com/";
+const fileUrl = "http://192.168.0.89:9001/f1/FileResources/";
 
 // 拼接文件URL
 export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
       item.originally = item[imgKey];
-      item[imgKey] = fileUrl + "file/download/source/v1?Mark=" + item[imgKey];
+      item[imgKey] = fileUrl + "DownLoad?pathtemp=" + item[imgKey];
     }
   });
   return arr;
@@ -49,12 +49,7 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  if (order) {
-    obj.orderByFileds = order + " desc";
-  } else {
-    obj.orderByFileds = "creationtime desc";
-  }
-
+  // obj.orderByFileds = order || "creationtime desc";
   obj.totalDataNum = 0;
   obj.data = {};
 
@@ -62,7 +57,7 @@ export const createGet = (currPage, pageSize, order) => {
 };
 
 // 创建一个formData对象
-export const creatFormData = (file) => {
+export const createFormData = (file) => {
   var formData = new window.FormData();
   file.forEach((item, index) => {
     formData.append("files" + index, item.raw);
@@ -74,7 +69,7 @@ export const creatFormData = (file) => {
 export const filteObj = (obj) => {
   var newObj = {};
   for (const key in obj) {
-    if (obj[key]) {
+    if (obj[key] !== null && obj[key] !== "") {
       newObj[key] = obj[key];
     }
   }

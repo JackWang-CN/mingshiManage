@@ -130,33 +130,28 @@ export default new VueRouter({
         // 店铺管理-角色管理
         {
           path: "role_list",
-          component: () => import("../views/home/store/role_list.vue"),
+          component: () => import("../views/home/store/role/list.vue"),
           meta: ["店铺管理", "角色管理"],
         },
 
         // 店铺管理-角色新增
         {
           path: "role_details",
-          component: () => import("../views/home/store/role_details.vue"),
+          component: () => import("../views/home/store/role/details.vue"),
           meta: ["店铺管理", "新增角色"],
         },
         // 店铺管理-账号管理
         {
           path: "user_list",
-          component: () => import("../views/home/store/user_list.vue"),
+          component: () => import("../views/home/store/user/list.vue"),
           meta: ["店铺管理", "账号管理"],
         },
-        // 店铺管理-账号详情
-        {
-          path: "user_details",
-          component: () => import("../views/home/store/user_details.vue"),
-          meta: ["店铺管理", "账号详情"],
-        },
+
         // 店铺管理-个人中心
         {
-          path: "info",
+          path: "merchant_info",
           component: () => import("../views/home/store/info.vue"),
-          meta: ["个人中心"],
+          meta: ["店铺管理", "店铺信息"],
         },
       ],
     },

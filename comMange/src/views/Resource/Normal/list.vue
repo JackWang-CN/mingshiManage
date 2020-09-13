@@ -113,6 +113,7 @@ export default {
   },
 
   mounted() {
+    this.find_form = createGet();
     // 首次加载
     this.activeName = "company";
   },
@@ -122,8 +123,6 @@ export default {
       type: "normal",
       // 查找条件
       find_form: {
-        currPage: 1,
-        pageSize: 10,
         data: {},
       },
       data_list: [], // 数据列表
@@ -201,15 +200,7 @@ export default {
   watch: {
     //   监听激活页请求不同数据
     activeName() {
-      if (this.activeName == "company") {
-        this.delType = 0;
-      } else {
-        this.delType = 1;
-      }
-
-      this.find_form.data = { scene: this.activeName };
       var form = { ...this.find_form };
-      form.data.isArRes = 0;
       getFileList(undefined, 1, form, this);
     },
   },

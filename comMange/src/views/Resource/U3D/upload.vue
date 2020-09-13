@@ -12,11 +12,11 @@
       </el-form-item>
 
       <el-form-item label="模型名称">
-        <el-input v-model="data_info.ResourceName" clearable></el-input>
+        <el-input v-model="data_info.ShowResourceName" clearable></el-input>
       </el-form-item>
 
       <el-form-item label="备注信息">
-        <el-input v-model="data_info.remarks" type="textarea" :rows="3"></el-input>
+        <el-input v-model="data_info.Remarks" type="textarea" :rows="3"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -48,8 +48,8 @@ export default {
 
     // 发送请求
     sendSubmit() {
-      var { ResourceName, remarks } = this.data_info;
-      uploadFiles("backAR", 1, ResourceName, remarks, this.file_list).then(
+      var { ShowResourceName, Remarks } = this.data_info;
+      uploadFiles(3, 1, this.file_list, ShowResourceName, Remarks).then(
         (res) => {
           switch (res.code) {
             case "000000":

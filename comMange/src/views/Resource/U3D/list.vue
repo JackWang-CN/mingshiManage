@@ -46,7 +46,7 @@
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="resourceName" label="模型名称" width="150"></el-table-column>
+      <el-table-column prop="showResourceName" label="模型名称" width="150"></el-table-column>
       <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
       <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
       <el-table-column prop="rpmico" label="资源缩略图" width="120">
@@ -79,7 +79,7 @@
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl+'file/download/source/v1?Mark='+scope.row.resID"
+            :href="fileUrl+'file/download/u3d/v1?Mark='+scope.row.resID"
           >下载文件</el-link>
         </template>
       </el-table-column>
@@ -111,8 +111,7 @@ export default {
   mounted() {
     // 首次加载
     var form = { ...this.find_form };
-    form.data.isArRes = 1;
-    getFileList(undefined, 1, form, this);
+    getFileList("u3dInfoList", 1, form, this);
   },
 
   data() {
@@ -123,9 +122,7 @@ export default {
         currPage: 1,
         pageSize: 10,
         totalDataNum: 0,
-        data: {
-          isArRes: 1,
-        },
+        data: {},
       },
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
@@ -147,7 +144,7 @@ export default {
         form.data.resExtName = "." + form.data.resExtName;
       }
       delete form.totalDataNum;
-      getFileList(this.model, this.control, 1, form, this);
+      getFileList("u3dInfoList", 1, form, this);
     },
 
     // 禁用文件
@@ -157,7 +154,7 @@ export default {
           case "000000":
             this.$message.info("已禁用");
             var form = { ...this.find_form };
-            getFileList(undefined, 1, form, this);
+            getFileList("u3dInfoList", 1, form, this);
             break;
         }
       });
@@ -170,7 +167,7 @@ export default {
           case "000000":
             var form = { ...this.find_form };
             this.$message.success("恢复成功！");
-            getFileList(undefined, 1, form, this);
+            getFileList("u3dInfoList", 1, form, this);
             break;
         }
       });
@@ -200,7 +197,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getFileList(undefined, 1, form, this);
+      getFileList("u3dInfoList", 1, form, this);
     },
   },
 };

@@ -54,23 +54,6 @@ export const offTheShelf = (version, info) => {
   return axios.post(url, info);
 };
 
-// 8.文件上传 resourceType = backAR || backWEB || app
-const fileUrl = "https://api.resources.scmsar.com/";
-
-export const uploadFiles = (
-  resourceType, // 文件类型
-  version, // 版本
-  resourceName, // 文件名称
-  remarks, // 备注
-  fileList // 文件列表
-) => {
-  var formData = createFormData(fileList);
-  var url =
-    fileUrl +
-    `file/upload/${resourceType}/v${version}?ResourceName=${resourceName}&Remarks=${remarks}`;
-  return axios.put(url, formData);
-};
-
 /* ========================================================== */
 /* 懒人版 */
 // 1) 获取列表
@@ -97,7 +80,6 @@ export const getDataList = (
     }
     _this[key] = res.resultObject.data;
     _this.find_form.totalDataNum = res.resultObject.totalDataNum;
-    console.log(_this.find_form);
   });
 };
 
@@ -155,15 +137,17 @@ export const updateDataDetails = (
 };
 
 /* 文件接口 */
+const fileUrl = "https://api.resources.scmsar.com/";
+
 // 1.获取文件
-export const geFile = (operate = "infoListByBack", version, info) => {
+export const geFile = (operate = "infoList", version, info) => {
   var url = fileUrl + `file/info/${operate}/v${version}`;
   return axios.post(url, info);
 };
 
 // 2.获取文件-自动填充
 export const getFileList = (
-  operate = "infoListByBack",
+  operate = "infoList",
   version,
   info,
   _this,
@@ -186,9 +170,17 @@ export const getFileList = (
   });
 };
 
-// 3.下载文件
-export const downloadFile = (version, resId) => {
-  var url = fileUrl + `file/download/source/v${version}?Mark=${resId}`;
+// 3.下载文件 type: 1-普通资源 2-AR资源
+export const downloadFile = (type, version, resId) => {
+  switch (type) {
+    case 1:
+      var url = fileUrl + `file/download/source/v${version}?Mark=${resId}`;
+      break;
+    case 2:
+      var url = fileUrl + `file/download/u3d/v${version}?Mark=${resId}`;
+      break;
+  }
+
   return axios.get(url);
 };
 
@@ -202,4 +194,29 @@ export const disableFile = (version, info) => {
 export const enableFile = (version, info) => {
   var url = fileUrl + `file/info/enable/v${version}`;
   return axios.patch(url, info);
+};
+
+// 8.文件上传 type: 1-账号资源 2-公共资源 3-AR资源
+export const uploadFiles = (
+  type, // 文件类型
+  version, // 版本
+  fileList, // 文件列表
+  parameter1, // 参数1
+  parameter2 // 参数2
+) => {
+  var formData = createFormData(fileList);
+
+  switch (type) {
+    case 1:
+      var path = `file/upload/self/v${version}`;
+      break;
+    case 2:
+      var path = `file/upload/common/v${version}?Remarks=${parameter1}`;
+      break;
+    case 3:
+      var path = `file/upload/u3d/v${version}?ShowResourceName=${parameter1}&&Remarks=${parameter2}`;
+      break;
+  }
+  var url = fileUrl + path;
+  return axios.put(url, formData);
 };
