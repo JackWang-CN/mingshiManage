@@ -73,7 +73,6 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
       <!-- 日期查询 -->
@@ -306,19 +305,6 @@
 </template>
 
 <script>
-import {
-  creatGet,
-  createObj,
-  spliceKey,
-  deletconditionofbusiness,
-} from "@/api/Common";
-import {
-  getDataList,
-  putcreate,
-  deletelist,
-  deleteuser,
-  patchedit,
-} from "@/api/api";
 export default {
   data() {
     return {
@@ -329,42 +315,7 @@ export default {
         data: {},
       },
       select_list: [], //已选表单
-      add_form: {}, //添加表单内容
-      edit_form: {}, //修改表单内容
-      dialogFormVisibleOfAdd: false, //添加表单弹窗
-      dialogFormVisibleOfEdit: false, //修改表单弹窗
-      // 日期选择
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-          {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-          {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-        ],
-      },
+
       // 商户列表
       store_list: [],
     };

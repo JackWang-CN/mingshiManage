@@ -6,7 +6,7 @@
     <!-- 表单 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="道具名称" label-width="100px">
-        <el-input v-model="find_form.data.aname" placeholder="请输入道具名称"></el-input>
+        <el-input v-model="find_form.data.aname" placeholder="请输入道具名称" clearable></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择房产类型">
@@ -14,26 +14,6 @@
           <el-option label="屋内道具" :value="2"></el-option>
           <el-option label="AR宠物" :value="3"></el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="交易金额" label-width="100px">
-        <el-input v-model="find_form.data.aunitp" placeholder="请输入交易金额"></el-input>
-      </el-form-item>
-      <el-form-item label="买家昵称" label-width="100px">
-        <el-input v-model="find_form.data.name1" placeholder="请输入买家昵称"></el-input>
-      </el-form-item>
-      <el-form-item label="卖家昵称" label-width="100px">
-        <el-input v-model="find_form.data.name2" placeholder="请输入卖家昵称"></el-input>
-      </el-form-item>
-      <el-form-item label="交易时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.creationTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
       </el-form-item>
 
       <!-- 按钮组 -->
@@ -59,7 +39,6 @@
       </el-table-column>
       <el-table-column prop="anum" label="数量" width="120"></el-table-column>
       <el-table-column prop="aunitp" label="单价" width="120"></el-table-column>
-
       <el-table-column prop="resId" label="道具缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar shape="square" :size="80" :src="scope.row.resId"></el-avatar>
@@ -68,7 +47,6 @@
       <el-table-column prop="ownerNickname" label="卖家昵称" width="120"></el-table-column>
       <el-table-column prop="tradePrice" label="交易金额" width="120"></el-table-column>
       <el-table-column prop="tradeTime" label="交易时间" width="180"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="180"></el-table-column>
       <el-table-column fixed="right" label="操作" width="280">
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row.dataId,0)" type="primary" size="small">详情</el-button>
@@ -88,7 +66,7 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { createGet, spliceKey, filteObj } from "@/utils/common";
-import { getDataList, updateData, delData } from "@/utils/api/api";
+import { getDataList } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -97,15 +75,7 @@ export default {
     this.find_form = createGet();
     var form = { ...this.find_form };
     // 首次加载
-    getDataList(
-      this.$vision.user,
-      this.control,
-      form,
-      "data_list",
-      this,
-      null,
-      "resId"
-    );
+    getDataList(this.model, this.control, this.vision, form, this, "data_list");
   },
 
   data() {
@@ -113,8 +83,44 @@ export default {
       find_form: {
         data: {},
       },
-      data_list: [],
-      control: "Auctraderec",
+      data_list: [
+        {
+          tradeId: "00145475714521001",
+          traderNickname: "疾风剑豪",
+          aname: "欧式洋房",
+          rpmtype: "1",
+          anum: 1,
+          aunitp: 3500,
+          ownerNickname: "奥恩",
+          tradePrice: "3500",
+          tradeTime: "2020-08-20 15:00:00",
+        },
+        {
+          tradeId: "00145475714521002",
+          traderNickname: "安妮",
+          aname: "中式四合院",
+          rpmtype: "1",
+          anum: 1,
+          aunitp: 1250,
+          ownerNickname: "奥恩",
+          tradePrice: "1250",
+          tradeTime: "2020-08-20 15:00:00",
+        },
+        {
+          tradeId: "00145475714521003",
+          traderNickname: "塞恩",
+          aname: "普通住房",
+          rpmtype: "1",
+          anum: 1,
+          aunitp: 2800,
+          ownerNickname: "黑默丁格",
+          tradePrice: "2800",
+          tradeTime: "2020-08-20 15:00:00",
+        },
+      ],
+      model: "auction",
+      control: "auctionLog",
+      vision: 1,
     };
   },
 
@@ -126,13 +132,12 @@ export default {
       form.data = filteObj(form.data);
       form.data = spliceKey(form.data);
       getDataList(
-        this.$vision.user,
+        this.model,
         this.control,
+        this.vision,
         form,
-        "data_list",
         this,
-        null,
-        "rpmico"
+        "data_list"
       );
     },
 
@@ -154,13 +159,12 @@ export default {
       var form = { ...this.find_form };
       delete form.totalDataNum;
       getDataList(
-        this.$vision.user,
+        this.model,
         this.control,
+        this.vision,
         form,
-        "data_list",
         this,
-        null,
-        "resId"
+        "data_list"
       );
     },
   },

@@ -44,29 +44,28 @@
     <el-table :data="data_list" border style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="tradeId" label="交易单号" width="120"></el-table-column>
-      <el-table-column prop="traderNickname" label="买家昵称" width="120"></el-table-column>
-      <el-table-column prop="aname" label="道具名称" width="120"></el-table-column>
-      <el-table-column prop="rpmtype" label="道具类型" width="120">
+      <el-table-column prop="buyID" label="买家昵称" width="120"></el-table-column>
+      <el-table-column prop="name" label="道具名称" width="120"></el-table-column>
+      <el-table-column prop="propTypeID" label="道具类型" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.rpmtype==1">户型风格</span>
-          <span v-else-if="scope.row.rpmtype==2">屋内道具</span>
-          <span v-else-if="scope.row.rpmtype==3">AR宠物</span>
+          <span v-if="scope.row.propTypeID==1">户型风格</span>
+          <span v-else-if="scope.row.propTypeID==2">屋内道具</span>
+          <span v-else-if="scope.row.propTypeID==3">AR宠物</span>
           <el-avatar :size="50" :src="scope.row.rpmico"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="anum" label="数量" width="120"></el-table-column>
-      <el-table-column prop="aunitp" label="单价" width="120"></el-table-column>
-      <el-table-column prop="resId" label="道具缩略图" width="120">
+      <el-table-column prop="sellNum" label="数量" width="120"></el-table-column>
+      <el-table-column prop="unitPrice" label="单价" width="120"></el-table-column>
+      <el-table-column prop="propIco" label="道具缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar shape="square" :size="80" :src="scope.row.resId"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="aunitp" label="交易金额" width="120"></el-table-column>
+      <el-table-column prop="describe" label="描述" width="120"></el-table-column>
       <el-table-column prop="tradeTime" label="交易时间" width="180"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="180"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="280">
+      <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
+          <el-button @click="showDetails(scope.row.logID)" type="primary" size="small">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,15 +80,14 @@
     <!-- 弹出框 -->
     <el-dialog title="交易详情" :visible.sync="isShowDetails">
       <el-form label-width="100px">
-        <el-form-item label="交易单号">{{data_info.tradeId}}</el-form-item>
-        <el-form-item label="道具名称">{{data_info.aname}}</el-form-item>
-        <el-form-item label="道具类型">{{data_info.rpmtype}}</el-form-item>
+        <el-form-item label="交易单号">{{data_info.logID}}</el-form-item>
+        <el-form-item label="道具名称">{{data_info.name}}</el-form-item>
+        <el-form-item label="道具类型">{{data_info.propTypeID}}</el-form-item>
         <el-form-item label="道具缩略图">
-          <el-avatar :size="80" :src="data_info.resId" shape="square"></el-avatar>
+          <el-avatar :size="80" :src="data_info.propIco" shape="square"></el-avatar>
         </el-form-item>
-        <el-form-item label="交易金额">{{data_info.aunitp}}</el-form-item>
+        <el-form-item label="交易金额">{{data_info.totalPrice}}</el-form-item>
         <el-form-item label="交易时间">{{data_info.tradeTime}}</el-form-item>
-        <el-form-item label="创建时间">{{data_info.creationtime}}</el-form-item>
         <el-form-item>
           <el-button @click="isShowDetails=false">关闭</el-button>
         </el-form-item>
@@ -101,7 +99,7 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { createGet, spliceKey, filteObj } from "@/utils/common";
-import { getDataList, updateData, delData } from "@/utils/api/api";
+import { getDataList, getDataDetails } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -110,15 +108,7 @@ export default {
     this.find_form = createGet();
     var form = { ...this.find_form };
     // 首次加载
-    getDataList(
-      this.$vision.user,
-      this.control,
-      form,
-      "data_list",
-      this,
-      null,
-      "resId"
-    );
+    getDataList(this.model, this.control, 1, form, this);
   },
 
   data() {
@@ -130,6 +120,9 @@ export default {
       data_info: [],
       control: "PropsCenterRecord",
       isShowDetails: false,
+
+      model: "prop",
+      control: "propStoreDealLog",
     };
   },
 
@@ -139,21 +132,14 @@ export default {
       var form = { ...this.find_form };
       form.data = filteObj(form.data);
       form.data = spliceKey(form.data);
-      getDataList(
-        this.$vision.user,
-        this.control,
-        form,
-        "data_list",
-        this,
-        null,
-        "resId"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 查看详情
-    showDetails(row) {
-      this.data_info = { ...row };
+    showDetails(id) {
       this.isShowDetails = true;
+      var logID = id;
+      getDataDetails(this.model, this.control, 1, { logID }, this);
     },
 
     // 重置
@@ -173,15 +159,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getDataList(
-        this.$vision.user,
-        this.control,
-        form,
-        "data_list",
-        this,
-        null,
-        "resId"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
   },
 };

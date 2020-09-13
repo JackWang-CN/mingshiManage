@@ -5,32 +5,19 @@
     <!-- 查询条件 -->
     <el-form ref="find_form" class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="物品名称" label-width="100px">
-        <el-input v-model="find_form.data.aname" placeholder="请输入拍卖品名称"></el-input>
+        <el-input v-model="find_form.data.propName" placeholder="请输入拍卖品名称"></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
-        <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
+        <el-select v-model="find_form.data.assetType" placeholder="请选择道具类型">
           <el-option label="全部" value></el-option>
-          <el-option label="优惠券" value="1"></el-option>
-          <el-option label="道具" value="2"></el-option>
-          <el-option label="虚拟房产" value="3"></el-option>
+          <el-option label="优惠券" :value="1"></el-option>
+          <el-option label="道具" :value="2"></el-option>
+          <el-option label="虚拟房产" :value="3"></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="卖家昵称" label-width="100px">
         <el-input v-model="find_form.data.owner"></el-input>
-      </el-form-item>
-
-      <!-- 日期查询 -->
-      <el-form-item label="上架时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.creationTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
       </el-form-item>
 
       <el-form-item>
@@ -41,29 +28,29 @@
 
     <!-- 数据列表 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="aname" label="拍品名称" width="150"></el-table-column>
+      <el-table-column prop="propName" label="拍品名称" width="150"></el-table-column>
 
       <el-table-column prop="rpmico" label="拍品图片" width="120">
         <template slot-scope="scope">
           <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="rpmtype" label="道具类型" width="100">
+      <el-table-column prop="assetType" label="道具类型" width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.rpmtype==1">优惠券</span>
-          <span v-else-if="scope.row.rpmtype==2">道具</span>
-          <span v-else-if="scope.row.rpmtype==3">虚拟房产</span>
+          <span v-if="scope.row.assetType==1">优惠券</span>
+          <span v-else-if="scope.row.assetType==2">道具</span>
+          <span v-else-if="scope.row.assetType==3">虚拟房产</span>
         </template>
       </el-table-column>
-      <el-table-column prop="anum" label="数量" width="120"></el-table-column>
-      <el-table-column prop="aunitp" label="价格" width="120"></el-table-column>
-      <el-table-column prop="infoDes" label="拍品描述" width="200"></el-table-column>
-      <el-table-column prop="listingTime" label="上架时间" width="160"></el-table-column>
+      <el-table-column prop="count" label="数量" width="120"></el-table-column>
+      <el-table-column prop="price" label="价格" width="120"></el-table-column>
+      <el-table-column prop="describe" label="拍品描述" width="200"></el-table-column>
+      <el-table-column prop="owner" label="卖家昵称" width="200"></el-table-column>
+      <el-table-column prop="addedTime" label="上架时间" width="180"></el-table-column>
       <el-table-column prop="expireTime" label="到期时间" width="160"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="160"></el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
+          <el-button @click="showDetails(scope.row.auctionID)" type="primary" size="small">详情</el-button>
           <el-button @click="switchState(scope.row)" type="warning" size="small">下架</el-button>
         </template>
       </el-table-column>
@@ -77,14 +64,14 @@
     ></Pagination>
 
     <!-- 弹出框 -->
-    <el-dialog title="道具详情" :visible.sync="isShowDetails" width="50%">
+    <el-dialog title="道具详情" :visible.sync="show_details" width="50%">
       <el-form label-width="100px">
-        <el-form-item label="物品名称">{{data_info.aname}}</el-form-item>
-        <el-form-item label="道具类型">{{data_info.rpmtype}}</el-form-item>
-        <el-form-item label="拍卖数量">{{data_info.anum}}</el-form-item>
-        <el-form-item label="拍品单价">{{data_info.aunitp}}</el-form-item>
-        <el-form-item label="拍品描述">{{data_info.infoDes}}</el-form-item>
-        <el-form-item label="上架时间">{{data_info.listingTime}}</el-form-item>
+        <el-form-item label="物品名称">{{data_info.propName}}</el-form-item>
+        <el-form-item label="道具类型">{{data_info.assetType}}</el-form-item>
+        <el-form-item label="拍卖数量">{{data_info.count}}</el-form-item>
+        <el-form-item label="拍品单价">{{data_info.price}}</el-form-item>
+        <el-form-item label="拍品描述">{{data_info.describe}}</el-form-item>
+        <el-form-item label="上架时间">{{data_info.addedTime}}</el-form-item>
         <el-form-item label="到期时间">{{data_info.expireTime}}</el-form-item>
         <el-form-item label="卖家昵称">{{data_info.owner}}</el-form-item>
         <el-form-item label="道具图片">
@@ -92,15 +79,15 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="isShowDetails = false">关闭</el-button>
+        <el-button @click="show_details = false">关闭</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="下架理由" :visible.sync="isShowShelf">
+    <el-dialog title="下架理由" :visible.sync="show_shelf">
       <el-input type="textarea" :rows="3" v-model="data_shelf.remarks"></el-input>
       <span slot="footer">
         <el-button @click="offShelf" type="primary">确定</el-button>
-        <el-button @click="isShowShelf = false">取消</el-button>
+        <el-button @click="show_shelf = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -108,7 +95,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getData, getDataList, getDetailsInfo } from "@/utils/api/api";
+import { getDataList, getDataDetails, offTheShelf } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   components: {
@@ -118,15 +105,7 @@ export default {
     // 首次加载
     this.find_form = createGet();
     var form = { ...this.find_form };
-    getDataList(
-      this.$vision.user,
-      this.control,
-      form,
-      "data_list",
-      this,
-      null,
-      "rpmico"
-    );
+    getDataList(this.model, this.control, 1, form, this);
   },
 
   data() {
@@ -135,12 +114,15 @@ export default {
       find_form: {
         data: {},
       },
-      control: "Auctiondata",
-      data_list: [], // 数据列表
+      // 数据列表
+      data_list: [],
       data_info: {}, // 详情数据对象
       data_shelf: {}, // 下架操作
-      isShowDetails: false, // 是否显示详情
-      isShowShelf: false, // 是否显示下架弹窗
+
+      show_details: false, // 是否显示详情
+      show_shelf: false, // 是否显示下架弹窗
+      model: "auction",
+      control: "auction",
     };
   },
 
@@ -150,63 +132,40 @@ export default {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
-      getDataList(
-        this.$vision.user,
-        this.control,
-        form,
-        "data_list",
-        this,
-        null,
-        "rpmico"
-      );
+      getDataList(this.model, this.control, 1, form, this, "data_list");
     },
 
     // 展示详情
-    showDetails(row) {
-      var { assetsId } = row;
+    showDetails(id) {
       // 1.打开模态框
-      this.isShowDetails = true;
+      this.show_details = true;
       // 2.请求详情数据并渲染
-      getDetailsInfo(
-        this.$vision.user,
-        this.control,
-        { assetsId },
-        "data_info",
-        this,
-        "rpmico"
-      );
+      getDataDetails(this.model, this.control, 1, { auctionID: id }, this);
     },
 
     // 点击下架
     switchState(row) {
-      var { owner, assetsId } = row;
+      var { owner, assetsID } = row;
+      console.log(row);
       // 1.打开模态框 2.填写下架理由 3.提交关闭模态框并重新加载
-      this.isShowShelf = true;
       this.data_shelf.owner = owner;
-      this.data_shelf.dataId = assetsId;
+      this.data_shelf.auctionID = assetsID;
+      this.show_shelf = true;
     },
 
     // 提交下架操作
     offShelf() {
-      this.isShowShelf = false;
-      getData(
-        this.$vision.user,
-        this.control,
-        "offTheShelf",
-        this.data_shelf
-      ).then((res) => {
-        this.$message.success("下架成功！");
+      this.show_shelf = false;
+      offTheShelf(1, this.data_shelf).then((res) => {
+        switch (res.code) {
+          case "C00501":
+            this.$message.success("下架成功！");
+            break;
+          case "000000":
+            break;
+        }
         var form = { ...this.find_form };
-        getDataList(
-          this.$vision.user,
-          this.control,
-          form,
-          "data_list",
-          this,
-          null,
-          "rpmico"
-        );
+        getDataList(this.model, this.control, 1, form, this, "data_list");
       });
     },
 
@@ -227,15 +186,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getDataList(
-        this.$vision.user,
-        this.control,
-        form,
-        "data_list",
-        this,
-        null,
-        "rpmico"
-      );
+      getDataList(this.model, this.control, 1, form, this, "data_list");
     },
   },
 };

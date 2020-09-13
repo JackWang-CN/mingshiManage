@@ -25,32 +25,6 @@ export default new VueRouter({
           meta: ["首页"],
         },
 
-        // 公告
-        {
-          path: "notice",
-          component: () => import("../views/home/notice.vue"),
-          meta: ["公告"],
-        },
-
-        // 权限管理-角色管理
-        {
-          path: "author_roleList",
-          component: () => import("../views/home/author_roleList.vue"),
-          meta: ["权限管理", "角色管理"],
-        },
-        // 权限管理-角色新增
-        {
-          path: "author_roleAdd",
-          component: () => import("../views/home/author_roleAdd.vue"),
-          meta: ["权限管理", "新增角色"],
-        },
-        // 权限管理-用户管理
-        {
-          path: "author_user",
-          component: () => import("../views/home/author_user.vue"),
-          meta: ["权限管理", "用户管理"],
-        },
-
         // 道具商城-列表
         {
           path: "props_list",
@@ -95,25 +69,87 @@ export default new VueRouter({
           meta: ["资源管理", "AR资源", "AR资源上传"],
         },
 
-        // 公告记录
+        // 配置管理-角色管理
+        {
+          path: "author_roleList",
+          component: () =>
+            import("../views/Company/configManage/author_roleList.vue"),
+          meta: ["配置管理", "角色权限"],
+        },
+        // 配置管理-角色新增
+        {
+          path: "author_roleAdd",
+          component: () =>
+            import("../views/Company/configManage/author_roleAdd.vue"),
+          meta: ["配置管理", "角色权限", "新增角色"],
+        },
+        // 配置管理-账号管理
+        {
+          path: "user_list",
+          component: () =>
+            import("../views/Company/configManage/account/user/list.vue"),
+          meta: ["配置管理", "账号管理"],
+        },
+        // 配置管理-公告记录
         {
           path: "configure_noticerecord",
           component: () => import("../views/home/configure_noticerecord.vue"),
           meta: ["配置管理", "公告记录"],
         },
-
-        // 角色权限
+        // 配置管理-充值配置
         {
-          path: "configure_roleGrauth",
-          component: () => import("../views/home/configure_roleGrauth.vue"),
-          meta: ["配置管理", "角色权限"],
+          path: "recharge_list",
+          component: () =>
+            import("../views/Company/configManage/recharge/index.vue"),
+          meta: ["配置管理", "充值配置"],
+        },
+        // 配置管理-充值配置-模板编辑
+        {
+          path: "recharge_details",
+          component: () =>
+            import("../views/Company/configManage/recharge/details.vue"),
+          meta: ["配置管理", "充值配置", "模板编辑"],
+        },
+        // 配置管理-版本控制
+        {
+          path: "version_list",
+          component: () =>
+            import("../views/Company/configManage/version/list.vue"),
+          meta: ["配置管理", "版本控制"],
+        },
+        // 配置管理-版本控制-版本详情
+        {
+          path: "version_details",
+          component: () =>
+            import("../views/Company/configManage/version/details.vue"),
+          meta: ["配置管理", "版本控制", "版本详情"],
         },
 
-        // 版本控制
+        // 消息通知-公告记录
         {
-          path: "configure_verControl",
-          component: () => import("../views/home/configure_verControl.vue"),
-          meta: ["配置管理", "版本控制"],
+          path: "notice_list",
+          component: () => import("../views/Company/notice/notice/list.vue"),
+          meta: ["消息通知", "公告记录"],
+        },
+
+        // 消息通知-公告记录-公告详情
+        {
+          path: "notice_details",
+          component: () => import("../views/Company/notice/notice/details.vue"),
+          meta: ["消息通知", "公告记录", "公告详情"],
+        },
+
+        // 消息通知-推送记录
+        {
+          path: "push_list",
+          component: () => import("../views/Company/notice/push/list.vue"),
+          meta: ["消息通知", "推送记录"],
+        },
+        // 消息通知-推送记录-推送详情
+        {
+          path: "push_details",
+          component: () => import("../views/Company/notice/push/details.vue"),
+          meta: ["消息通知", "推送记录", "推送详情"],
         },
 
         // 拍卖行-拍卖列表
@@ -132,7 +168,7 @@ export default new VueRouter({
 
         // 用户管理-用户列表
         {
-          path: "user_list",
+          path: "customer_list",
           component: () => import("../views/UserData/userInfo/list.vue"),
           meta: ["用户管理", "用户列表"],
         },
@@ -214,27 +250,50 @@ export default new VueRouter({
           meta: ["商户管理", "商户列表"],
         },
 
-        // 商户管理-业务请求跟踪管理
+        // 商户管理-商户审核
         {
-          path: "merchant_busReqTrace",
-          component: () => import("../views/Merchant/merchant_busReqTrace.vue"),
-          meta: ["商户管理", "业务请求跟踪管理"],
+          path: "merchant_check",
+          component: () => import("../views/Merchant/merchant_check.vue"),
+          meta: ["商户管理", "商户审核"],
         },
 
-        // 优惠券量产管理
+        // 商户管理-商户委托
         {
-          path: "merchant_couponProduc",
-          component: () =>
-            import("../views/Merchant/merchant_couponProduc.vue"),
-          meta: ["商户管理", "优惠券量产管理"],
+          path: "merchant_entrustList",
+          component: () => import("../views/Merchant/entrust/list.vue"),
+          meta: ["商户管理", "商户委托"],
+        },
+        // 商户管理-商户委托-委托详情
+        {
+          path: "merchant_entrustDetails",
+          component: () => import("../views/Merchant/entrust/details.vue"),
+          meta: ["商户管理", "商户委托", "委托详情"],
         },
 
-        // 委托请求数据管理
+        // 商户管理-商户活动列表
         {
-          path: "merchant_entrustReqData",
-          component: () =>
-            import("../views/Merchant/merchant_entrustReqData.vue"),
-          meta: ["商户管理", "委托请求数据管理"],
+          path: "merchant_activityList",
+          component: () => import("../views/Merchant/activity/list.vue"),
+          meta: ["商户管理", "商户活动"],
+        },
+        // 商户管理-商户活动创建
+        {
+          path: "merchant_activityCreate",
+          component: () => import("../views/Merchant/activity/create.vue"),
+          meta: ["商户管理", "商户活动"],
+        },
+
+        // 商户管理-优惠券列表
+        {
+          path: "merchant_couponList",
+          component: () => import("../views/Merchant/coupon/list.vue"),
+          meta: ["商户管理", "优惠券列表"],
+        },
+        // 商户管理-优惠券创建
+        {
+          path: "merchant_couponCreate",
+          component: () => import("../views/Merchant/coupon/create.vue"),
+          meta: ["商户管理", "优惠券列表", "创建优惠券"],
         },
 
         // 商户广告数据管理

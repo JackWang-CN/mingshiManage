@@ -5,34 +5,19 @@
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="群ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.groupId"
-          placeholder="请输入群ID"
-        ></el-input>
+        <el-input v-model="find_form.data.groupId" placeholder="请输入群ID"></el-input>
       </el-form-item>
       <el-form-item label="群名称" label-width="100px">
-        <el-input
-          v-model="find_form.data.groupName"
-          placeholder="请输入群名称"
-        ></el-input>
+        <el-input v-model="find_form.data.groupName" placeholder="请输入群名称"></el-input>
       </el-form-item>
       <el-form-item label="群公告" label-width="100px">
-        <el-input
-          v-model="find_form.data.groupNotice"
-          placeholder="请输入群公告"
-        ></el-input>
+        <el-input v-model="find_form.data.groupNotice" placeholder="请输入群公告"></el-input>
       </el-form-item>
       <el-form-item label="所有人ID" label-width="100px">
-        <el-input
-          v-model="find_form.data.ownerId"
-          placeholder="请输入所有人ID"
-        ></el-input>
+        <el-input v-model="find_form.data.ownerId" placeholder="请输入所有人ID"></el-input>
       </el-form-item>
       <el-form-item label="是否禁用" label-width="100px">
-        <el-select
-          v-model="find_form.data.isDisable"
-          placeholder="请选择是否禁用"
-        >
+        <el-select v-model="find_form.data.isDisable" placeholder="请选择是否禁用">
           <el-option label="是" value="1"></el-option>
           <el-option label="否" value="0"></el-option>
         </el-select>
@@ -49,20 +34,11 @@
           :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
-      <!-- 日期查询 -->
-      <div class="date_btn">
-        <el-form-item class="btns_find">
-          <el-button type="primary" @click="queryData">查询</el-button>
-          <el-button type="info" @click="resetForm">重置</el-button>
-          <el-button
-            type="success"
-            style="margin-left:50px"
-            @click="dialogFormVisibleOfAdd = true"
-            >添加</el-button
-          >
-          <el-button type="danger" @click="delete_list">批量删除</el-button>
-        </el-form-item>
-      </div>
+
+      <el-form-item>
+        <el-button type="primary" @click="queryData">查询</el-button>
+        <el-button type="info" @click="resetForm">重置</el-button>
+      </el-form-item>
     </el-form>
     <!-- 商户列表 -->
     <el-table
@@ -72,81 +48,38 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        fixed
-        prop="groupId"
-        label="群ID"
-        width="80"
-      ></el-table-column>
-      <el-table-column
-        prop="groupName"
-        label="群名称"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="groupNotice"
-        label="群公告"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="ownerId"
-        label="所有人ID"
-        width="120"
-      ></el-table-column>
+      <el-table-column fixed prop="groupId" label="群ID" width="80"></el-table-column>
+      <el-table-column prop="groupName" label="群名称" width="120"></el-table-column>
+      <el-table-column prop="groupNotice" label="群公告" width="120"></el-table-column>
+      <el-table-column prop="ownerId" label="所有人ID" width="120"></el-table-column>
       <el-table-column prop="isDisable" label="是否禁用" width="120">
-        <template slot-scope="scope">{{
+        <template slot-scope="scope">
+          {{
           scope.row.isDisable == "1" ? "是" : "否"
-        }}</template></el-table-column
-      >
-      <el-table-column
-        prop="creationtime"
-        label="创建时间"
-        width="120"
-      ></el-table-column>
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="creationtime" label="创建时间" width="120"></el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="show_edit(scope.row)" type="text" size="small"
-            >编辑</el-button
-          >
-          <el-button
-            @click="user_delete(scope.row)"
-            type="text"
-            size="small"
-            class="btns_delete"
-            >删除</el-button
-          >
+          <el-button @click="show_edit(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="user_delete(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加弹出框(添加) -->
-    <el-dialog
-      title="添加类别"
-      :visible.sync="dialogFormVisibleOfAdd"
-      width="40%"
-    >
+    <el-dialog title="添加类别" :visible.sync="dialogFormVisibleOfAdd" width="40%">
       <!-- 新增表单 -->
       <el-form ref="add_form" :model="add_form" label-width="120px">
         <el-form-item label="群名称">
-          <el-input
-            v-model="add_form.groupName"
-            placeholder="请输入群名称"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.groupName" placeholder="请输入群名称" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="群公告">
-          <el-input
-            v-model="add_form.groupNotice"
-            placeholder="请输入群公告"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.groupNotice" placeholder="请输入群公告" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="所有人ID">
-          <el-input
-            v-model="add_form.ownerId"
-            placeholder="请输入所有人ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="add_form.ownerId" placeholder="请输入所有人ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="是否禁用">
           <el-select v-model="add_form.isDisable" placeholder="请选择是否禁用">
@@ -162,33 +95,17 @@
     </el-dialog>
 
     <!-- 添加弹出框(修改) -->
-    <el-dialog
-      title="修改类别"
-      :visible.sync="dialogFormVisibleOfEdit"
-      width="40%"
-    >
+    <el-dialog title="修改类别" :visible.sync="dialogFormVisibleOfEdit" width="40%">
       <!-- 修改表单 -->
       <el-form ref="edit_form" :model="edit_form" label-width="120px">
         <el-form-item label="群名称">
-          <el-input
-            v-model="edit_form.groupName"
-            placeholder="请输入群名称"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.groupName" placeholder="请输入群名称" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="群公告">
-          <el-input
-            v-model="edit_form.groupNotice"
-            placeholder="请输入群公告"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.groupNotice" placeholder="请输入群公告" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="所有人ID">
-          <el-input
-            v-model="edit_form.ownerId"
-            placeholder="请输入所有人ID"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-model="edit_form.ownerId" placeholder="请输入所有人ID" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="是否禁用">
           <el-select v-model="edit_form.isDisable" placeholder="请选择是否禁用">
@@ -206,19 +123,6 @@
 </template>
 
 <script>
-import {
-  creatGet,
-  createObj,
-  spliceKey,
-  deletconditionofbusiness,
-} from "@/api/Common";
-import {
-  getDataList,
-  putcreate,
-  deletelist,
-  deleteuser,
-  patchedit,
-} from "@/api/api";
 export default {
   data() {
     return {

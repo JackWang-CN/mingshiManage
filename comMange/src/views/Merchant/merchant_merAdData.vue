@@ -206,19 +206,6 @@
 </template>
 
 <script>
-import {
-  creatGet,
-  createObj,
-  spliceKey,
-  deletconditionofbusiness,
-} from "@/api/Common";
-import {
-  getDataList,
-  putcreate,
-  deletelist,
-  deleteuser,
-  patchedit,
-} from "@/api/api";
 export default {
   data() {
     return {

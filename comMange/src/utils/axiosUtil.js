@@ -18,10 +18,5 @@ axios.interceptors.request.use((req) => {
 
 // 响应拦截器
 axios.interceptors.response.use((res) => {
-  switch (res.data.code) {
-    case "200":
-      return res.data.resultObject;
-    case "416":
-      return null;
-  }
+  return res.data;
 });

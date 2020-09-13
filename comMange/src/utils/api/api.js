@@ -3,18 +3,18 @@
 import axios from "axios";
 import { spliceUrl } from "../common";
 
-const getData = (vision, control, action, info) => {
-  var url = vision + "/" + control + "/" + action;
+const getData = (version, control, action, info) => {
+  var url = version + "/" + control + "/" + action;
   return axios.post(url, info);
 };
 
-const addData = (vision, control, action, info) => {
-  var url = vision + "/" + control + "/" + action;
+const addData = (version, control, action, info) => {
+  var url = version + "/" + control + "/" + action;
   return axios.put(url, info);
 };
 
-const updateData = (vision, control, action, info) => {
-  var url = vision + "/" + control + "/" + action;
+const updateData = (version, control, action, info) => {
+  var url = version + "/" + control + "/" + action;
   return axios.patch(url, info);
 };
 
@@ -43,7 +43,7 @@ export const sendLogin = (info) => axios.post("/c1/Userinfo/pwdLogin", info);
 
 // 2.获取列表
 export const getDataList = (
-  vision, // 版本
+  version, // 版本
   control, // 控制
   info, // 参数
   list, // 接收数据的列表名
@@ -55,13 +55,13 @@ export const getDataList = (
 
   // 若data为空对象，则删除data属性
   if (info.data && Object.keys(info.data).length == 0) delete info.data;
-  getData(vision, control, action, info).then((res) => {
-    _this.find_form.totalDataNum = res.totalDataNum;
+  getData(version, control, action, info).then((res) => {
+    _this.find_form.totalDataNum = res.resultObject.totalDataNum;
 
     // 如果请求页数大于总页数，则重新请求最后一页数据
     if (info.currPage > res.totalPageNum && info.currPage > 1) {
       info.currPage = res.totalPageNum;
-      getData(vision, control, action, info).then((result) => {
+      getData(version, control, action, info).then((result) => {
         if (result.data) {
           // 判断是否需要拼接Url
           if (imgArr.includes(control)) {
@@ -74,12 +74,13 @@ export const getDataList = (
         }
       });
     } else {
-      if (res.data) {
+      var data = res.resultObject.data;
+      if (data) {
         // 判断是否需要拼接Url
         if (imgArr.includes(control)) {
-          _this[list] = spliceUrl(res.data, imgKey);
+          _this[list] = spliceUrl(data, imgKey);
         } else {
-          _this[list] = res.data;
+          _this[list] = data;
         }
       } else {
         _this[list] = [];
@@ -90,9 +91,10 @@ export const getDataList = (
 };
 
 // 3.获取详细
-export const getDetailsInfo = (vision, control, info, list, _this, imgKey) => {
+export const getDetailsInfo = (version, control, info, list, _this, imgKey) => {
   var action = "details";
-  getData(vision, control, action, info).then((res) => {
+  getData(version, control, action, info).then((res) => {
+    var res = res.resultObject;
     if (imgArr.includes(control)) {
       _this[list] = spliceUrl([res], imgKey)[0];
     } else {
@@ -103,18 +105,18 @@ export const getDetailsInfo = (vision, control, info, list, _this, imgKey) => {
 };
 
 // 4.添加数据
-export const addDataList = (vision, control, info, _this, path) => {
+export const addDataList = (version, control, info, _this, path) => {
   var action = "create";
-  addData(vision, control, action, info).then(() => {
+  addData(version, control, action, info).then(() => {
     _this.$message.success("发布成功");
     _this.$router.push(path);
   });
 };
 
 // 5.更新数据
-export const updateDataList = (vision, control, info, _this, path) => {
+export const updateDataList = (version, control, info, _this, path) => {
   var action = "edit";
-  updateData(vision, control, action, info).then((res) => {
+  updateData(version, control, action, info).then((res) => {
     switch (res) {
       case 1:
         _this.$message.success("修改已生效！");
@@ -127,8 +129,8 @@ export const updateDataList = (vision, control, info, _this, path) => {
 };
 
 // 6.删除数据
-export const delData = (vision, control, action, info) => {
-  var url = vision + "/" + control + "/" + action;
+export const delData = (version, control, action, info) => {
+  var url = version + "/" + control + "/" + action;
   return axios.delete(url, { data: info });
 };
 
@@ -141,8 +143,9 @@ export const upLoadFiles = (remarks, formdata) => {
 };
 
 // 8.U3D文件上传
-export const uploadArFiles = (hierarchy, Remarks, formdata) => {
-  var url = fileUrl + `U3DUploadForm?hierarchy=${hierarchy}&Remarks=${Remarks}`;
+export const uploadArFiles = (resourceName, Remarks, formdata) => {
+  var url =
+    fileUrl + `U3DUploadForm?resourceName=${resourceName}&Remarks=${Remarks}`;
   return axios.post(url, formdata);
 };
 

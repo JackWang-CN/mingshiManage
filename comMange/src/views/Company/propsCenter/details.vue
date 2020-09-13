@@ -189,7 +189,7 @@ export default {
       });
     },
 
-    //   返回上一页
+    // 返回上一页
     cancel() {
       this.$router.push("props_list");
     },

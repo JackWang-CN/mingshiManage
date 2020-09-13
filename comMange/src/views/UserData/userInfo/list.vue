@@ -100,7 +100,8 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { delData, getDataList } from "@/utils/api/api";
+import { delData } from "@/utils/api/api";
+import { getDataList } from "@/utils/api/apis";
 import { createGet, spliceKey, filteObj } from "@/utils/common";
 export default {
   components: {
@@ -116,9 +117,11 @@ export default {
         // orderByFileds: "creationtime desc",
         data: {},
       },
-      control: "Userinfo",
-      select_list: [], //已选表单
 
+      model: "",
+      control: "Userinfo",
+
+      select_list: [], //已选表单
       data_list: [], // 用户列表
     };
   },

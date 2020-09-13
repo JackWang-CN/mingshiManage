@@ -17,20 +17,6 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <!-- 公告 -->
-        <el-menu-item index="notice">
-          <i class="el-icon-message-solid"></i>
-          <span slot="title">公告</span>
-        </el-menu-item>
-        <!-- 权限管理 -->
-        <el-submenu index="authorization">
-          <template slot="title">
-            <i class="el-icon-s-check"></i>
-            <span>权限管理</span>
-          </template>
-          <el-menu-item index="author_roleList">角色管理</el-menu-item>
-          <el-menu-item index="author_user">用户管理</el-menu-item>
-        </el-submenu>
 
         <!-- 道具商城 -->
         <el-submenu index="props">
@@ -63,43 +49,59 @@
           <el-menu-item index="ar_list">AR资源管理</el-menu-item>
         </el-submenu>
 
+        <!-- 配置管理 -->
         <el-submenu index="configure">
           <template slot="title">
             <i class="el-icon-s-tools"></i>
             <span>配置管理</span>
           </template>
+          <el-menu-item index="author_roleList">角色管理</el-menu-item>
+          <el-menu-item index="user_list">账号管理</el-menu-item>
+          <el-menu-item index="recharge_list">充值配置</el-menu-item>
           <el-menu-item index="configure_noticerecord">公告记录</el-menu-item>
-          <el-menu-item index="configure_roleGrauth">角色权限</el-menu-item>
-          <el-menu-item index="configure_verControl">版本控制</el-menu-item>
+          <el-menu-item index="version_list">版本控制</el-menu-item>
         </el-submenu>
 
-        <el-submenu index="userdata">
+        <!-- 消息通知 -->
+        <el-submenu index="notice">
           <template slot="title">
-            <i class="el-icon-user-solid"></i>
-            <span>用户管理</span>
+            <i class="el-icon-message-solid"></i>
+            <span>消息通知</span>
           </template>
-          <el-menu-item index="user_list">用户列表</el-menu-item>
-          <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
-          <el-menu-item index="user_group">群组管理</el-menu-item>
-          <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
-          <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
-          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>
+          <el-menu-item index="notice_list">公告记录</el-menu-item>
+          <el-menu-item index="push_list">推送记录</el-menu-item>
         </el-submenu>
 
+        <!-- 商户管理 -->
         <el-submenu index="merchant">
           <template slot="title">
             <i class="el-icon-s-goods"></i>
             <span>商户管理</span>
           </template>
           <el-menu-item index="merchant_list">商户列表</el-menu-item>
-          <el-menu-item index="merchant_busReqTrace">业务请求跟踪</el-menu-item>
-          <el-menu-item index="merchant_couponProduc">优惠券量产管理</el-menu-item>
-          <el-menu-item index="merchant_entrustReqData">委托请求数据管理</el-menu-item>
-          <el-menu-item index="merchant_merAdData">商户广告数据管理</el-menu-item>
-          <el-menu-item index="merchant_order">订单管理</el-menu-item>
-          <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item>
-          <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item>
-          <el-menu-item index="merchant_userInfo">用户信息主表</el-menu-item>
+          <el-menu-item index="merchant_check">商户审核</el-menu-item>
+          <el-menu-item index="merchant_entrustList">商户委托</el-menu-item>
+          <el-menu-item index="merchant_activityList">商户活动</el-menu-item>
+          <el-menu-item index="merchant_merAdData">商户广告</el-menu-item>
+          <el-menu-item index="merchant_couponList">优惠券列表</el-menu-item>
+          <!-- <el-menu-item index="merchant_order">订单管理</el-menu-item> -->
+          <!-- <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item> -->
+          <!-- <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item> -->
+          <!-- <el-menu-item index="merchant_userInfo">用户信息主表</el-menu-item> -->
+        </el-submenu>
+
+        <!-- 用户管理 -->
+        <el-submenu index="userdata">
+          <template slot="title">
+            <i class="el-icon-user-solid"></i>
+            <span>用户管理</span>
+          </template>
+          <el-menu-item index="customer_list">用户列表</el-menu-item>
+          <el-menu-item index="user_group">群组管理</el-menu-item>
+          <!-- <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
+          <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
+          <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
+          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>-->
         </el-submenu>
 
         <!-- 

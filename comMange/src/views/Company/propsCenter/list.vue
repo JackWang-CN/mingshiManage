@@ -24,20 +24,6 @@
           <el-option label="已冻结" value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="道具单价" label-width="100px">
-        <el-input v-model="find_form.data.aunitp" placeholder="请输入道具单价"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.creationTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
 
       <!-- 按钮组 -->
       <el-form-item class="btns_find">
@@ -47,6 +33,13 @@
         <el-button type="danger" @click="delList">批量删除</el-button>
       </el-form-item>
     </el-form>
+
+    <!-- tab分页 -->
+    <el-tabs v-model="activeName" type="card">
+      <el-tab-pane label="用户房产" name="house"></el-tab-pane>
+      <el-tab-pane label="用户道具" name="prop"></el-tab-pane>
+      <el-tab-pane label="用户宠物" name="pet"></el-tab-pane>
+    </el-tabs>
 
     <!-- 表格 -->
     <el-table :data="data_list" border style="width: 100%" @selection-change="select">
@@ -104,12 +97,15 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { createGet, spliceKey, filteObj } from "@/utils/common";
-import { getDataList, updateData, delData } from "@/utils/api/api";
+import { updateData, delData } from "@/utils/api/api";
+import { getDataList } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
   },
   mounted() {
+    this.activeName = "house";
+
     this.find_form = createGet();
     var form = { ...this.find_form };
     // 首次加载
@@ -130,6 +126,10 @@ export default {
       control: "PropsCenter",
       data_list: [],
       select_list: [], // 选中的列表
+      activeName: "",
+
+      model: "",
+      control: "",
     };
   },
 
@@ -260,6 +260,12 @@ export default {
         null,
         "rpmico"
       );
+    },
+  },
+
+  watch: {
+    activeName() {
+      console.log(1);
     },
   },
 };

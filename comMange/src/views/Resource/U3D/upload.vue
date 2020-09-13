@@ -11,18 +11,8 @@
         </el-upload>
       </el-form-item>
 
-      <!-- <el-form-item label="资源类型">
-        <el-select v-model="data_info.type">
-          <el-option label="房屋" value="0"></el-option>
-          <el-option label="宠物" value="1"></el-option>
-          <el-option label="室内道具" value="2"></el-option>
-          <el-option label="活动道具" value="3"></el-option>
-        </el-select>
-      </el-form-item>-->
-
-      <el-form-item label="目录别名">
-        <el-input v-model="data_info.hierarchy" clearable></el-input>
-        <div class="el-upload__tip">例：/Models/House/Reveal</div>
+      <el-form-item label="模型名称">
+        <el-input v-model="data_info.ResourceName" clearable></el-input>
       </el-form-item>
 
       <el-form-item label="备注信息">
@@ -38,7 +28,7 @@
 </template>
 
 <script>
-import { uploadArFiles } from "@/utils/api/api";
+import { uploadFiles } from "@/utils/api/apis";
 import { createFormData } from "@/utils/common";
 export default {
   mounted() {},
@@ -58,12 +48,17 @@ export default {
 
     // 发送请求
     sendSubmit() {
-      var { hierarchy, remarks } = this.data_info;
-      var formData = createFormData(this.file_list);
-      uploadArFiles(hierarchy, remarks, formData).then((res) => {
-        this.$message.success("上传成功！");
-        this.$router.push("ar_list");
-      });
+      var { ResourceName, remarks } = this.data_info;
+      uploadFiles("backAR", 1, ResourceName, remarks, this.file_list).then(
+        (res) => {
+          switch (res.code) {
+            case "000000":
+              this.$message.success("上传成功！");
+              this.$router.push("ar_list");
+              break;
+          }
+        }
+      );
     },
 
     // 取消

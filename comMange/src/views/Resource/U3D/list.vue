@@ -19,7 +19,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="上传用户">
-        <el-input v-model="find_form.data.uploadId" placeholder="请输入上传用户ID"></el-input>
+        <el-input v-model="find_form.data.uploadID" placeholder="请输入上传用户ID"></el-input>
       </el-form-item>
 
       <!-- 日期查询 -->
@@ -46,8 +46,9 @@
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="actuFileName" label="原文件名" width="150"></el-table-column>
-      <el-table-column prop="storFileName" label="存储文件名" width="150"></el-table-column>
+      <el-table-column prop="resourceName" label="模型名称" width="150"></el-table-column>
+      <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
+      <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
       <el-table-column prop="rpmico" label="资源缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
@@ -55,28 +56,31 @@
       </el-table-column>
       <el-table-column prop="resExtName" label="资源后缀名" width="100"></el-table-column>
       <el-table-column prop="scene" label="业务场景" width="100"></el-table-column>
-      <el-table-column prop="upLoadId" label="上传用户" width="100"></el-table-column>
+      <el-table-column prop="uploadID" label="上传用户" width="100"></el-table-column>
       <el-table-column prop="isDelete" label="是否禁用" width="100">
         <template slot-scope="scope">{{scope.row.isDelete?'是':'否'}}</template>
       </el-table-column>
-      <el-table-column prop="resNotes" label="资源说明" width="250"></el-table-column>
+      <el-table-column prop="describe" label="资源说明" width="250"></el-table-column>
       <el-table-column prop="creationTime" label="上传时间" width="250"></el-table-column>
-      <el-table-column label="操作" width="220">
+      <el-table-column label="操作" width="220" fixed="right">
         <template slot-scope="scope">
-          <el-button @click="resource_update(scope.row)" type="primary" size="small">编辑</el-button>
           <el-button
-            @click="delRow(scope.row.originally)"
+            @click="disableRow(scope.row.resID)"
             type="danger"
             size="small"
             v-if="!scope.row.isDelete"
           >禁用</el-button>
           <el-button
-            @click="backDel(scope.row.originally)"
-            type="warning"
+            @click="enableRow(scope.row.resID)"
+            type="success"
             size="small"
             v-if="scope.row.isDelete"
           >恢复</el-button>
-          <el-link class="btn_link" type="primary" :href="scope.row.resId">下载文件</el-link>
+          <el-link
+            class="btn_link"
+            type="primary"
+            :href="fileUrl+'file/download/source/v1?Mark='+scope.row.resID"
+          >下载文件</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -92,7 +96,12 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getFileList, downloadFile, delFile, backFile } from "@/utils/api/api";
+import {
+  getFileList,
+  downloadFile,
+  disableFile,
+  enableFile,
+} from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   components: {
@@ -101,9 +110,9 @@ export default {
 
   mounted() {
     // 首次加载
-    this.find_form = createGet();
     var form = { ...this.find_form };
-    getFileList(this.type, form, "data_list", this, "resId");
+    form.data.isArRes = 1;
+    getFileList(undefined, 1, form, this);
   },
 
   data() {
@@ -111,12 +120,19 @@ export default {
       // 查找条件
       type: "ar",
       find_form: {
-        data: {},
+        currPage: 1,
+        pageSize: 10,
+        totalDataNum: 0,
+        data: {
+          isArRes: 1,
+        },
       },
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
       isShowDetails: false, // 是否显示详情
       delType: 2,
+
+      fileUrl: "https://api.resources.scmsar.com/",
     };
   },
 
@@ -131,24 +147,32 @@ export default {
         form.data.resExtName = "." + form.data.resExtName;
       }
       delete form.totalDataNum;
-      getFileList(this.type, form, "data_list", this, "resId");
+      getFileList(this.model, this.control, 1, form, this);
     },
 
-    // 删除当前行
-    delRow(resId) {
-      delFile(this.delType, { resId }).then((res) => {
-        this.$message.success("禁用成功！");
-        var form = { ...this.find_form };
-        getFileList(this.type, form, "data_list", this, "resId");
+    // 禁用文件
+    disableRow(resID) {
+      disableFile(1, { resID }).then((res) => {
+        switch (res.code) {
+          case "000000":
+            this.$message.info("已禁用");
+            var form = { ...this.find_form };
+            getFileList(undefined, 1, form, this);
+            break;
+        }
       });
     },
 
-    // 恢复删除
-    backDel(resId) {
-      backFile({ resId }, true).then((res) => {
-        this.$message.success("恢复成功！");
-        var form = { ...this.find_form };
-        getFileList(this.type, form, "data_list", this, "resId");
+    // 恢复禁用
+    enableRow(resId) {
+      enableFile(1, { resId }).then((res) => {
+        switch (res.code) {
+          case "000000":
+            var form = { ...this.find_form };
+            this.$message.success("恢复成功！");
+            getFileList(undefined, 1, form, this);
+            break;
+        }
       });
     },
 
@@ -157,11 +181,6 @@ export default {
       this.$router.push({
         path: "ar_upload",
       });
-    },
-
-    // 下载
-    download(resId) {
-      downloadFile(this.type, resId);
     },
 
     // 重置
@@ -181,7 +200,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getFileList(this.type, form, "data_list", this);
+      getFileList(undefined, 1, form, this);
     },
   },
 };

@@ -17,6 +17,9 @@ import "./utils/axiosUtil";
 import "./assets/css/reset.css";
 import "./assets/css/common.scss";
 
+// 引入日期重新
+import "./utils/date";
+
 //路由守卫
 router.beforeEach((to, from, next) => {
   if (to.meta.notNeed) {
@@ -27,7 +30,7 @@ router.beforeEach((to, from, next) => {
       //判断本地是否存在token
       next();
     } else {
-      new Vue().$message.error("请先登录再操作！");
+      new Vue().$message.error("请于登录后操作！");
       next({
         path: "/login",
       });

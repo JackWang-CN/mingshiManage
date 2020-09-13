@@ -3,13 +3,26 @@
     <!-- 普通资源列表 -->
     <div class="pageTitle">普通资源列表</div>
 
+    <!-- tab分页 -->
+    <el-tabs v-model="activeName" type="card">
+      <el-tab-pane label="公共资源" name="common"></el-tab-pane>
+      <el-tab-pane label="用户资源" name="user"></el-tab-pane>
+    </el-tabs>
+
     <!-- 查询表单 -->
-    <el-form :model="find_form" class="find_form" label-width="120px">
+    <el-form :model="find_form" class="find_form" label-width="80px">
       <!-- 查询条件 -->
+      <el-form-item label="上传端" v-if="activeName!='company'">
+        <el-select v-model="find_form.data.client" placeholder="用户/商户/公司">
+          <el-option label="用户" :value="0"></el-option>
+          <el-option label="商户" :value="1"></el-option>
+          <el-option label="公司" :value="2"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="文件后缀">
         <el-input v-model="find_form.data.resExtName" placeholder="如：jpg"></el-input>
       </el-form-item>
-      <el-form-item label="是否禁用" v-if="activeName!='company'">
+      <el-form-item label="是否禁用" v-if="activeName =='user'">
         <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
@@ -36,50 +49,42 @@
       <el-form-item>
         <el-button type="primary" @click="findData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
-        <!-- <el-button type="danger" style="margin-left:50px">批量删除</el-button> -->
       </el-form-item>
     </el-form>
 
-    <!-- tab分页 -->
-    <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="公司资源" name="company"></el-tab-pane>
-      <el-tab-pane label="商户资源" name="merchant"></el-tab-pane>
-      <el-tab-pane label="用户资源" name="userdata"></el-tab-pane>
-    </el-tabs>
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="actuFileName" label="原文件名" width="150"></el-table-column>
-      <el-table-column prop="storFileName" label="存储文件名" width="150"></el-table-column>
-      <el-table-column prop="resId" label="资源缩略图" width="120">
-        <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.resId" shape="square"></el-avatar>
-        </template>
-      </el-table-column>
+      <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
+      <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
       <el-table-column prop="resExtName" label="资源后缀名" width="100"></el-table-column>
       <el-table-column prop="scene" label="业务场景" width="100"></el-table-column>
-      <el-table-column prop="upLoadId" label="上传用户" width="100"></el-table-column>
-      <el-table-column prop="isDelete" :label="activeName=='company'?'是否删除':'是否禁用'" width="100">
+      <el-table-column prop="clientIdentity" label="上传端口" width="100"></el-table-column>
+      <el-table-column prop="uploadID" label="上传用户" width="100"></el-table-column>
+      <el-table-column prop="isDelete" label="是否禁用" width="100">
         <template slot-scope="scope">{{scope.row.isDelete?'是':'否'}}</template>
       </el-table-column>
-      <el-table-column prop="resNotes" label="资源说明" width="250"></el-table-column>
+      <el-table-column prop="describe" label="资源说明" width="250"></el-table-column>
       <el-table-column prop="creationTime" label="上传时间" width="250"></el-table-column>
-      <el-table-column label="操作" width="210">
+      <el-table-column label="操作" width="210" fixed="right">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row)" type="primary" size="small">编辑</el-button>
           <el-button
-            @click="delRow(scope.row.originally)"
+            @click="disableRow(scope.row.resID)"
             type="danger"
             size="small"
             v-if="!scope.row.isDelete"
-          >{{activeName=='company'?'删除':'禁用'}}</el-button>
+          >禁用</el-button>
           <el-button
-            @click="backDel(scope.row.originally)"
-            type="warning"
+            @click="enableRow(scope.row.resID)"
+            type="success"
             size="small"
             v-if="scope.row.isDelete"
           >恢复</el-button>
-          <el-link class="btn_link" type="primary" :href="scope.row.resId">下载文件</el-link>
+          <el-link
+            class="btn_link"
+            type="primary"
+            :href="fileUrl+'file/download/source/v1?Mark='+scope.row.resID"
+          >下载文件</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -95,7 +100,12 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getFileList, delFile, backFile } from "@/utils/api/api";
+import {
+  getFileList,
+  downloadFile,
+  disableFile,
+  enableFile,
+} from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   components: {
@@ -104,7 +114,6 @@ export default {
 
   mounted() {
     // 首次加载
-    this.find_form = createGet();
     this.activeName = "company";
   },
 
@@ -113,13 +122,18 @@ export default {
       type: "normal",
       // 查找条件
       find_form: {
+        currPage: 1,
+        pageSize: 10,
         data: {},
       },
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
       isShowDetails: false, // 是否显示详情
       activeName: "",
-      delType: 1, // 删除的类型 0-普通真删 1-普通假删
+      fileUrl: "https://api.resources.scmsar.com/",
+
+      model: "file",
+      control: "info",
     };
   },
 
@@ -134,34 +148,32 @@ export default {
         form.data.resExtName = "." + form.data.resExtName;
       }
       delete form.totalDataNum;
-      getFileList(this.type, form, "data_list", this, "resId");
+      getFileList(undefined, 1, form, this);
     },
 
-    // 删除当前行
-    delRow(resId) {
-      delFile(this.delType, { resId }).then((res) => {
-        var message =
-          this.activeName == "company" ? "删除成功！" : "禁用成功！";
-        this.$message.success(message);
-        var form = { ...this.find_form };
-        getFileList(this.type, form, "data_list", this, "resId");
+    // 禁用文件
+    disableRow(resID) {
+      disableFile(1, { resID }).then((res) => {
+        switch (res.code) {
+          case "000000":
+            this.$message.info("已禁用");
+            var form = { ...this.find_form };
+            getFileList(undefined, 1, form, this);
+            break;
+        }
       });
     },
 
-    // 恢复删除
-    backDel(resId) {
-      backFile({ resId }).then((res) => {
-        this.$message.success("恢复成功！");
-        var form = { ...this.find_form };
-        getFileList(this.type, form, "data_list", this, "resId");
-      });
-    },
-
-    // 跳转到详情
-    toDetails(id) {
-      this.$router.push({
-        path: "",
-        query: { id },
+    // 恢复禁用
+    enableRow(resId) {
+      enableFile(1, { resId }).then((res) => {
+        switch (res.code) {
+          case "000000":
+            var form = { ...this.find_form };
+            this.$message.success("恢复成功！");
+            getFileList(undefined, 1, form, this);
+            break;
+        }
       });
     },
 
@@ -182,7 +194,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getFileList(this.type, form, "data_list", this, "resId");
+      getFileList(undefined, 1, form, this);
     },
   },
 
@@ -197,7 +209,8 @@ export default {
 
       this.find_form.data = { scene: this.activeName };
       var form = { ...this.find_form };
-      getFileList(this.type, form, "data_list", this, "resId");
+      form.data.isArRes = 0;
+      getFileList(undefined, 1, form, this);
     },
   },
 };

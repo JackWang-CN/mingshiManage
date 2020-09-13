@@ -2,18 +2,18 @@
   <div id="props_type" class="shadow_container">
     <div class="pageTitle">道具类型</div>
 
-    <!-- 查询组件 -->
-    <div class="search">
-      <el-input v-model="find_form.info" placeholder="分类名称" prefix-icon="el-icon-search"></el-input>
-      <el-button type="success" @click="switchDialog('1')">新增分类</el-button>
-    </div>
-
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
       <el-tab-pane label="户型风格" name="1"></el-tab-pane>
       <el-tab-pane label="屋内道具" name="2"></el-tab-pane>
       <el-tab-pane label="AR宠物" name="3"></el-tab-pane>
     </el-tabs>
+
+    <!-- 查询组件 -->
+    <div class="search">
+      <el-input v-model="find_form.info" placeholder="分类名称" prefix-icon="el-icon-search"></el-input>
+      <el-button type="success" @click="switchDialog('1')">新增分类</el-button>
+    </div>
 
     <!-- 列表 -->
     <el-table :data="data_list" tooltip-effect="dark" border>
@@ -40,23 +40,26 @@
         <!-- 基本类别 -->
         <div class="basic">
           <!-- 下拉框一 -->
-          <el-form-item label="道具大类">
-            <el-select v-model="add_form.large_type">
-              <el-option label="户型风格" value="1"></el-option>
-              <el-option label="屋内道具" value="2"></el-option>
-              <el-option label="AR宠物" value="3"></el-option>
+          <el-form-item label="所属父类">
+            <el-select v-model="add_form.parentID">
+              <el-option label="父类1" value="1"></el-option>
+              <el-option label="父类2" value="2"></el-option>
+              <el-option label="父类3" value="3"></el-option>
             </el-select>
           </el-form-item>
           <!-- 下拉框二 -->
-          <el-form-item label="道具小类">
-            <el-input v-model="add_form.small_type"></el-input>
+          <el-form-item label="类型名称">
+            <el-input v-model="add_form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="类型描述">
+            <el-input type="textarea" v-model="add_form.describe" :rows="4"></el-input>
           </el-form-item>
         </div>
         <!-- 特性 -->
         <div class="special">
           <div class="group">
             <h3>媒体附加</h3>
-            <el-checkbox-group v-model="add_form.mediaList" @change="change('1')">
+            <el-checkbox-group v-model="special_list.mediaList" @change="change('1')">
               <el-checkbox label="文字"></el-checkbox>
               <el-checkbox label="图片"></el-checkbox>
               <el-checkbox label="语音"></el-checkbox>
@@ -66,7 +69,7 @@
           </div>
           <div class="group">
             <h3>摆放规则</h3>
-            <el-checkbox-group v-model="add_form.placeList" @change="change('2')">
+            <el-checkbox-group v-model="special_list.placeList" @change="change('2')">
               <el-checkbox label="墙面"></el-checkbox>
               <el-checkbox label="地面"></el-checkbox>
               <el-checkbox label="房顶"></el-checkbox>
@@ -76,7 +79,7 @@
           </div>
           <div class="group">
             <h3>AI特性</h3>
-            <el-checkbox-group v-model="add_form.AIList">
+            <el-checkbox-group v-model="special_list.AIList">
               <el-checkbox label="走"></el-checkbox>
               <el-checkbox label="跑"></el-checkbox>
               <el-checkbox label="大笑"></el-checkbox>
@@ -95,23 +98,23 @@
 </template>
 
 <script>
+import { getDataList, addData } from "@/utils/api/apis";
+import { createGet } from "@/utils/common";
 export default {
   mounted() {
+    this.find_form = createGet();
     this.activeName = "1";
   },
 
   data() {
     return {
       find_form: {},
-      data_list: [
-        {
-          name: "家具",
-          code: "001",
-          design: "椅子桌子板凳",
-        },
-      ],
+      data_list: [],
+
       // 弹出框表单对象
-      add_form: {
+      add_form: {},
+
+      special_list: {
         mediaList: [],
         placeList: [],
         AIList: [],
@@ -124,6 +127,9 @@ export default {
         mediaCheck: false,
         placeCheck: false,
       },
+
+      model: "prop",
+      control: "propType",
     };
   },
 
@@ -134,11 +140,18 @@ export default {
       if (this.show_details) {
         this.operate_type = type;
       }
+      // AI特性
+      getDataList(this.model, "propAISpecialLog", 1, createGet(), this);
+      // 媒体特性
+      getDataList(this.model, "propMediaSpecialLog", 1, createGet(), this);
+      // 摆放特性
+      getDataList(this.model, "propPutSpecialLog", 1, createGet(), this);
     },
 
     // 提交添加
     sendSubmit() {
       console.log(this.add_form);
+      addData(this.model, this.control, 1, this.add_form);
     },
 
     change(type) {
@@ -179,9 +192,11 @@ export default {
   },
 
   watch: {
+    // 监听activeName，变量值改变时请求不同的信息渲染到列表上
     activeName() {
       console.log(this.activeName);
-      // 监听该变量，变量值改变时请求不同的信息渲染到列表上
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, form, this);
     },
   },
 };
@@ -191,16 +206,23 @@ export default {
 #props_type {
   .search {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     margin-bottom: 20px;
     .el-input {
       width: 300px;
+      margin-right: 20px;
     }
   }
   .details_form {
     // 基本特性
     .basic {
-      display: flex;
+      .el-form-item {
+        display: block;
+        .el-input,
+        .el-textarea {
+          width: 400px;
+        }
+      }
     }
     // 道具特性
     .special {
