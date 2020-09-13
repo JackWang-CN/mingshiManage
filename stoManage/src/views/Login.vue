@@ -5,22 +5,22 @@
       名视商户营销平台
     </div>
     <div class="center">
-      <el-form class="loginForm" :model="loginForm" :rules="loginRules" ref="loginForm">
+      <el-form class="loginForm" :model="loginForm" :rules="rules" ref="loginForm">
         <h2>登录</h2>
         <!-- 商户名 -->
-        <el-form-item>
-          <el-input placeholder="请输入商户名" v-model="loginForm.merName">
+        <el-form-item prop="merchantName">
+          <el-input placeholder="请输入商户名" v-model="loginForm.merchantName">
             <i slot="prefix" class="el-input__icon iconfont el-icon-s-shop"></i>
           </el-input>
         </el-form-item>
         <!-- 账号 -->
-        <el-form-item>
+        <el-form-item prop="account">
           <el-input placeholder="请输入您的账号" v-model="loginForm.account">
             <i slot="prefix" class="el-input__icon iconfont icon-user1"></i>
           </el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
+        <el-form-item prop="passWord">
           <el-input placeholder="请输入您的密码" v-model="loginForm.passWord" show-password>
             <i slot="prefix" class="el-input__icon iconfont icon-lock"></i>
           </el-input>
@@ -42,7 +42,7 @@
 
 <script>
 import Verify from "@/components/verify.vue";
-import { sendLogin } from "@/utils/api/api";
+import { getData } from "@/utils/api/apis";
 
 import { spliceUrl } from "@/utils/common";
 export default {
@@ -51,14 +51,17 @@ export default {
     return {
       // 输入框
       loginForm: {
-        merName: "",
-        passWord: "",
+        merchantName: "",
         account: "",
+        passWord: "",
       },
       // 验证规则
-      loginRules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
+      rules: {
+        merchantName: [
+          { required: true, message: "请输入商家名称", trigger: "blur" },
+        ],
+        account: [
+          { required: true, message: "请输入账号", trigger: "blur" },
           {
             min: 2,
             max: 12,
@@ -66,7 +69,7 @@ export default {
             trigger: "blur",
           },
         ],
-        password: [
+        passWord: [
           { required: true, message: "请输入密码", trigger: "blur" },
           {
             min: 6,
@@ -78,53 +81,62 @@ export default {
       },
       // 滑动验证成功判断
       confirmSuccess: false,
-
       // 加载
       loading: false,
+      model: "merLogin",
+      control: "login",
     };
   },
   methods: {
     // 登录
     submitLogin(form) {
-      // this.$refs[form].validate((valid) => {
-      //   // 表单验证
-      //   if (valid) {
-      //     // 滑动验证
-      //     if (this.confirmSuccess) {
-      //       this.loading = true;
-      //       var timer = setTimeout(() => {
-      //         this.loading = false;
-      //         this.$message.error("登录超时，请重试");
-      //       }, 10000);
-      //       sendLogin(this.loginForm).then((res) => {
-      //         if (res) {
-      //           clearTimeout(timer);
-      //           var token = res.accessToken,
-      //             headImg = spliceUrl([res.user], "headIco")[0].headIco,
-      //             userName = res.user.userName,
-      //             userId = res.user.userId,
-      //             merchantname = res.user.merchantname;
-      //           sessionStorage.setItem("token", token);
-      //           sessionStorage.setItem("headImg", headImg);
-      //           sessionStorage.setItem("userName", userName);
-      //           sessionStorage.setItem("userId", userId);
-      //           sessionStorage.setItem("merchantname", merchantname);
-      //           this.loading = false;
-      //           this.$message.success("登录成功");
+      this.$refs[form].validate((valid) => {
+        // 表单验证
+        if (valid) {
+          // 滑动验证
+          if (this.confirmSuccess) {
+            this.loading = true;
+            var timer = setTimeout(() => {
+              this.loading = false;
+              this.$message.error("登录超时，请重试");
+            }, 5000);
+            getData(
+              this.model,
+              this.control,
+              1,
+              this.loginForm,
+              "account"
+            ).then((res) => {
+              console.log(res);
 
-      //           this.$router.replace("home");
-      //         }
-      //       });
-      //     } else {
-      //       this.$message.error("请进行验证！");
-      //     }
-      //   } else {
-      //     this.$message.error("请检查用户名及密码");
-      //     return false;
-      //   }
-      // });
-      sessionStorage.setItem("token", "token");
-      this.$router.replace("home");
+              switch (res.code) {
+                case "000000":
+                  clearTimeout(timer);
+                  var data = res.resultObject.result;
+                  var token = data.accessToken,
+                    headImg = spliceUrl([data.user], "headIco")[0].headIco,
+                    userName = data.user.name,
+                    userId = data.user.userId,
+                    merchantname = this.loginForm.merchantname;
+                  sessionStorage.setItem("token", token);
+                  sessionStorage.setItem("headImg", headImg);
+                  sessionStorage.setItem("userName", userName);
+                  sessionStorage.setItem("userId", userId);
+                  sessionStorage.setItem("merchantname", merchantname);
+                  this.loading = false;
+                  this.$message.success("登录成功");
+                  this.$router.replace("home");
+                  break;
+              }
+            });
+          } else {
+            this.$message.error("请进行验证！");
+          }
+        } else {
+          this.$message.error("请检查用户名及密码");
+          return false;
+        }
+      });
     },
 
     //滑动事件

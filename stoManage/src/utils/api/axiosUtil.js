@@ -21,16 +21,7 @@ axios.interceptors.request.use(
 // 响应拦截
 axios.interceptors.response.use(
   (res) => {
-    if (res.status == 200) {
-      switch (res.data.code) {
-        case "200":
-          return res.data.resultObject;
-        case "412":
-          return "412";
-        case "416":
-          return 0;
-      }
-    }
+    return res.data;
   },
   (err) =>
     Promise.reject((err) => {

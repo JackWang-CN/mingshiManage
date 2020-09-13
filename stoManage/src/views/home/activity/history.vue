@@ -40,7 +40,13 @@
 </template>
 
 <script>
+import { getData } from "@/utils/api/apis";
+import { createGet } from "@/utils/common";
 export default {
+  mounted() {
+    this.find_form = createGet();
+  },
+
   data() {
     return {
       data_list: [],

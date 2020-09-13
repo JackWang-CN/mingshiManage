@@ -1,13 +1,13 @@
 /* 公共方法 */
 
-const fileUrl = "http://192.168.0.89:9001/f1/FileResources/";
+const fileUrl = "https://api.resources.scmsar.com/";
 
 // 拼接文件URL
 export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
       item.originally = item[imgKey];
-      item[imgKey] = fileUrl + "DownLoad?pathtemp=" + item[imgKey];
+      item[imgKey] = fileUrl + "file/download/source/v1?Mark=" + item[imgKey];
     }
   });
   return arr;
@@ -49,7 +49,7 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  obj.orderByFileds = order || "creationtime desc";
+  obj.orderByFileds = order + " desc" || "creationtime desc";
   obj.totalDataNum = 0;
   obj.data = {};
 
@@ -74,4 +74,17 @@ export const filteObj = (obj) => {
     }
   }
   return newObj;
+};
+
+// 转换日期选择器的数组
+export const switchDateList = (
+  dateList,
+  startKey = "startTime",
+  endKey = "endTime"
+) => {
+  var obj = {};
+  obj[startKey] = dateList[0].toJSON();
+  obj[endKey] = dateList[1].toJSON();
+
+  return obj;
 };

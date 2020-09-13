@@ -20,7 +20,7 @@ const updateData = (vision, control, action, info) => {
 
 // 设置基础地址
 // axios.defaults.baseURL = "https://api.merchant.scmsar.com:4430";
-axios.defaults.baseURL = "http://192.168.0.89:9010";
+// axios.defaults.baseURL = "http://192.168.0.89:9010";
 
 /*
  *  1.ClientPlatform     ---- web ios android

@@ -1,14 +1,26 @@
 import axios from "axios";
 
 // 设置基础地址
-// axios.defaults.baseURL = "http://192.168.0.89:9018";
-axios.defaults.baseURL = "https://api.company.scmsar.com/";
+// axios.defaults.baseURL = "http://192.168.0.139:800";
+axios.defaults.baseURL = "https://api.merchant.scmsar.com/";
 
 /* 基础接口 */
 // 1.查询列表
-export const getData = (model, control, version, info, operate = "list") => {
+export const getData = (
+  model,
+  control,
+  version,
+  info,
+  operate = "list",
+  method
+) => {
   var url = `${model}/${control}/${operate}/v${version}`;
-  return axios.post(url, info);
+  switch (method) {
+    case "get":
+      return axios.get(url, info);
+    default:
+      return axios.post(url, info);
+  }
 };
 
 // 2.创建数据
@@ -51,6 +63,23 @@ export const delList = (model, control, version, info, operate = "delList") => {
 export const offTheShelf = (version, info) => {
   var url = `auction/auction/offTheShelf/v${version}`;
   return axios.post(url, info);
+};
+
+// 8.文件上传 resourceType = backAR || backWEB || app
+const fileUrl = "https://api.resources.scmsar.com/";
+
+export const uploadFiles = (
+  resourceType, // 文件类型
+  version, // 版本
+  resourceName, // 文件名称
+  remarks, // 备注
+  fileList // 文件列表
+) => {
+  var formData = createFormData(fileList);
+  var url =
+    fileUrl +
+    `file/upload/${resourceType}/v${version}?ResourceName=${resourceName}&Remarks=${remarks}`;
+  return axios.put(url, formData);
 };
 
 /* ========================================================== */
