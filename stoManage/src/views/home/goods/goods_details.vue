@@ -31,7 +31,7 @@
         <el-date-picker v-model="data_info.dismountTime" type="datetime" placeholder="选择时间"></el-date-picker>
       </el-form-item>
 
-      <el-form-item label="资源预览" v-if="type=='update'">
+      <el-form-item label="资源预览">
         <img :src="data_info.productIco" alt height="300" />
       </el-form-item>
 

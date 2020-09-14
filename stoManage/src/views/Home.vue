@@ -178,6 +178,7 @@ export default {
             { name: "基础信息", url: "merchant_info", isActive: false },
             { name: "角色管理", url: "role_list", isActive: false },
             { name: "账号管理", url: "user_list", isActive: false },
+            { name: "个人中心", url: "personal_center", isActive: false },
           ],
         },
       ],

@@ -1,5 +1,5 @@
 <template>
-  <!-- 个人中心 -->
+  <!-- 店铺信息 -->
   <div id="merchant_info" class="shadow_container">
     <div class="pageTitle">店铺信息</div>
     <el-form label-width="100px">

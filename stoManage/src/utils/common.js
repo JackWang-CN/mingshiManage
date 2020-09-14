@@ -93,3 +93,12 @@ export const switchDateList = (
 
   return obj;
 };
+
+// 判断结果，进行提示
+export const hintMessage = (_this, code, message = "操作成功！") => {
+  switch (code) {
+    case "000000":
+      _this.$message.success(message);
+      break;
+  }
+};

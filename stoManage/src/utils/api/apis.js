@@ -107,12 +107,12 @@ export const getDataList = (
       key = "data_list";
     }
 
-    if (operate == "flowList") {
+    if (operate == "flowList" || control == "goods") {
       _this[key] = res.resultObject.data;
       return;
     }
-
     _this[key] = res.resultObject;
+    console.log(_this[key]);
   });
 };
 
