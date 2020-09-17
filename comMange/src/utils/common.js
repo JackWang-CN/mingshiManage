@@ -60,7 +60,11 @@ export const createGet = (currPage, pageSize, order) => {
 export const createFormData = (file) => {
   var formData = new window.FormData();
   file.forEach((item, index) => {
-    formData.append("files" + index, item.raw);
+    if (item.raw) {
+      formData.append("files" + index, item.raw);
+    } else {
+      formData.append("files" + index, item);
+    }
   });
   return formData;
 };
@@ -87,4 +91,16 @@ export const switchDateList = (
   obj[endKey] = dateList[1].toJSON();
 
   return obj;
+};
+
+// 判断结果，进行提示
+export const hintMessage = (_this, res, message = "操作成功！") => {
+  switch (res.code) {
+    case "000000":
+      _this.$message.success(message);
+      break;
+    case "C00501":
+      _this.$message.info(res.resultMessage);
+      break;
+  }
 };

@@ -1,10 +1,7 @@
 <template>
-  <div id="props_list" class="shadow_container">
-    <!-- 道具列表 -->
-    <div class="pageTitle">
-      道具列表
-      <el-button type="success" @click="toDetails()">添加</el-button>
-    </div>
+  <div id="props_store" class="shadow_container">
+    <!-- 商城道具 -->
+    <div class="pageTitle">商城道具</div>
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
@@ -20,19 +17,9 @@
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
-          <el-option
-            v-for="item in type_list"
-            :key="item.name"
-            :label="item.name"
-            :value="item.typeID"
-          ></el-option>
-          <el-option label="全部" value></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="道具状态" label-width="100px">
-        <el-select v-model="find_form.data.isEnable" placeholder="请选择道具状态">
-          <el-option label="上架中" value="1"></el-option>
-          <el-option label="已下架" value="0"></el-option>
+          <el-option label="户型风格" :value="1"></el-option>
+          <el-option label="屋内道具" :value="2"></el-option>
+          <el-option label="AR宠物" :value="3"></el-option>
           <el-option label="全部" value></el-option>
         </el-select>
       </el-form-item>
@@ -46,6 +33,13 @@
     <!-- 表格 -->
     <el-table :data="data_list" border style="width: 100%">
       <el-table-column prop="name" label="道具名称" width="120"></el-table-column>
+      <el-table-column prop="count" label="售卖数量" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.count==-1">无限制</span>
+          <span v-else-if="scope.row.count!==-1">{{scope.row.count}}</span>
+        </template>-->
+      </el-table-column>
+      <el-table-column prop="price" label="单价" width="120"></el-table-column>
       <el-table-column prop="typeID" label="道具类型" width="120">
         <!-- <template slot-scope="scope">
           <span v-if="scope.row.typeID==1">户型风格</span>
@@ -65,7 +59,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="describe" label="道具描述" width="120"></el-table-column>
-      <el-table-column prop="createTime" label="上架时间" width="170"></el-table-column>
+      <el-table-column prop="onShelfTime" label="上架时间" width="170"></el-table-column>
       <el-table-column prop="validityTimestamp" label="有效期限" width="170">
         <template slot-scope="scope">
           <span v-if="scope.row.validityTimestamp==-1">永久有效</span>
@@ -74,14 +68,8 @@
       </el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.propID)" type="primary" size="small">修改</el-button>
-          <el-button
-            v-show="!scope.row.isEnable"
-            @click="onshelve(scope.row.propID)"
-            type="success"
-            size="small"
-          >上架</el-button>
-          <el-button @click="delRow(scope.row.propID)" type="danger" size="small">删除</el-button>
+          <el-button @click="toDetails" type="info" size="small" disabled>详情</el-button>
+          <el-button @click="unshelve(scope.row.propID)" type="warning" size="small">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -112,11 +100,11 @@ export default {
     return {
       find_form: { data: {} },
       data_list: [],
-      type_list: [], // 选中的列表
+      select_list: [], // 选中的列表
       activeName: "",
 
-      model: "prop",
-      control: "prop",
+      model: "propMall",
+      control: "propStore",
     };
   },
 
@@ -141,9 +129,9 @@ export default {
       });
     },
 
-    // 道具上架
-    onshelve(propID) {
-      updateData(this.model, this.control, 1, { propID }, "enable").then(
+    // 道具下架
+    unshelve(propID) {
+      updateData(this.model, this.control, 1, { propID }, "disable").then(
         (res) => {
           if (res) {
             hintMessage(this, res);
@@ -152,15 +140,6 @@ export default {
           }
         }
       );
-    },
-
-    // 删除当前
-    delRow(propID) {
-      delData(this.model, this.control, 1, { propID }).then((res) => {
-        hintMessage(this, res);
-        var form = { ...this.find_form };
-        getDataList(this.model, this.control, 1, form, this);
-      });
     },
 
     // 重置
@@ -187,28 +166,18 @@ export default {
   watch: {
     // 监听激活页面以请求不同数据
     activeName() {
-      // 请求不同分支道具
-      this.model = this.activeName;
-      this.control = this.activeName;
+      // this.model = this.activeName;
+      // this.control = this.activeName;
       this.find_form = createGet();
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
-      // 请求不同分支道具类型
-      getDataList(
-        this.model,
-        this.control + "Type",
-        1,
-        form,
-        this,
-        "type_list"
-      );
     },
   },
 };
 </script>
 
 <style lang='scss'>
-#props_list {
+#props_store {
   form {
     .el-form-item {
       display: inline-block;

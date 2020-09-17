@@ -78,8 +78,21 @@ export const getDataList = (
     if (!key) {
       key = "data_list";
     }
+
+    if (
+      operate == "getSpecialConfig" ||
+      operate == "stage/list" ||
+      operate == "managerType/list"
+    ) {
+      _this[key] = res.resultObject;
+      return;
+    }
+
     _this[key] = res.resultObject.data;
-    _this.find_form.totalDataNum = res.resultObject.totalDataNum;
+
+    if (_this.find_form) {
+      _this.find_form.totalDataNum = res.resultObject.totalDataNum;
+    }
   });
 };
 
@@ -124,7 +137,7 @@ export const updateDataDetails = (
   info,
   _this,
   path,
-  operate
+  operate = "edit"
 ) => {
   updateData(model, control, version, info, operate).then((res) => {
     switch (res.code) {

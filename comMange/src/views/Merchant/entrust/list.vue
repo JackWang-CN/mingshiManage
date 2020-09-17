@@ -2,6 +2,13 @@
 <template>
   <div id="entrust_list" class="shadow_container">
     <div class="pageTitle">商户委托</div>
+
+    <!-- tab分页 -->
+    <el-tabs v-model="activeName" type="card">
+      <el-tab-pane label="进行中委托" name="list"></el-tab-pane>
+      <el-tab-pane label="历史委托" name="history/list"></el-tab-pane>
+    </el-tabs>
+
     <!-- 查询条件 -->
     <el-form class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="请求编号" label-width="100px">
@@ -33,18 +40,33 @@
       <el-table-column prop="applyTime" label="申请时间" width="200"></el-table-column>
       <el-table-column prop="finishTime" label="完成时间" width="200"></el-table-column>
       <el-table-column prop="managerName" label="客户经理" width="120"></el-table-column>
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="160">
         <template slot-scope="scope">
-          <span v-if="scope.row.PhaseStatus==0">
-            <el-button @click="switchOperate(scope.row,0)" type="warning" size="small">处理</el-button>
-            <el-button @click="switchOperate(scope.row,1)" type="danger" size="small">拒绝</el-button>
+          <!-- 未处理阶段 -->
+          <span v-if="scope.row.phaseStatus=='待受理'">
+            <el-button @click="switchOperate(scope.row.entrustID,0)" type="warning" size="small">处理</el-button>
+            <el-button @click="switchOperate(scope.row.entrustID,1)" type="danger" size="small">拒绝</el-button>
           </span>
-          <el-button
-            v-else-if="scope.row.PhaseStatus!==0"
-            @click="switchOperate(scope.row,3)"
-            type="success"
-            size="small"
-          >更新进度</el-button>
+          <!-- 已接受未完成阶段 -->
+          <span v-if="update_list.includes(scope.row.phaseStatus)">
+            <el-button
+              @click="switchOperate(scope.row.entrustID,3)"
+              type="success"
+              size="small"
+            >更新进度</el-button>
+          </span>
+          <!-- 待回访阶段 -->
+          <span v-if="scope.row.phaseStatus=='终止'">
+            <el-button @click="switchOperate(scope.row.entrustID,3)" type="warning" size="small">回访</el-button>
+          </span>
+          <!-- 回访已完成 -->
+          <span v-if="scope.row.phaseStatus=='回访'">
+            <el-button
+              @click="switchOperate(scope.row.entrustID,3)"
+              type="primary"
+              size="small"
+            >查看记录</el-button>
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -53,17 +75,17 @@
     <el-dialog title="委托处理" :visible.sync="show_details" width="30%" @close="closeOperate">
       <el-form label-width="80px">
         <el-form-item label="任务分配" v-show="this.operate==0">
-          <div>
-            <el-button>选择业务经理</el-button>
-            <el-tag v-show="data_info.manager">{{data_info.manager}}</el-tag>
-          </div>
-          <el-radio-group v-model="data_info.manager" @change="selectManger">
-            <el-radio v-for="item in manager_list" :key="item" :label="item">{{item}}</el-radio>
+          <el-radio-group v-model="data_info.managerID" @change="selectManger">
+            <el-radio
+              v-for="item in manager_list"
+              :key="item.managerID"
+              :label="item.managerID"
+            >{{item.managerName}}</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="拒绝理由" v-show="this.operate==1">
-          <el-input type="textarea" v-model="data_info.refuse" :rows="5"></el-input>
+          <el-input type="textarea" v-model="data_info.describe" :rows="5"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -72,62 +94,58 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <!-- 分页插件 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
   </div>
 </template>
 
 <script>
-import { createGet } from "@/utils/common";
-import { getDataList } from "@/utils/api/apis";
+import Pagination from "@/components/Pagination";
+import { createGet, hintMessage } from "@/utils/common";
+import { getDataList, updateData } from "@/utils/api/apis";
 export default {
+  components: {
+    Pagination,
+  },
+
   mounted() {
     // 首次加载
-    var form = createGet();
-    getDataList(
-      this.model,
-      this.control,
-      this.vision,
-      form,
-      this,
-      null,
-      "activityEntrustList"
-    );
+    this.find_form = createGet();
+    this.activeName = "list";
   },
 
   data() {
     return {
+      update_list: [
+        "受理",
+        "需求确认",
+        "签订合同",
+        "策划执行",
+        "完结待商户确认",
+        "商户确认完结",
+      ],
+
       // 查找条件
       find_form: { data: {} },
       select_list: [],
-      data_list: [
+      data_list: [],
+      data_info: {},
+      manager_list: [
         {
-          TableID: 1,
-          EntrustID: "CODE0001",
-          MerchantName: "测试商家",
-          MerchantID: "000000000031615601",
-          Theme: "测试活动",
-          Content: "参与本活动可获得优惠券哦",
-          PhaseStatus: "0",
-          ManagerName: "痛仰",
-          ManagerID: "20080616234772245440491010032207854874",
-          ApplyTime: "2020-08-31 14:32:21",
-          FinishTime: null,
+          managerName: "德玛西亚",
+          managerID: "20082814315634805620491050059783724634",
         },
         {
-          TableID: 2,
-          EntrustID: "CODE0002",
-          MerchantName: "测试商家2",
-          MerchantID: "000000000031615602",
-          Theme: "测试活动2",
-          Content: "参与本活动可获得优惠券哦",
-          PhaseStatus: "1",
-          ManagerName: "小刘",
-          ManagerID: "20080616234772245440491010032207854874",
-          ApplyTime: "2020-08-31 14:32:21",
-          FinishTime: null,
+          managerName: "痛仰",
+          managerID: "20080616234772245440491010032207854874",
         },
       ],
-      data_info: {},
-      manager_list: ["贾克斯", "凯特琳", "图奇", "莎拉", "卡莎"],
+      activeName: "",
 
       operate: 0, // 0-接收 1-拒绝
       show_details: false,
@@ -148,20 +166,18 @@ export default {
     },
 
     // 点击处理按钮
-    switchOperate(row, type) {
+    switchOperate(entrustID, type) {
       if (type == 3) {
-        console.log(row);
-        var { EntrustID } = row;
-
         this.$router.push({
           path: "merchant_entrustDetails",
           query: {
-            id: EntrustID,
+            id: entrustID,
           },
         });
       } else {
         this.show_details = true;
         this.operate = type;
+        this.data_info.entrustID = entrustID;
       }
     },
 
@@ -178,15 +194,63 @@ export default {
     // 确认提交
     sendSubmit() {
       this.show_details = false;
+      // 1.判断操作是接收还是拒绝
+      if (this.operate == 0) {
+        var operate = "accept";
+      } else {
+        var operate = "reject";
+      }
+      // 2.执行对应的操作
+      updateData(this.model, this.control, 1, this.data_info, operate).then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, this.vision, form, this);
+        }
+      );
     },
 
     // 勾选客户经理
     selectManger(v) {
       console.log(v);
     },
-    // 重置
-    resetForm() {
-      this.find_form.data = {};
+
+    // 分页属性改变
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      delete form.totalDataNum;
+      getDataList(
+        this.model,
+        this.control,
+        this.vision,
+        form,
+        this,
+        null,
+        "activityEntrustList"
+      );
+    },
+  },
+
+  watch: {
+    activeName() {
+      var form = { ...this.find_form };
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        form,
+        this,
+        null,
+        this.activeName
+      );
     },
   },
 };

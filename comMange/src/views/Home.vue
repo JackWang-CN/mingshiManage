@@ -24,6 +24,7 @@
             <i class="el-icon-shopping-cart-2"></i>
             <span>道具商城</span>
           </template>
+          <el-menu-item index="props_store">商城道具</el-menu-item>
           <el-menu-item index="props_list">道具列表</el-menu-item>
           <el-menu-item index="props_type">道具类型</el-menu-item>
           <el-menu-item index="props_records">交易记录</el-menu-item>

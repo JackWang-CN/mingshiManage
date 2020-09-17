@@ -25,6 +25,12 @@ export default new VueRouter({
           meta: ["首页"],
         },
 
+        // 道具商城-商城道具
+        {
+          path: "props_store",
+          component: () => import("../views/Company/propsCenter/store.vue"),
+          meta: ["道具商城", "商城道具"],
+        },
         // 道具商城-列表
         {
           path: "props_list",
@@ -246,14 +252,21 @@ export default new VueRouter({
         // 商户管理-商户列表
         {
           path: "merchant_list",
-          component: () => import("../views/Merchant/merchant_list.vue"),
+          component: () => import("../views/Merchant/store/list.vue"),
           meta: ["商户管理", "商户列表"],
+        },
+
+        // 商户管理-商户列表-商户详情
+        {
+          path: "merchant_details",
+          component: () => import("../views/Merchant/store/details.vue"),
+          meta: ["商户管理", "商户列表", "商户详情"],
         },
 
         // 商户管理-商户审核
         {
           path: "merchant_check",
-          component: () => import("../views/Merchant/merchant_check.vue"),
+          component: () => import("../views/Merchant/store/check.vue"),
           meta: ["商户管理", "商户审核"],
         },
 

@@ -5,6 +5,12 @@
       活动列表
       <el-button type="success" @click="toDetails">创建活动</el-button>
     </div>
+
+    <!-- tab分页 -->
+    <el-tabs v-model="activeName" type="card">
+      <el-tab-pane label="商户列表" name="propHouse"></el-tab-pane>
+    </el-tabs>
+
     <!-- 查询条件 -->
     <el-form ref="find_form" class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="活动名称" label-width="100px">

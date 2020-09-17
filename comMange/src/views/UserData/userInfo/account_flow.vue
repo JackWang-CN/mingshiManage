@@ -2,13 +2,26 @@
   <!-- 个人流水 -->
   <div id="account_flow" class="shadow_container">
     <div class="pageTitle">个人流水</div>
-    <el-table :data="flow_list" border style="width: 100%" @selection-change="select">
+    <el-table :data="data_list" border style="width: 100%" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="userId" label="用户ID" width="150"></el-table-column>
-      <el-table-column prop="iename" label="交易方" width="90"></el-table-column>
-      <el-table-column prop="payType" label="交易类型" width="90"></el-table-column>
-      <el-table-column prop="flowType" label="流水类型" width="90">
-        <template slot-scope="scope">{{scope.row.flowType==1?'收入':'支出'}}</template>
+      <el-table-column prop="accountFlowID" label="用户ID" width="180"></el-table-column>
+      <el-table-column prop="traderName" label="交易方名称" width="120"></el-table-column>
+      <el-table-column prop="traderType" label="交易方类型" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.traderType==0">商家</span>
+          <span v-else-if="scope.row.traderType==1">用户</span>
+          <span v-else-if="scope.row.traderType==2">公司</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="payMethod" label="消费方式" width="90">
+        <template slot-scope="scope">
+          <span v-if="scope.row.payMethod==0">商家</span>
+          <span v-else-if="scope.row.payMethod==1">用户</span>
+          <span v-else-if="scope.row.payMethod==2">公司</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="incomeExpensesType" label="流水类型" width="90">
+        <template slot-scope="scope">{{scope.row.incomeExpensesType==1?'收入':'支出'}}</template>
       </el-table-column>
 
       <el-table-column prop="picourl" label="图标" width="80">
@@ -18,13 +31,13 @@
       </el-table-column>
       <el-table-column prop="goldCoinVal" label="金币数量" width="100">
         <template slot-scope="scope">
-          {{scope.row.flowType==1?'+':'-'}}
-          {{scope.row.goldCoinVal}}
+          {{scope.row.incomeExpensesType==1?'+':'-'}}
+          {{scope.row.gold}}
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="描述" width="90"></el-table-column>
-      <el-table-column prop="totalGoldCoinVal" label="当前总金额" width="120"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="200"></el-table-column>
+      <el-table-column prop="describe" label="描述" width="200"></el-table-column>
+      <el-table-column prop="currTotalGold" label="当前总金额" width="120"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="200"></el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="warning" size="small" @click="mark(scope.row)">备注</el-button>
@@ -48,41 +61,31 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getDataList } from "@/utils/api/api";
+import { getDataList } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   components: {
     Pagination,
   },
   mounted() {
-    var userId = this.$route.query.id;
-    this.find_form.data.userId = userId;
-    var get_form = createGet();
-    get_form.data = { userId };
+    this.customerID = this.$route.query.id;
     getDataList(
-      this.$vision.user,
-      "Accflow",
-      get_form,
-      "flow_list",
-      this,
-      null,
-      "picourl"
+      this.model,
+      this.control,
+      1,
+      { customerID: this.customerID },
+      this
     );
   },
 
   data() {
     return {
-      find_form: {
-        currPage: 1,
-        pageSize: 10,
-        totalDataNum: 0,
-        // orderByFileds: "creationtime desc",
-        data: {
-          userId: "",
-        },
-      },
+      find_form: { data: {} },
 
-      flow_list: [],
+      data_list: [],
+
+      model: "cusInfo",
+      control: "cusGoldAccountFlow",
     };
   },
 
@@ -105,7 +108,7 @@ export default {
         this.$vision.user,
         "Accflow",
         form,
-        "flow_list",
+        "data_list",
         this,
         null,
         "picourl"

@@ -7,15 +7,8 @@
       <!-- 当前阶段 -->
       <el-tab-pane label="当前阶段" name="current">
         <!-- 进度条 -->
-        <el-steps :active="1" finish-status="success" :space="170">
-          <el-step title="待受理" @click="clickStep"></el-step>
-          <el-step title="受理" @click="clickStep"></el-step>
-          <el-step title="需求确认" @click="clickStep"></el-step>
-          <el-step title="签订合同" @click="clickStep"></el-step>
-          <el-step title="策划执行" @click="clickStep"></el-step>
-          <el-step title="完结待商户确认" @click="clickStep"></el-step>
-          <el-step title="商户确认完结" @click="clickStep"></el-step>
-          <el-step title="回访" @click="clickStep"></el-step>
+        <el-steps :active="activeState" finish-status="success" :space="170">
+          <el-step v-for="item in progress_list" :key="item.stateID" :title="item.stateName"></el-step>
         </el-steps>
 
         <!-- 表单 -->
@@ -26,14 +19,14 @@
             </el-upload>
           </el-form-item>
           <el-form-item label="阶段描述">
-            <el-input type="textarea" :rows="3"></el-input>
+            <el-input type="textarea" :rows="3" v-model="data_info.describe"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="success">保存当前进度</el-button>
-            <el-button type="primary">保存进入下一步</el-button>
-            <el-button type="info">返回</el-button>
+            <el-button type="success" @click="updateProgress(0)">保存当前进度</el-button>
+            <el-button type="primary" @click="updateProgress(1)">保存进入下一步</el-button>
+            <el-button type="info" @click="cancel">返回</el-button>
             <el-button type="text" @click="show_more=!show_more">{{show_more?'收起∧':'更多∨'}}</el-button>
-            <el-button type="danger" v-show="show_more">终止</el-button>
+            <el-button type="danger" v-show="show_more" @click="shutdownEntrust">终止</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -74,39 +67,83 @@
 </template>
 
 <script>
-import { watch } from "fs";
+import {
+  getDataList,
+  getData,
+  updateData,
+  updateDataDetails,
+} from "@/utils/api/apis";
+import { createGet } from "@/utils/common";
 export default {
-  mounted() {
+  created() {
+    this.entrustID = this.$route.query.id;
+
+    // 1.获取商家委托阶段列表（一共有几个阶段）
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      createGet(1, 99),
+      this,
+      "progress_list",
+      "stage/list"
+    );
+
+    // 2.获取委托进度信息列表
+
     this.activeName = "current";
   },
 
   data() {
     return {
-      data_list: [
-        {
-          TableID: 2,
-          EntrustID: "CODE0002",
-          MerchantName: "测试商家2",
-          MerchantID: "000000000031615602",
-          Theme: "测试活动2",
-          Content: "参与本活动可获得优惠券哦",
-          PhaseStatus: "1",
-          ManagerName: "小刘",
-          ManagerID: "20080616234772245440491010032207854874",
-          ApplyTime: "2020-08-31 14:32:21",
-          FinishTime: null,
-        },
-      ],
-
+      data_list: [],
+      data_info: {},
+      progress_list: [], // 商家委托列表
+      entrustID: "",
       activeName: "",
       show_details: false, // 展示详情
       show_more: false, // 显示隐藏按钮
+      activeObj: {}, // 当前的委托阶段数据对象
+      activeState: 0, // 当前的委托阶段
+      model: "merchant",
+      control: "merEntrustActivity",
     };
   },
 
   watch: {
+    // 监听页面激活
     activeName() {
-      console.log(1);
+      switch (this.activeName) {
+        case "current":
+          getData(
+            this.model,
+            this.control,
+            1,
+            { value: this.entrustID },
+            "progress/current"
+          ).then((res) => {
+            this.activeObj = res.resultObject;
+            var phaseStatus = this.activeObj.phaseStatus;
+            // 获取当前的阶段名称，遍历所有阶段，取得当前阶段在所有阶段中的序号
+            this.progress_list.some((item, index) => {
+              if (item.stateName == phaseStatus) {
+                this.activeState = index;
+              }
+              // 满足条件终止循环
+              return item.stateName == phaseStatus;
+            });
+          });
+          break;
+        case "history":
+          getData(
+            this.model,
+            this.control,
+            1,
+            { value: this.entrustID },
+            "progress/list"
+          ).then((res) => {});
+          break;
+      }
     },
   },
 
@@ -116,8 +153,36 @@ export default {
       this.show_details = true;
     },
 
-    clickStep() {
-      console.log(1);
+    // 更新进度 0-当前 1-下一个阶段
+    updateProgress(type) {
+      // 判断是保存当前进度，还是进入下一阶段
+      var index = this.activeState;
+      if (type) {
+        index++;
+      }
+      this.data_info.entrustID = this.entrustID;
+      this.data_info.stateID = this.progress_list[index].stateID;
+      console.log(this.data_info);
+    },
+
+    // 终止委托
+    shutdownEntrust() {
+      this.data_info.entrustID = this.entrustID;
+      console.log(this.data_info);
+      updateDataDetails(
+        this.model,
+        this.control,
+        1,
+        this.data_info,
+        this,
+        "merchant_entrustList",
+        "end"
+      );
+    },
+
+    // 返回上一页
+    cancel() {
+      this.$router.push("merchant_entrustList");
     },
   },
 };

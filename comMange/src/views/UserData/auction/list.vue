@@ -4,8 +4,8 @@
     <div class="pageTitle">拍卖列表</div>
     <!-- 查询条件 -->
     <el-form ref="find_form" class="find_form" :model="find_form" label-width="80px">
-      <el-form-item label="物品名称" label-width="100px">
-        <el-input v-model="find_form.data.propName" placeholder="请输入拍卖品名称"></el-input>
+      <el-form-item label="道具名称" label-width="100px">
+        <el-input v-model="find_form.data.propName" placeholder="请输入道具名称"></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.assetType" placeholder="请选择道具类型">
@@ -22,7 +22,6 @@
 
       <el-form-item>
         <el-button type="primary" @click="findData">查询</el-button>
-        <el-button type="info" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
 

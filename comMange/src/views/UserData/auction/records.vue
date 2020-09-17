@@ -10,9 +10,10 @@
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择房产类型">
-          <el-option label="户型风格" :value="1"></el-option>
-          <el-option label="屋内道具" :value="2"></el-option>
-          <el-option label="AR宠物" :value="3"></el-option>
+          <el-option label="全部" value></el-option>
+          <el-option label="优惠券" :value="1"></el-option>
+          <el-option label="道具" :value="2"></el-option>
+          <el-option label="虚拟房产" :value="3"></el-option>
         </el-select>
       </el-form-item>
 

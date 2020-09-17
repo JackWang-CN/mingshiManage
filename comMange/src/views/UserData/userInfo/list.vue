@@ -8,83 +8,61 @@
         <el-input v-model="find_form.data.nickname" placeholder="请输入昵称"></el-input>
       </el-form-item>
       <el-form-item label="手机号码" label-width="100px">
-        <el-input v-model="find_form.data.mobileNum" placeholder="请输入手机号（帐号）"></el-input>
-      </el-form-item>
-      <el-form-item label="是否实名" label-width="100px">
-        <el-select v-model="find_form.data.isRealNameSys" placeholder="请选择是否实名制">
-          <el-option label="是" value="1"></el-option>
-          <el-option label="否" value="0"></el-option>
-        </el-select>
+        <el-input v-model="find_form.data.phone" placeholder="请输入手机号（帐号）"></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" label-width="100px">
-        <el-input v-model="find_form.data.name" placeholder="请输入姓名"></el-input>
+        <el-input v-model="find_form.data.trueName" placeholder="请输入姓名"></el-input>
       </el-form-item>
       <el-form-item label="用户性别" label-width="100px">
         <el-select v-model="find_form.data.sex" placeholder="请选择性别">
-          <el-option label="男" value="1"></el-option>
-          <el-option label="女" value="0"></el-option>
+          <el-option label="男" :value="1"></el-option>
+          <el-option label="女" :value="0"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否禁用" label-width="100px">
-        <el-select v-model="find_form.data.isDisable" placeholder="请选择是否禁用">
-          <el-option label="是" value="1"></el-option>
-          <el-option label="否" value="0"></el-option>
+      <el-form-item label="是否启用" label-width="100px">
+        <el-select v-model="find_form.data.isEnable" placeholder="请选择是否禁用">
+          <el-option label="是" :value="1"></el-option>
+          <el-option label="否" :value="0"></el-option>
         </el-select>
       </el-form-item>
-
-      <el-form-item label="创建时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.creationTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <!-- 日期查询 -->
-
       <el-form-item class="btns_find">
         <el-button type="primary" @click="findData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
+
     <!-- 用户列表 -->
     <el-table :data="data_list" border style="width: 100%" @selection-change="select">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="nickname" label="用户昵称" width="120"></el-table-column>
-      <el-table-column prop="userHeadpng" label="用户头像" width="120">
+      <el-table-column prop="headImage" label="用户头像" width="120">
         <template slot-scope="scope">
-          <el-avatar :size="70" :src="scope.row.userHeadpng" shape="square"></el-avatar>
+          <el-avatar :size="70" :src="scope.row.headImage" shape="square"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="perSign" label="个性签名" width="150"></el-table-column>
-      <el-table-column prop="mobileNum" label="手机号码" width="120"></el-table-column>
-      <el-table-column prop="userEmail" label="用户邮箱" width="120"></el-table-column>
-      <el-table-column prop="safePwd" label="安全密码" width="120"></el-table-column>
+      <el-table-column prop="perSign" label="个性签名" width="200"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="120"></el-table-column>
+      <el-table-column prop="email" label="用户邮箱" width="150"></el-table-column>
       <el-table-column prop="isRealNameSys" label="是否实名" width="120">
-        <template slot-scope="scope">{{ scope.row.isRealNameSys == "1" ? "是" : "否" }}</template>
+        <template slot-scope="scope">{{ scope.row.isRealNameSys ? "是" : "否" }}</template>
       </el-table-column>
-      <el-table-column prop="name" label="真实姓名" width="120"></el-table-column>
+      <el-table-column prop="trueName" label="真实姓名" width="120"></el-table-column>
       <el-table-column prop="sex" label="用户性别" width="120">
-        <template slot-scope="scope">{{ scope.row.sex == "1" ? "男" : "女" }}</template>
+        <template slot-scope="scope">{{ scope.row.sex ? "女" : "男" }}</template>
       </el-table-column>
-      <el-table-column prop="iDCard" label="身份证号" width="120"></el-table-column>
-      <el-table-column prop="isDisable" label="是否禁用" width="120">
-        <template slot-scope="scope">{{ scope.row.isDisable == "1" ? "是" : "否" }}</template>
+      <el-table-column prop="idCard" label="身份证号" width="150"></el-table-column>
+      <el-table-column prop="isEnable" label="是否启用" width="120">
+        <template slot-scope="scope">{{ scope.row.isEnable ? "是" : "否" }}</template>
       </el-table-column>
-      <el-table-column prop="extendLogin" label="三方登录预留字段" width="150"></el-table-column>
-      <el-table-column prop="isDelete" label="是否删除标志" width="120">
-        <template slot-scope="scope">{{ scope.row.isDelete == "1" ? "是" : "否" }}</template>
-      </el-table-column>
-      <el-table-column prop="inteThrCode" label="三证合一代码" width="120"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="200"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="200"></el-table-column>
       <el-table-column fixed="right" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.userId)" type="primary" size="small">详情</el-button>
-          <el-button @click="toDetails(scope.row.userId)" type="warning" size="small">编辑</el-button>
-          <el-button @click="switchState(scope.row)" type="danger" size="small">禁用</el-button>
+          <el-button @click="toDetails(scope.row.customerID)" type="primary" size="small">详情</el-button>
+          <el-button
+            @click="switchState(scope.row)"
+            :type="scope.row.isEnable?'danger':'success'"
+            size="small"
+          >{{scope.row.isEnable?"禁用":'启用'}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -100,57 +78,39 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { delData } from "@/utils/api/api";
-import { getDataList } from "@/utils/api/apis";
-import { createGet, spliceKey, filteObj } from "@/utils/common";
+import { getDataList, updateData } from "@/utils/api/apis";
+import { createGet, spliceKey, filteObj, hintMessage } from "@/utils/common";
 export default {
   components: {
     Pagination,
   },
+
+  mounted() {
+    // 首次加载
+    this.find_form = createGet();
+    var form = { ...this.find_form };
+    getDataList(this.model, this.control, 1, form, this);
+  },
+
   data() {
     return {
       // 查找条件
-      find_form: {
-        currPage: 1,
-        pageSize: 10,
-        totalDataNum: 0,
-        // orderByFileds: "creationtime desc",
-        data: {},
-      },
+      find_form: { data: {} },
 
-      model: "",
-      control: "Userinfo",
+      model: "cusInfo",
+      control: "customerInfo",
 
       select_list: [], //已选表单
       data_list: [], // 用户列表
     };
   },
-  mounted() {
-    // 首次加载
-    getDataList(
-      this.$vision.user,
-      this.control,
-      createGet(),
-      "data_list",
-      this,
-      null,
-      "userHeadpng"
-    );
-  },
+
   methods: {
     // 查询
     findData() {
       var form = { ...this.find_form };
       form.data = filteObj(form.data);
-      getDataList(
-        this.$vision.user,
-        this.control,
-        form,
-        "data_list",
-        this,
-        null,
-        "userHeadpng"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 分页属性改变
@@ -164,16 +124,7 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      delete form.totalDataNum;
-      getDataList(
-        this.$vision.user,
-        "Userinfo",
-        form,
-        "data_list",
-        this,
-        null,
-        "userHeadpng"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 跳转到详情
@@ -184,26 +135,45 @@ export default {
       });
     },
 
-    // 删除当前
-    delRow(row) {
-      var form = {
-        userId: row.userId,
-      };
-      deleteuser(this.$vision.user, "Userinfo", form).then((res) => {
-        if (res) {
-          this.$message.success("删除成功");
-          this.resetForm();
-          getDataList(
-            this.$vision.user,
-            "Userinfo",
-            this.find_form,
-            "data_list",
-            this
-          );
-        } else {
-          this.$message.success("删除失败");
-        }
-      });
+    // 禁用启用操作
+    switchState(row) {
+      console.log(row);
+      var { customerID, isEnable } = row;
+      isEnable = !isEnable - 0;
+      switch (isEnable) {
+        case 0:
+          updateData(
+            this.model,
+            this.control,
+            1,
+            {
+              customerID,
+              isEnable,
+            },
+            "disable"
+          ).then((res) => {
+            hintMessage(this, res);
+            var form = { ...this.find_form };
+            getDataList(this.model, this.control, 1, form, this);
+          });
+          break;
+        case 1:
+          updateData(
+            this.model,
+            this.control,
+            1,
+            {
+              customerID,
+              isEnable,
+            },
+            "enable"
+          ).then((res) => {
+            hintMessage(this, res);
+            var form = { ...this.find_form };
+            getDataList(this.model, this.control, 1, form, this);
+          });
+          break;
+      }
     },
 
     // 重置

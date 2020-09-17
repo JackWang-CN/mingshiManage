@@ -9,10 +9,11 @@
         <el-input v-model="find_form.data.aname" placeholder="请输入道具名称"></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
-        <el-select v-model="find_form.data.rpmtype" placeholder="请选择房产类型">
+        <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
           <el-option label="户型风格" :value="1"></el-option>
           <el-option label="屋内道具" :value="2"></el-option>
           <el-option label="AR宠物" :value="3"></el-option>
+          <el-option label="全部" value></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="交易金额" label-width="100px">
@@ -36,7 +37,6 @@
       <!-- 按钮组 -->
       <el-form-item class="btns_find">
         <el-button type="primary" @click="findData">查询</el-button>
-        <el-button type="info" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
 
