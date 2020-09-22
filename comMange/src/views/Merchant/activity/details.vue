@@ -217,7 +217,7 @@ export default {
 
     // 取消操作回到上一页
     cancel() {
-      this.$router.push("merchant_activityList");
+      this.$router.push("activity_list");
     },
 
     // 切换模型类型

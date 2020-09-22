@@ -8,7 +8,8 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="商户列表" name="propHouse"></el-tab-pane>
+      <el-tab-pane label="进行中活动" name="propHouse"></el-tab-pane>
+      <el-tab-pane label="历史活动" name="propHouse"></el-tab-pane>
     </el-tabs>
 
     <!-- 查询条件 -->
@@ -94,6 +95,8 @@ export default {
     // 首次加载
     this.find_form = createGet();
     var form = { ...this.find_form };
+
+    this.activeName = "";
   },
 
   data() {
@@ -103,10 +106,10 @@ export default {
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
 
+      activeName: "",
       show_details: false,
       model: "",
       control: "",
-      vision: 1,
     };
   },
 
@@ -117,7 +120,7 @@ export default {
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
       form.data = spliceKey(form.data);
-      getDataList(this.model, this.control, this.vision, form, this);
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 展示详情
@@ -129,7 +132,7 @@ export default {
       getDataDetail(
         this.model,
         this.control,
-        this.vision,
+        1,
         { assetsId },
         this,
         "data_info"
@@ -138,7 +141,7 @@ export default {
 
     // 跳转到详情页
     toDetails() {
-      this.$router.push("merchant_activityCreate");
+      this.$router.push("activity_details");
     },
 
     // 重置
@@ -158,14 +161,7 @@ export default {
       }
       var form = { ...this.find_form };
       delete form.totalDataNum;
-      getDataList(
-        this.model,
-        this.control,
-        this.vision,
-        form,
-        this,
-        "data_list"
-      );
+      getDataList(this.model, this.control, 1, form, this, "data_list");
     },
   },
 };

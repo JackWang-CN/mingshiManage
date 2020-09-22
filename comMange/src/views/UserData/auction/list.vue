@@ -47,7 +47,7 @@
       <el-table-column prop="owner" label="卖家昵称" width="200"></el-table-column>
       <el-table-column prop="addedTime" label="上架时间" width="180"></el-table-column>
       <el-table-column prop="expireTime" label="到期时间" width="160"></el-table-column>
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button @click="showDetails(scope.row.auctionID)" type="primary" size="small">详情</el-button>
           <el-button @click="switchState(scope.row)" type="warning" size="small">下架</el-button>
@@ -95,7 +95,7 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { getDataList, getDataDetails, offTheShelf } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey } from "@/utils/common";
+import { createGet, filteObj, spliceKey, hintMessage } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -156,21 +156,10 @@ export default {
     offShelf() {
       this.show_shelf = false;
       offTheShelf(1, this.data_shelf).then((res) => {
-        switch (res.code) {
-          case "C00501":
-            this.$message.success("下架成功！");
-            break;
-          case "000000":
-            break;
-        }
+        hintMessage(this, res);
         var form = { ...this.find_form };
         getDataList(this.model, this.control, 1, form, this, "data_list");
       });
-    },
-
-    // 重置
-    resetForm() {
-      this.find_form.data = {};
     },
 
     // 分页属性改变

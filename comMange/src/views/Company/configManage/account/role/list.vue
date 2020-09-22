@@ -48,23 +48,7 @@ export default {
   data() {
     return {
       find_form: { data: {} },
-      data_list: [
-        {
-          roleGrName: "普通用户",
-          creationTime: "2020-08-25 12:00:00",
-          roleList: "查询列表",
-        },
-        {
-          roleGrName: "普通管理员",
-          creationTime: "2020-08-25 12:00:00",
-          roleList: "查询列表、修改数据、添加数据",
-        },
-        {
-          roleGrName: "超级管理员",
-          creationTime: "2020-08-25 12:00:00",
-          roleList: "查询列表、修改数据、添加数据、删除数据",
-        },
-      ],
+      data_list: [],
 
       show_details: false,
       model: "comUser",
@@ -84,7 +68,7 @@ export default {
 
     // 跳转到详情页
     toDetails() {
-      this.$router.push("author_roleAdd");
+      this.$router.push("role_details");
     },
 
     // 删除当前行

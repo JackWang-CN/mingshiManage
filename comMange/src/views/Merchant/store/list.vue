@@ -8,7 +8,7 @@
 
     <!-- 表格 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="name" label="商户名称" width="180"></el-table-column>
+      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
       <el-table-column prop="headImage" label="商户头像" width="150"></el-table-column>
       <el-table-column prop="manageTypeName" label="经营类别" width="150"></el-table-column>
       <el-table-column prop="accountType" label="账号类型" width="100">
@@ -20,7 +20,12 @@
       <el-table-column prop="tel" label="联系电话" width="180"></el-table-column>
       <el-table-column prop="address" label="地址" width="200"></el-table-column>
       <el-table-column prop="inteThrCode" label="统一社会信用代码" width="200"></el-table-column>
-      <el-table-column prop="isEnable" label="启用状态" width="100"></el-table-column>
+      <el-table-column prop="isEnable" label="启用状态" width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isEnable">启用</span>
+          <span v-else>禁用</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="officeManagerName" label="业务经理" width="100"></el-table-column>
       <el-table-column prop="checkStatus" label="审核状态" width="100">
         <template slot-scope="scope">
@@ -32,27 +37,27 @@
       <el-table-column prop="checkeRemark" label="审核备注" width="200"></el-table-column>
       <el-table-column prop="checkerName" label="审核人员" width="100"></el-table-column>
       <el-table-column prop="checkTime" label="审核时间" width="180"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="240">
+      <el-table-column label="操作" fixed="right" width="260">
         <template slot-scope="scope">
-          <el-button
-            type="success"
-            v-if="scope.row.checkStatus==0"
-            @click="submitCheck(scope.row.merchantID)"
-            size="small"
-          >提交</el-button>
           <el-button type="primary" @click="toDetails(scope.row.merchantID)" size="small">修改</el-button>
           <el-button
-            type="danger"
+            :type="scope.row.isEnable?'danger':'success'"
             v-if="scope.row.checkStatus==1"
             @click="switchState(scope.row)"
             size="small"
-          >禁用</el-button>
+          >{{scope.row.isEnable?'禁用':'启用'}}</el-button>
           <el-button
             type="info"
             v-if="scope.row.checkStatus==0||scope.row.isEnable==0"
             @click="delRow(scope.row.merchantID)"
             size="small"
           >删除</el-button>
+          <el-button
+            type="success"
+            v-if="!scope.row.checkStatus"
+            @click="submitCheck(scope.row.merchantID)"
+            size="small"
+          >申请审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,13 +111,26 @@ export default {
     // 点击提交审核
     submitCheck(value) {
       console.log(value);
-      updateData(this.model, this.control, 1, { value }).then((res) => {
-        hintMessage(this, res, "提交审核成功！");
-      });
+      updateData(this.model, this.control, 1, { value }, "check/apply").then(
+        (res) => {
+          hintMessage(this, res, "提交审核成功！");
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this, "data_list");
+        }
+      );
     },
 
     // 切换禁用启用
-    switchState() {},
+    switchState(row) {
+      var { merchantID, isEnable } = row;
+      isEnable = !isEnable - 0;
+      var form = { merchantID, isEnable };
+      updateData(this.model, this.control, 1, form, "enable").then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(this.model, this.control, 1, form, this);
+      });
+    },
 
     // 删除当前行
     delRow(value) {

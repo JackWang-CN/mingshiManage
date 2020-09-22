@@ -25,7 +25,7 @@
           }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button @click="toDetails(1,scope.row.versionID)" type="primary" size="small">编辑</el-button>
           <el-button @click="delRow(scope.row.versionID)" type="danger" size="small">删除</el-button>

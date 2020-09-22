@@ -56,11 +56,11 @@
             <i class="el-icon-s-tools"></i>
             <span>配置管理</span>
           </template>
-          <el-menu-item index="author_roleList">角色管理</el-menu-item>
+          <el-menu-item index="role_list">角色管理</el-menu-item>
           <el-menu-item index="user_list">账号管理</el-menu-item>
           <el-menu-item index="recharge_list">充值配置</el-menu-item>
-          <el-menu-item index="configure_noticerecord">公告记录</el-menu-item>
           <el-menu-item index="version_list">版本控制</el-menu-item>
+          <el-menu-item index="merchant_database">商户数据库</el-menu-item>
         </el-submenu>
 
         <!-- 消息通知 -->
@@ -81,10 +81,11 @@
           </template>
           <el-menu-item index="merchant_list">商户列表</el-menu-item>
           <el-menu-item index="merchant_check">商户审核</el-menu-item>
-          <el-menu-item index="merchant_entrustList">商户委托</el-menu-item>
-          <el-menu-item index="merchant_activityList">商户活动</el-menu-item>
+          <el-menu-item index="entrust_list">商户委托</el-menu-item>
+          <el-menu-item index="merchant_type">经营类别</el-menu-item>
+          <el-menu-item index="activity_list">商户活动</el-menu-item>
           <el-menu-item index="merchant_merAdData">商户广告</el-menu-item>
-          <el-menu-item index="merchant_couponList">优惠券列表</el-menu-item>
+          <el-menu-item index="coupon_list">优惠券列表</el-menu-item>
           <!-- <el-menu-item index="merchant_order">订单管理</el-menu-item> -->
           <!-- <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item> -->
           <!-- <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item> -->

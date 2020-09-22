@@ -5,9 +5,35 @@
     <!-- 表单 -->
     <el-form label-width="100px">
       <!-- 文件上传 -->
-      <el-form-item label="文件上传">
-        <el-upload class="upload-demo" action="#" :on-change="getFileList" :auto-upload="false">
-          <el-button size="small" type="primary">选择文件</el-button>
+      <el-form-item label="AR文件">
+        <el-upload class="upload-demo" action="#" :on-change="arChange" :auto-upload="false">
+          <el-button size="small" type="primary">添加模型</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="模型主图">
+        <el-upload
+          class="upload-demo"
+          action="#"
+          :auto-upload="false"
+          :on-remove="removeFile"
+          :on-change="mainChange"
+          list-type="picture"
+        >
+          <el-button size="small" type="primary">添加主图</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="模型子图">
+        <el-upload
+          class="upload-demo"
+          action="#"
+          :auto-upload="false"
+          :on-remove="removeFile"
+          :on-change="childrenChange"
+          list-type="picture"
+        >
+          <el-button size="small" type="primary">添加子图</el-button>
         </el-upload>
       </el-form-item>
 
@@ -36,7 +62,9 @@ export default {
   data() {
     return {
       data_info: {},
-      file_list: [],
+      file_ar: [], // ar文件对象
+      img_main: [], // 主缩略图文件对象
+      img_children: [], // 子多图文件对象
     };
   },
 
@@ -47,23 +75,41 @@ export default {
     },
 
     // 发送请求
-    sendSubmit() {
+    async sendSubmit() {
       var { ShowResourceName, Remarks } = this.data_info;
-      uploadFiles(3, 1, this.file_list, ShowResourceName, Remarks).then(
-        (res) => {
-          switch (res.code) {
-            case "000000":
-              this.$message.success("上传成功！");
-              this.$router.push("ar_list");
-              break;
-          }
-        }
+      // 1.上传AR资源
+      var res = await uploadFiles(
+        3,
+        1,
+        this.file_ar,
+        ShowResourceName,
+        Remarks
       );
+      var { resID } = res.resultObject[0];
+      console.log(resID);
     },
 
     // 取消
     cancel() {
       this.$router.push("ar_list");
+    },
+
+    // 文件删除
+    removeFile(file, list) {
+      this.file_list = [...list];
+    },
+
+    // ar文件状态改变
+    arChange(file, list) {
+      this.file_ar = [...list];
+    },
+    // 主缩略图状态改变
+    mainChange(file, list) {
+      this.img_main = [...list];
+    },
+    // 子图文件状态改变
+    childrenChange(file, list) {
+      this.img_children = [...list];
     },
   },
 };
@@ -72,9 +118,12 @@ export default {
 <style lang='scss'>
 #ar_upload {
   form {
-    .el-input,
-    .el-textarea {
-      width: 300px;
+    .el-form-item {
+      width: 400px;
+      .el-input,
+      .el-textarea {
+        width: 300px;
+      }
     }
   }
 }

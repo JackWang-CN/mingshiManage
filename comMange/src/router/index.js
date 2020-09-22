@@ -77,17 +77,17 @@ export default new VueRouter({
 
         // 配置管理-角色管理
         {
-          path: "author_roleList",
+          path: "role_list",
           component: () =>
-            import("../views/Company/configManage/author_roleList.vue"),
+            import("../views/Company/configManage/account/role/list.vue"),
           meta: ["配置管理", "角色权限"],
         },
         // 配置管理-角色新增
         {
-          path: "author_roleAdd",
+          path: "role_details",
           component: () =>
-            import("../views/Company/configManage/author_roleAdd.vue"),
-          meta: ["配置管理", "角色权限", "新增角色"],
+            import("../views/Company/configManage/account/role/details.vue"),
+          meta: ["配置管理", "角色权限", "角色编辑"],
         },
         // 配置管理-账号管理
         {
@@ -95,12 +95,6 @@ export default new VueRouter({
           component: () =>
             import("../views/Company/configManage/account/user/list.vue"),
           meta: ["配置管理", "账号管理"],
-        },
-        // 配置管理-公告记录
-        {
-          path: "configure_noticerecord",
-          component: () => import("../views/home/configure_noticerecord.vue"),
-          meta: ["配置管理", "公告记录"],
         },
         // 配置管理-充值配置
         {
@@ -129,6 +123,13 @@ export default new VueRouter({
           component: () =>
             import("../views/Company/configManage/version/details.vue"),
           meta: ["配置管理", "版本控制", "版本详情"],
+        },
+        // 配置管理-商户数据库
+        {
+          path: "merchant_database",
+          component: () =>
+            import("../views/Company/configManage/merchant/database.vue"),
+          meta: ["配置管理", "商户数据库"],
         },
 
         // 消息通知-公告记录
@@ -272,40 +273,47 @@ export default new VueRouter({
 
         // 商户管理-商户委托
         {
-          path: "merchant_entrustList",
+          path: "entrust_list",
           component: () => import("../views/Merchant/entrust/list.vue"),
           meta: ["商户管理", "商户委托"],
         },
         // 商户管理-商户委托-委托详情
         {
-          path: "merchant_entrustDetails",
+          path: "entrust_details",
           component: () => import("../views/Merchant/entrust/details.vue"),
           meta: ["商户管理", "商户委托", "委托详情"],
         },
 
+        // 商户管理-经营类别
+        {
+          path: "merchant_type",
+          component: () => import("../views/Merchant/store/type.vue"),
+          meta: ["商户管理", "商户委托"],
+        },
+
         // 商户管理-商户活动列表
         {
-          path: "merchant_activityList",
+          path: "activity_list",
           component: () => import("../views/Merchant/activity/list.vue"),
           meta: ["商户管理", "商户活动"],
         },
         // 商户管理-商户活动创建
         {
-          path: "merchant_activityCreate",
-          component: () => import("../views/Merchant/activity/create.vue"),
+          path: "activity_details",
+          component: () => import("../views/Merchant/activity/details.vue"),
           meta: ["商户管理", "商户活动"],
         },
 
         // 商户管理-优惠券列表
         {
-          path: "merchant_couponList",
+          path: "coupon_list",
           component: () => import("../views/Merchant/coupon/list.vue"),
           meta: ["商户管理", "优惠券列表"],
         },
         // 商户管理-优惠券创建
         {
-          path: "merchant_couponCreate",
-          component: () => import("../views/Merchant/coupon/create.vue"),
+          path: "coupon_details",
+          component: () => import("../views/Merchant/coupon/details.vue"),
           meta: ["商户管理", "优惠券列表", "创建优惠券"],
         },
 

@@ -79,7 +79,7 @@
 
 <script>
 import { getData, getDataList, addData } from "@/utils/api/apis";
-import { createGet } from "@/utils/common";
+import { createGet, hintMessage } from "@/utils/common";
 export default {
   mounted() {
     this.activeName = "apply";
@@ -111,7 +111,10 @@ export default {
       switch (this.activeName) {
         case "history":
           var form = { ...this.find_form };
-          getDataList(this.model, this.control, 1, form, this);
+          getData(this.model, this.control, 1, form).then((res) => {
+            hintMessage(this, res);
+            this.data_list = res.resultObject.data;
+          });
       }
     },
   },
@@ -124,15 +127,15 @@ export default {
 
     // 点击提交按钮
     sendSubmit() {
-      getData(this.model, this.control, 1, this.apply_form, "create").then(
-        (res) => {
-          switch (res.code) {
-            case "000000":
-              this.$message.success("申请成功！");
-              this.activeName = "history";
-          }
+      var form = { ...this.apply_form };
+      this.apply_form = {};
+      getData(this.model, this.control, 1, form, "create").then((res) => {
+        switch (res.code) {
+          case "000000":
+            this.$message.success("申请成功！");
+            this.activeName = "history";
         }
-      );
+      });
     },
 
     // 点击查看详情

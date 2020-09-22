@@ -22,8 +22,7 @@
       <el-table-column prop="describe" label="描述说明"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="showDetails(1,scope.row)">详情</el-button>
-          <el-button type="warning" size="small">修改</el-button>
+          <el-button type="warning" size="small" @click="showDetails(1,scope.row)">修改</el-button>
           <el-button type="danger" size="small" @click="delRow(scope.row.typeID)">删除</el-button>
         </template>
       </el-table-column>
@@ -34,7 +33,7 @@
       :title="operate==0?'添加类型':'类型详情'"
       :visible.sync="show_details"
       width="30%"
-      @close="closeDetails"
+      @closed="closeDetails"
     >
       <el-form label-width="80px" class="details_form">
         <!-- 基本类别 -->
@@ -44,7 +43,7 @@
             <el-select v-model="data_info.parentID">
               <el-option
                 v-for="item in data_list"
-                :key="item.name"
+                :key="item.typeID"
                 :label="item.name"
                 :value="item.typeID"
               ></el-option>
@@ -66,7 +65,7 @@
             <el-checkbox-group v-model="data_info.mediaSpecial">
               <el-checkbox
                 v-for="item in prop_special.media"
-                :key="item.value"
+                :key="item.majoKey"
                 :label="item.majoKey"
               >{{item.value}}</el-checkbox>
             </el-checkbox-group>
@@ -77,7 +76,7 @@
             <el-checkbox-group v-model="data_info.putSpecial">
               <el-checkbox
                 v-for="item in prop_special.put"
-                :key="item.value"
+                :key="item.majoKey"
                 :label="item.majoKey"
               >{{item.value}}</el-checkbox>
             </el-checkbox-group>
@@ -88,16 +87,16 @@
             <el-checkbox-group v-model="data_info.aiSpecial">
               <el-checkbox
                 v-for="item in AI_special"
-                :key="item.value"
+                :key="item.majoKey"
                 :label="item.majoKey"
               >{{item.value}}</el-checkbox>
             </el-checkbox-group>
           </div>
         </div>
         <el-form-item>
-          <el-button type="primary" v-if="operate==0" @click="sendSubmit">添加</el-button>
-          <el-button type="primary" v-else-if="operate==1">确定</el-button>
-          <el-button type="info" v-if="operate==1" @click="showDetails">取消</el-button>
+          <el-button type="primary" v-if="operate==0" @click="sendSubmit(0)">添加</el-button>
+          <el-button type="primary" v-else-if="operate==1" @click="sendSubmit(1)">确定</el-button>
+          <el-button type="info" @click="show_details=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -105,7 +104,7 @@
 </template>
 
 <script>
-import { getDataList, addData, delData } from "@/utils/api/apis";
+import { getDataList, addData, delData, updateData } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
   mounted() {
@@ -180,15 +179,16 @@ export default {
           );
           break;
       }
+      console.log(this.data_list);
 
       if (type) {
-        console.log(row);
         this.data_info = { ...row };
       }
     },
 
     // 提交添加
-    sendSubmit() {
+    sendSubmit(type) {
+      this.show_details = false;
       var form = { ...this.data_info };
       switch (this.model) {
         case "propHouse":
@@ -204,13 +204,20 @@ export default {
           delete form.putSpecial;
           break;
       }
-      addData(this.model, this.control, 1, form).then((res) => {
-        console.log(res);
-        this.show_details = false;
-        hintMessage(this, res);
-        var form = { ...this.find_form };
-        getDataList(this.model, this.control, 1, form, this);
-      });
+
+      if (type == 0) {
+        addData(this.model, this.control, 1, form).then((res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this);
+        });
+      } else {
+        updateData(this.model, this.control, 1, form).then((res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this);
+        });
+      }
     },
 
     change(type) {

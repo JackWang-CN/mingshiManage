@@ -5,7 +5,7 @@
 
     <el-form label-width="120px">
       <el-form-item label="商户名称">
-        <el-input v-model="data_info.name"></el-input>
+        <el-input v-model="data_info.merchantName"></el-input>
       </el-form-item>
 
       <el-form-item label="经营类型">

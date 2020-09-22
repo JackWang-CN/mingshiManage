@@ -5,7 +5,7 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="进行中委托" name="list"></el-tab-pane>
+      <el-tab-pane label="进行中委托" name="ongoing/list"></el-tab-pane>
       <el-tab-pane label="历史委托" name="history/list"></el-tab-pane>
     </el-tabs>
 
@@ -43,7 +43,7 @@
       <el-table-column label="操作" width="160">
         <template slot-scope="scope">
           <!-- 未处理阶段 -->
-          <span v-if="scope.row.phaseStatus=='待受理'">
+          <span v-if="scope.row.phaseStatus=='待受理'||!scope.row.phaseStatus">
             <el-button @click="switchOperate(scope.row.entrustID,0)" type="warning" size="small">处理</el-button>
             <el-button @click="switchOperate(scope.row.entrustID,1)" type="danger" size="small">拒绝</el-button>
           </span>
@@ -116,7 +116,7 @@ export default {
   mounted() {
     // 首次加载
     this.find_form = createGet();
-    this.activeName = "list";
+    this.activeName = "ongoing/list";
   },
 
   data() {
@@ -169,7 +169,7 @@ export default {
     switchOperate(entrustID, type) {
       if (type == 3) {
         this.$router.push({
-          path: "merchant_entrustDetails",
+          path: "entrust_details",
           query: {
             id: entrustID,
           },
@@ -178,6 +178,7 @@ export default {
         this.show_details = true;
         this.operate = type;
         this.data_info.entrustID = entrustID;
+        console.log(this.data_info);
       }
     },
 

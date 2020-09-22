@@ -84,7 +84,7 @@
 
       <el-form-item>
         <el-button type="primary" @click="sendLogin">提交</el-button>
-        <el-button type="info">取消</el-button>
+        <el-button type="info" @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -123,6 +123,11 @@ export default {
       this.data_info.startTime = date.startTime;
       this.data_info.endTime = date.endTime;
       console.log(this.data_info);
+    },
+
+    // 返回上一页
+    cancel() {
+      this.$router.push("coupon_list");
     },
   },
 };

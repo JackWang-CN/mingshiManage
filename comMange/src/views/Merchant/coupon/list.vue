@@ -100,7 +100,7 @@ export default {
   methods: {
     // 跳转到详情页
     toDetails() {
-      this.$router.push("merchant_couponCreate");
+      this.$router.push("coupon_details");
     },
   },
 };

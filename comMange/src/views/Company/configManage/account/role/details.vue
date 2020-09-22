@@ -3,18 +3,15 @@
   <div id="author_roleAdd" class="shadow_container">
     <div class="pageTitle">新增角色</div>
     <!-- 查询表单 -->
-    <el-form ref="add_role" :model="add_role" label-width="80px">
+    <el-form ref="data_info" :model="data_info" label-width="80px">
       <div>
         <el-form-item label="角色名称">
-          <el-input
-            v-model="add_role.name"
-            placeholder="请输入角色名称"
-          ></el-input>
+          <el-input v-model="data_info.name" placeholder="请输入角色名称"></el-input>
         </el-form-item>
         <el-form-item label="角色状态">
-          <el-select v-model="add_role.status" placeholder="请选择角色状态">
-            <el-option label="禁用" value="禁用"></el-option>
-            <el-option label="启用" value="启用"></el-option>
+          <el-select v-model="data_info.isEnable" placeholder="请选择角色状态">
+            <el-option label="禁用" :value="0"></el-option>
+            <el-option label="启用" :value="1"></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -50,26 +47,24 @@
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 10 }"
           placeholder="请输入内容"
-          v-model="add_role.description"
+          v-model="data_info.description"
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="createRole">立即创建</el-button>
-        <el-button type="danger" @click="cancleCreate">取消</el-button>
+        <el-button type="primary" @click="sendSubmit">立即创建</el-button>
+        <el-button type="danger" @click="cancle">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { addDataList } from "@/utils/api/apis";
 export default {
   data() {
     return {
-      add_role: {
-        name: "",
-        status: "",
-        description: "",
-      },
+      data_info: {},
+
       author_list: [
         { type: "首页", children_dom: ["首页"] },
         { type: "公告", children_dom: ["公告"] },
@@ -79,6 +74,9 @@ export default {
         { type: "客户管理", children_dom: ["客户管理"] },
       ],
       checkList: [],
+
+      model: "comUser",
+      control: "comUserRoleAuth",
     };
   },
   methods: {
@@ -86,28 +84,24 @@ export default {
       var index = this.checkList.indexOf(content);
       this.checkList.splice(index, 1);
     },
+
     // 创建角色
-    createRole() {},
+    sendSubmit() {
+      console.log(this.data_info);
+      addDataList(
+        this.model,
+        this.control,
+        1,
+        this.data_info,
+        this,
+        "role_list"
+      );
+    },
+
     // 取消创建
-    cancleCreate() {
-      this.$confirm("确认取消操作?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-          this.$router.push("author_roleList");
-        })
-        .catch(() => {
-          this.$message({
-            type: "success",
-            message: "已取消删除",
-          });
-        });
+    cancle() {
+      this.$message.info("操作取消");
+      this.$router.push("role_list");
     },
   },
 };

@@ -73,7 +73,7 @@ import {
   updateData,
   updateDataDetails,
 } from "@/utils/api/apis";
-import { createGet } from "@/utils/common";
+import { createGet, hintMessage } from "@/utils/common";
 export default {
   created() {
     this.entrustID = this.$route.query.id;
@@ -90,7 +90,6 @@ export default {
     );
 
     // 2.获取委托进度信息列表
-
     this.activeName = "current";
   },
 
@@ -148,21 +147,48 @@ export default {
   },
 
   methods: {
-    //   展示详情
+    // 展示详情
     showDetails() {
       this.show_details = true;
     },
 
     // 更新进度 0-当前 1-下一个阶段
     updateProgress(type) {
-      // 判断是保存当前进度，还是进入下一阶段
       var index = this.activeState;
-      if (type) {
-        index++;
-      }
       this.data_info.entrustID = this.entrustID;
       this.data_info.stateID = this.progress_list[index].stateID;
-      console.log(this.data_info);
+
+      // 判断是保存当前进度，还是进入下一阶段
+      if (type) {
+        index++;
+        this.data_info.nextStateID = this.progress_list[index].stateID;
+        var operate = "update/next";
+      } else {
+        var operate = "update";
+      }
+      var form = { ...this.data_info };
+      this.data_info = {};
+      updateData(this.model, this.control, 1, form, operate).then((res) => {
+        hintMessage(this, res);
+        getData(
+          this.model,
+          this.control,
+          1,
+          { value: this.entrustID },
+          "progress/current"
+        ).then((res) => {
+          this.activeObj = res.resultObject;
+          var phaseStatus = this.activeObj.phaseStatus;
+          // 获取当前的阶段名称，遍历所有阶段，取得当前阶段在所有阶段中的序号
+          this.progress_list.some((item, index) => {
+            if (item.stateName == phaseStatus) {
+              this.activeState = index;
+            }
+            // 满足条件终止循环
+            return item.stateName == phaseStatus;
+          });
+        });
+      });
     },
 
     // 终止委托
@@ -182,7 +208,7 @@ export default {
 
     // 返回上一页
     cancel() {
-      this.$router.push("merchant_entrustList");
+      this.$router.push("entrust_list");
     },
   },
 };

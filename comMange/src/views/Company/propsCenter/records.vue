@@ -43,7 +43,7 @@
     <!-- 表格 -->
     <el-table :data="data_list" border style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="tradeId" label="交易单号" width="120"></el-table-column>
+      <el-table-column prop="logID" label="交易单号" width="120"></el-table-column>
       <el-table-column prop="buyID" label="买家昵称" width="120"></el-table-column>
       <el-table-column prop="name" label="道具名称" width="120"></el-table-column>
       <el-table-column prop="propTypeID" label="道具类型" width="120">
@@ -59,6 +59,7 @@
       <el-table-column prop="propIco" label="道具缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar shape="square" :size="80" :src="scope.row.resId"></el-avatar>
+          {{scope.row.propIco}}
         </template>
       </el-table-column>
       <el-table-column prop="describe" label="描述" width="120"></el-table-column>
@@ -118,10 +119,9 @@ export default {
       },
       data_list: [],
       data_info: [],
-      control: "PropsCenterRecord",
       isShowDetails: false,
 
-      model: "prop",
+      model: "propMall",
       control: "propStoreDealLog",
     };
   },

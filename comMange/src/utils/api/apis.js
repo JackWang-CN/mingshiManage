@@ -2,7 +2,7 @@ import axios from "axios";
 import { createFormData } from "@/utils/common";
 
 // 设置基础地址
-// axios.defaults.baseURL = "http://192.168.0.89:9018";
+// axios.defaults.baseURL = "http://192.168.0.139:800";
 axios.defaults.baseURL = "https://api.company.scmsar.com/";
 
 /* 基础接口 */
@@ -85,6 +85,8 @@ export const getDataList = (
       operate == "managerType/list"
     ) {
       _this[key] = res.resultObject;
+
+      console.log(key, _this[key]);
       return;
     }
 
