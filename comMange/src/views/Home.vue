@@ -50,27 +50,20 @@
           <el-menu-item index="ar_list">AR资源管理</el-menu-item>
         </el-submenu>
 
-        <!-- 配置管理 -->
-        <el-submenu index="configure">
+        <!-- 活动管理 -->
+        <el-submenu index="activity">
           <template slot="title">
-            <i class="el-icon-s-tools"></i>
-            <span>配置管理</span>
+            <i class="el-icon-s-management"></i>
+            <span>活动管理</span>
           </template>
-          <el-menu-item index="role_list">角色管理</el-menu-item>
-          <el-menu-item index="user_list">账号管理</el-menu-item>
-          <el-menu-item index="recharge_list">充值配置</el-menu-item>
-          <el-menu-item index="version_list">版本控制</el-menu-item>
-          <el-menu-item index="merchant_database">商户数据库</el-menu-item>
-        </el-submenu>
-
-        <!-- 消息通知 -->
-        <el-submenu index="notice">
-          <template slot="title">
-            <i class="el-icon-message-solid"></i>
-            <span>消息通知</span>
-          </template>
-          <el-menu-item index="notice_list">公告记录</el-menu-item>
-          <el-menu-item index="push_list">推送记录</el-menu-item>
+          <el-menu-item index="activity_list">商户活动</el-menu-item>
+          <el-menu-item index="activity_type">活动类型</el-menu-item>
+          <el-menu-item index="coupon_list">优惠券</el-menu-item>
+          <el-menu-item index="coupon_type">优惠券类型</el-menu-item>
+          <!-- <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
+          <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
+          <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
+          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>-->
         </el-submenu>
 
         <!-- 商户管理 -->
@@ -83,9 +76,10 @@
           <el-menu-item index="merchant_check">商户审核</el-menu-item>
           <el-menu-item index="entrust_list">商户委托</el-menu-item>
           <el-menu-item index="merchant_type">经营类别</el-menu-item>
-          <el-menu-item index="activity_list">商户活动</el-menu-item>
+
           <el-menu-item index="merchant_merAdData">商户广告</el-menu-item>
-          <el-menu-item index="coupon_list">优惠券列表</el-menu-item>
+
+          <el-menu-item index="merchant_database">商户数据库</el-menu-item>
           <!-- <el-menu-item index="merchant_order">订单管理</el-menu-item> -->
           <!-- <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item> -->
           <!-- <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item> -->
@@ -104,6 +98,28 @@
           <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
           <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
           <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>-->
+        </el-submenu>
+
+        <!-- 公告管理 -->
+        <el-submenu index="notice">
+          <template slot="title">
+            <i class="el-icon-message-solid"></i>
+            <span>公告管理</span>
+          </template>
+          <el-menu-item index="notice_list">公告记录</el-menu-item>
+          <el-menu-item index="push_list">推送记录</el-menu-item>
+        </el-submenu>
+
+        <!-- 配置管理 -->
+        <el-submenu index="configure">
+          <template slot="title">
+            <i class="el-icon-s-tools"></i>
+            <span>配置管理</span>
+          </template>
+          <el-menu-item index="recharge_list">金币充值配置</el-menu-item>
+          <el-menu-item index="version_list">APP版本控制</el-menu-item>
+          <el-menu-item index="role_list">角色管理</el-menu-item>
+          <el-menu-item index="user_list">账号管理</el-menu-item>
         </el-submenu>
 
         <!-- 
@@ -188,10 +204,21 @@
 
 <script>
 export default {
+  created() {
+    var token = sessionStorage.getItem("token");
+    if (!token) {
+      this.$router.replace("/login");
+      this.$message.error("账号已注销，请重新登录！");
+    }
+    this.UserName = sessionStorage.getItem("userName");
+    this.circleUrl =
+      "https://api.resources.scmsar.com/file/download/source/v1?Mark=" +
+      sessionStorage.getItem("headImg");
+  },
+
   data() {
     return {
-      circleUrl:
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      circleUrl: "",
       dialogFormVisible: false,
       UserName: "未登录",
       changePwd: {
@@ -201,15 +228,7 @@ export default {
       },
     };
   },
-  created() {
-    var token = sessionStorage.getItem("token");
-    if (!token) {
-      this.$router.replace("/login");
-      this.$message.error("账号已注销，请重新登录！");
-    }
-    this.UserName = sessionStorage.getItem("userName");
-    this.circleUrl = sessionStorage.getItem("headImg");
-  },
+
   methods: {
     // 个人中心
     toPersonalCenter() {

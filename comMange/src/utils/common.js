@@ -1,13 +1,13 @@
 /* 公共方法 */
 
-const fileUrl = "http://192.168.0.89:9001/f1/FileResources/";
+const fileUrl =
+  "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
 
-// 拼接文件URL
-export const spliceUrl = (arr, imgKey) => {
+// 拼接图片URL
+export const spliceImg = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
-      item.originally = item[imgKey];
-      item[imgKey] = fileUrl + "DownLoad?pathtemp=" + item[imgKey];
+      item.imgUrl = fileUrl + item[imgKey];
     }
   });
   return arr;

@@ -1,10 +1,7 @@
 <template>
   <div id="props_list" class="shadow_container">
     <!-- 道具列表 -->
-    <div class="pageTitle">
-      道具列表
-      <el-button type="success" @click="toDetails()">添加</el-button>
-    </div>
+    <div class="pageTitle">道具列表</div>
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
@@ -22,7 +19,7 @@
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
           <el-option
             v-for="item in type_list"
-            :key="item.name"
+            :key="item.typeID"
             :label="item.name"
             :value="item.typeID"
           ></el-option>
@@ -40,6 +37,7 @@
       <!-- 按钮组 -->
       <el-form-item class="btns_find">
         <el-button type="primary" @click="findData">查询</el-button>
+        <el-button type="success" @click="toDetails()">添加道具</el-button>
       </el-form-item>
     </el-form>
 
@@ -53,18 +51,24 @@
           <span v-else-if="scope.row.typeID==3">AR宠物</span>
         </template>-->
       </el-table-column>
+      <el-table-column prop="isShelfPropMall" label="上架状态" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isShelfPropMall">上架中</span>
+          <span v-else>未上架</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="isEnable" label="道具状态" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.isEnable=1">上架中</span>
-          <span v-else-if="scope.row.isEnable=0">已下架</span>
+          <span v-if="scope.row.isEnable=1">启用</span>
+          <span v-else>禁用</span>
         </template>
       </el-table-column>
       <el-table-column prop="facadeImageID" label="道具缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar shape="square" :size="80" :src="scope.row.rpmico"></el-avatar>
+          <el-avatar shape="square" :size="80" :src="scope.row.imgUrl"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="道具描述" width="120"></el-table-column>
+      <el-table-column prop="describe" label="道具描述" width="300"></el-table-column>
       <el-table-column prop="createTime" label="上架时间" width="170"></el-table-column>
       <el-table-column prop="validityTimestamp" label="有效期限" width="170">
         <template slot-scope="scope">
@@ -76,12 +80,12 @@
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row.propID)" type="primary" size="small">修改</el-button>
           <el-button
-            v-show="!scope.row.isEnable"
+            v-if="!scope.row.isShelfPropMall"
             @click="onshelve(scope.row.propID)"
             type="success"
             size="small"
           >上架</el-button>
-          <el-button @click="delRow(scope.row.propID)" type="danger" size="small">删除</el-button>
+          <!-- <el-button @click="delRow(scope.row.propID)" type="danger" size="small">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -97,8 +101,14 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceKey, filteObj, hintMessage } from "@/utils/common";
-import { getDataList, updateData, delData } from "@/utils/api/apis";
+import {
+  createGet,
+  spliceKey,
+  filteObj,
+  hintMessage,
+  spliceImg,
+} from "@/utils/common";
+import { getDataList, addData, delData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -126,7 +136,7 @@ export default {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
+      // form.data = spliceKey(form.data);
       getDataList(this.model, this.control, 1, form, this);
     },
 
@@ -143,7 +153,7 @@ export default {
 
     // 道具上架
     onshelve(propID) {
-      updateData(this.model, this.control, 1, { propID }, "enable").then(
+      addData(this.model, this.control, 1, { propID }, "onShelf").then(
         (res) => {
           if (res) {
             hintMessage(this, res);
@@ -190,7 +200,8 @@ export default {
       // 请求不同分支道具
       this.model = this.activeName;
       this.control = this.activeName;
-      this.find_form = createGet();
+      this.find_form.currPage = 1;
+      this.find_form.data = {};
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
       // 请求不同分支道具类型
@@ -202,6 +213,11 @@ export default {
         this,
         "type_list"
       );
+    },
+
+    // 拼接图片url
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "facadeImageID");
     },
   },
 };

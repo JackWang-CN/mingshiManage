@@ -1,7 +1,7 @@
 <!-- 用户管理 -->
 <template>
   <div id="author_user" class="shadow_container">
-    <div class="pageTitle">用户管理</div>
+    <div class="pageTitle">账号管理</div>
     <!-- 查询表单 -->
     <el-form class="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
@@ -39,6 +39,12 @@
     <!-- 角色列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="name" label="昵称" width="150"></el-table-column>
+      <el-table-column prop="imgUrl" label="头像" width="150">
+        <template slot-scope="scope">
+          <el-avatar :size="80" :src="scope.row.imgUrl" shape="square"></el-avatar>
+        </template>
+      </el-table-column>
       <el-table-column prop="account" label="用户名" width="150"></el-table-column>
       <el-table-column prop="isEnable" label="用户状态" width="100">
         <template slot-scope="scope">{{ scope.row.isEnable == "1" ? "禁用" : "启用" }}</template>
@@ -48,12 +54,18 @@
       <el-table-column prop="isAdministrator" label="用户级别" width="120">
         <template slot-scope="scope">{{ scope.row.isAdministrator == "1" ? "超级管理员" : "普通用户" }}</template>
       </el-table-column>
-      <el-table-column prop="realName" label="真实姓名" width="120"></el-table-column>
+      <el-table-column prop="trueName" label="真实姓名" width="120"></el-table-column>
       <el-table-column prop="idCard" label="身份证号" width="250"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" width="250"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="showDetails('1',scope.row)" type="primary" size="small">编辑</el-button>
-          <el-button @click="delRow(scope.row)" type="danger" size="small">删除</el-button>
+          <el-button
+            v-if="!scope.row.isAdministrator"
+            @click="delRow(scope.row)"
+            type="danger"
+            size="small"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +110,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceKey, filteObj } from "@/utils/common";
+import { createGet, spliceKey, filteObj, spliceImg } from "@/utils/common";
 import { getDataList, addData, delData, updateData } from "@/utils/api/apis";
 export default {
   components: {
@@ -237,6 +249,12 @@ export default {
         _like_realName: "",
         _like_idCard: "",
       };
+    },
+  },
+
+  watch: {
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "headIco");
     },
   },
 };

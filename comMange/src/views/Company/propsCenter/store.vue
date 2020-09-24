@@ -17,9 +17,12 @@
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
-          <el-option label="户型风格" :value="1"></el-option>
-          <el-option label="屋内道具" :value="2"></el-option>
-          <el-option label="AR宠物" :value="3"></el-option>
+          <el-option
+            v-for="type in type_list"
+            :key="type.typeID"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
           <el-option label="全部" value></el-option>
         </el-select>
       </el-form-item>
@@ -55,10 +58,10 @@
       </el-table-column>
       <el-table-column prop="facadeImageID" label="道具缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar shape="square" :size="80" :src="scope.row.rpmico"></el-avatar>
+          <el-avatar shape="square" :size="80" :src="scope.row.imgUrl"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="道具描述" width="120"></el-table-column>
+      <el-table-column prop="describe" label="道具描述" width="300"></el-table-column>
       <el-table-column prop="onShelfTime" label="上架时间" width="170"></el-table-column>
       <el-table-column prop="validityTimestamp" label="有效期限" width="170">
         <template slot-scope="scope">
@@ -68,8 +71,7 @@
       </el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
-          <el-button @click="toDetails" type="info" size="small" disabled>详情</el-button>
-          <el-button @click="unshelve(scope.row.propID)" type="warning" size="small">下架</el-button>
+          <el-button @click="unshelve(scope.row.storeID)" type="danger" size="small">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,7 +87,13 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceKey, filteObj, hintMessage } from "@/utils/common";
+import {
+  createGet,
+  spliceKey,
+  filteObj,
+  hintMessage,
+  spliceImg,
+} from "@/utils/common";
 import { getDataList, updateData, delData } from "@/utils/api/apis";
 export default {
   components: {
@@ -101,6 +109,7 @@ export default {
       find_form: { data: {} },
       data_list: [],
       select_list: [], // 选中的列表
+      type_list: [],
       activeName: "",
 
       model: "propMall",
@@ -114,8 +123,16 @@ export default {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
-      getDataList(this.model, this.control, 1, form, this);
+      // form.data = spliceKey(form.data);
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        form,
+        this,
+        "data_list",
+        this.activeName
+      );
     },
 
     // 跳转到详情页
@@ -130,16 +147,28 @@ export default {
     },
 
     // 道具下架
-    unshelve(propID) {
-      updateData(this.model, this.control, 1, { propID }, "disable").then(
-        (res) => {
-          if (res) {
-            hintMessage(this, res);
-            var form = { ...this.find_form };
-            getDataList(this.model, this.control, 1, form, this);
-          }
+    unshelve(storeID) {
+      delData(
+        this.model,
+        this.control,
+        1,
+        { storeID, describe: "下架" },
+        "offTheShelf"
+      ).then((res) => {
+        if (res) {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(
+            this.model,
+            this.control,
+            1,
+            form,
+            this,
+            "data_list",
+            this.activeName + "List"
+          );
         }
-      );
+      });
     },
 
     // 重置
@@ -158,19 +187,48 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      delete form.totalDataNum;
-      getDataList(this.model, this.control, 1, form, this);
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        form,
+        this,
+        "data_list",
+        this.activeName + "List"
+      );
     },
   },
 
   watch: {
     // 监听激活页面以请求不同数据
     activeName() {
-      // this.model = this.activeName;
-      // this.control = this.activeName;
-      this.find_form = createGet();
       var form = { ...this.find_form };
-      getDataList(this.model, this.control, 1, form, this);
+
+      // 请求商城道具列表
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        form,
+        this,
+        "data_list",
+        this.activeName + "List"
+      );
+
+      // 请求道具类型
+      getDataList(
+        this.activeName,
+        this.activeName + "Type",
+        1,
+        createGet(1, 99),
+        this,
+        "type_list"
+      );
+    },
+
+    // 拼接图片url
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "facadeImageID");
     },
   },
 };

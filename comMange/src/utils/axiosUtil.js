@@ -12,7 +12,6 @@ axios.interceptors.request.use((req) => {
   }
   req.headers.ClientPlatform = "web";
   req.headers.ClientScene = "company";
-
   return req;
 });
 

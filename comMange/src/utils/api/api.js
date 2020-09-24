@@ -1,7 +1,7 @@
 /* 接口封装 */
 
 import axios from "axios";
-import { spliceUrl } from "../common";
+import { spliceImg } from "../common";
 
 const getData = (version, control, action, info) => {
   var url = version + "/" + control + "/" + action;
@@ -65,7 +65,7 @@ export const getDataList = (
         if (result.data) {
           // 判断是否需要拼接Url
           if (imgArr.includes(control)) {
-            _this[list] = spliceUrl(result.data, imgKey);
+            _this[list] = spliceImg(result.data, imgKey);
           } else {
             _this[list] = result.data;
           }
@@ -78,7 +78,7 @@ export const getDataList = (
       if (data) {
         // 判断是否需要拼接Url
         if (imgArr.includes(control)) {
-          _this[list] = spliceUrl(data, imgKey);
+          _this[list] = spliceImg(data, imgKey);
         } else {
           _this[list] = data;
         }
@@ -96,7 +96,7 @@ export const getDetailsInfo = (version, control, info, list, _this, imgKey) => {
   getData(version, control, action, info).then((res) => {
     var res = res.resultObject;
     if (imgArr.includes(control)) {
-      _this[list] = spliceUrl([res], imgKey)[0];
+      _this[list] = spliceImg([res], imgKey)[0];
     } else {
       _this[list] = res;
     }
@@ -165,7 +165,7 @@ export const getFile = (type, info) => {
 export const getFileList = (type, info, list, _this, imgKey) => {
   getFile(type, info).then((res) => {
     _this.find_form.totalDataNum = res.totalDataNum;
-    _this[list] = spliceUrl(res.data, imgKey);
+    _this[list] = spliceImg(res.data, imgKey);
   });
 };
 

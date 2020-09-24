@@ -19,11 +19,11 @@
     <!-- 角色列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="roleGrName" label="角色名称" width="150"></el-table-column>
+      <el-table-column prop="name" label="角色名称" width="150"></el-table-column>
       <el-table-column label="角色权限" width="300">
         <template slot-scope="scope">{{ scope.row.roleList }}</template>
       </el-table-column>
-      <el-table-column prop="creationTime" label="创建时间" width="180"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="toDetails(scope.row)" type="primary" size="small">编辑</el-button>

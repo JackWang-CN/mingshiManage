@@ -3,12 +3,6 @@
     <!-- 普通资源列表 -->
     <div class="pageTitle">普通资源列表</div>
 
-    <!-- tab分页 -->
-    <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="公共资源" name="common"></el-tab-pane>
-      <el-tab-pane label="用户资源" name="user"></el-tab-pane>
-    </el-tabs>
-
     <!-- 查询表单 -->
     <el-form :model="find_form" class="find_form" label-width="80px">
       <!-- 查询条件 -->
@@ -152,7 +146,7 @@ export default {
 
     // 禁用文件
     disableRow(resID) {
-      disableFile(1, { resID }).then((res) => {
+      disableFile(1, 1, { resID }).then((res) => {
         switch (res.code) {
           case "000000":
             this.$message.info("已禁用");
@@ -165,7 +159,7 @@ export default {
 
     // 恢复禁用
     enableRow(resId) {
-      enableFile(1, { resId }).then((res) => {
+      enableFile(1, 1, { resId }).then((res) => {
         switch (res.code) {
           case "000000":
             var form = { ...this.find_form };

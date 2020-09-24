@@ -124,39 +124,32 @@ export default new VueRouter({
             import("../views/Company/configManage/version/details.vue"),
           meta: ["配置管理", "版本控制", "版本详情"],
         },
-        // 配置管理-商户数据库
-        {
-          path: "merchant_database",
-          component: () =>
-            import("../views/Company/configManage/merchant/database.vue"),
-          meta: ["配置管理", "商户数据库"],
-        },
 
-        // 消息通知-公告记录
+        // 公告管理-公告记录
         {
           path: "notice_list",
           component: () => import("../views/Company/notice/notice/list.vue"),
-          meta: ["消息通知", "公告记录"],
+          meta: ["公告管理", "公告记录"],
         },
 
-        // 消息通知-公告记录-公告详情
+        // 公告管理-公告记录-公告详情
         {
           path: "notice_details",
           component: () => import("../views/Company/notice/notice/details.vue"),
-          meta: ["消息通知", "公告记录", "公告详情"],
+          meta: ["公告管理", "公告记录", "公告详情"],
         },
 
-        // 消息通知-推送记录
+        // 公告管理-推送记录
         {
           path: "push_list",
           component: () => import("../views/Company/notice/push/list.vue"),
-          meta: ["消息通知", "推送记录"],
+          meta: ["公告管理", "推送记录"],
         },
-        // 消息通知-推送记录-推送详情
+        // 公告管理-推送记录-推送详情
         {
           path: "push_details",
           component: () => import("../views/Company/notice/push/details.vue"),
-          meta: ["消息通知", "推送记录", "推送详情"],
+          meta: ["公告管理", "推送记录", "推送详情"],
         },
 
         // 拍卖行-拍卖列表
@@ -303,18 +296,30 @@ export default new VueRouter({
           component: () => import("../views/Merchant/activity/details.vue"),
           meta: ["商户管理", "商户活动"],
         },
+        // 商户管理-商户活动类型
+        {
+          path: "activity_type",
+          component: () => import("../views/Merchant/activity/type.vue"),
+          meta: ["商户管理", "活动类型"],
+        },
 
-        // 商户管理-优惠券列表
+        // 活动管理-优惠券列表
         {
           path: "coupon_list",
           component: () => import("../views/Merchant/coupon/list.vue"),
           meta: ["商户管理", "优惠券列表"],
         },
-        // 商户管理-优惠券创建
+        // 活动管理-优惠券创建
         {
           path: "coupon_details",
           component: () => import("../views/Merchant/coupon/details.vue"),
           meta: ["商户管理", "优惠券列表", "创建优惠券"],
+        },
+        // 活动管理-优惠券类型
+        {
+          path: "coupon_type",
+          component: () => import("../views/Merchant/coupon/type.vue"),
+          meta: ["商户管理", "优惠券类型"],
         },
 
         // 商户广告数据管理
@@ -322,6 +327,13 @@ export default new VueRouter({
           path: "merchant_merAdData",
           component: () => import("../views/Merchant/merchant_merAdData.vue"),
           meta: ["商户管理", "商户广告数据管理"],
+        },
+
+        // 商户管理-商户数据库
+        {
+          path: "merchant_database",
+          component: () => import("../views/Merchant/merchant/database.vue"),
+          meta: ["配置管理", "商户数据库"],
         },
 
         // 订单管理

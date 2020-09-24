@@ -44,7 +44,7 @@
       @selection-change="select"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="goodstID" label="商品ID" width="200" sortable></el-table-column>
+      <el-table-column prop="goodstNumber" label="商品编号" width="150" sortable></el-table-column>
       <el-table-column prop="name" label="商品名称" width="150" sortable></el-table-column>
       <el-table-column prop="imageID" label="商品图片" width="150"></el-table-column>
       <el-table-column prop="describe" label="详情描述" width="300"></el-table-column>
@@ -72,6 +72,9 @@
     <!-- 弹出框 -->
     <el-dialog title="商品详情" :visible.sync="show_details" width="20%" @closed="clear">
       <el-form label-width="100px" id="details_form">
+        <el-form-item label="商品编号">
+          <el-input v-model="data_info.goodsNumber"></el-input>
+        </el-form-item>
         <el-form-item label="商品名称">
           <el-input v-model="data_info.name"></el-input>
         </el-form-item>
@@ -79,12 +82,12 @@
           <el-input type="textarea" :rows="4" v-model="data_info.describe"></el-input>
         </el-form-item>
         <el-form-item label="商品类型">
-          <el-select v-model="data_info.goodsTypeID">
+          <el-select v-model="data_info.goodsTypeNumber">
             <el-option
               v-for="type in type_list"
               :key="type.typeID"
               :label="type.namePath"
-              :value="type.typeID"
+              :value="type.typeNumber"
             ></el-option>
           </el-select>
         </el-form-item>

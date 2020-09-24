@@ -9,8 +9,8 @@
     <!-- 查询表单 -->
     <el-form :model="find_form" class="find_form" label-width="100px">
       <!-- 查询条件 -->
-      <el-form-item label="文件后缀">
-        <el-input v-model="find_form.data.resExtName" placeholder="如：jpg"></el-input>
+      <el-form-item label="模型名称">
+        <el-input v-model="find_form.data.showResourceName"></el-input>
       </el-form-item>
       <el-form-item label="是否禁用">
         <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
@@ -49,9 +49,14 @@
       <el-table-column prop="showResourceName" label="模型名称" width="150"></el-table-column>
       <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
       <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
-      <el-table-column prop="rpmico" label="资源缩略图" width="120">
+      <el-table-column prop="mainImageID" label="资源缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
+          <el-avatar
+            v-if="scope.row.mainImageID"
+            :size="80"
+            :src="fileUrl+'ar2d/v1?Mark='+scope.row.mainImageID"
+            shape="square"
+          ></el-avatar>
         </template>
       </el-table-column>
       <el-table-column prop="resExtName" label="资源后缀名" width="100"></el-table-column>
@@ -79,7 +84,7 @@
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl+'file/download/u3d/v1?Mark='+scope.row.resID"
+            :href="fileUrl+'aru3d/v1?Mark='+scope.row.resID"
           >下载文件</el-link>
         </template>
       </el-table-column>
@@ -102,7 +107,7 @@ import {
   disableFile,
   enableFile,
 } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey } from "@/utils/common";
+import { createGet, filteObj, spliceKey, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -129,7 +134,7 @@ export default {
       isShowDetails: false, // 是否显示详情
       delType: 2,
 
-      fileUrl: "https://api.resources.scmsar.com/",
+      fileUrl: "https://api.resources.scmsar.com/file/download/",
     };
   },
 
@@ -139,7 +144,7 @@ export default {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
+      // form.data = spliceKey(form.data);
       if (form.data.resExtName) {
         form.data.resExtName = "." + form.data.resExtName;
       }
@@ -149,7 +154,7 @@ export default {
 
     // 禁用文件
     disableRow(resID) {
-      disableFile(1, { resID }).then((res) => {
+      disableFile(2, 1, { resID }).then((res) => {
         switch (res.code) {
           case "000000":
             this.$message.info("已禁用");
@@ -162,7 +167,7 @@ export default {
 
     // 恢复禁用
     enableRow(resId) {
-      enableFile(1, { resId }).then((res) => {
+      enableFile(2, 1, { resId }).then((res) => {
         switch (res.code) {
           case "000000":
             var form = { ...this.find_form };

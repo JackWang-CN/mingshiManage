@@ -8,12 +8,7 @@
       <el-form-item label="角色名称">
         <el-input v-model="find_form.name"></el-input>
       </el-form-item>
-      <el-form-item label="角色状态">
-        <el-select v-model="find_form.enable" placeholder="请选择角色状态">
-          <el-option label="禁用" value="1"></el-option>
-          <el-option label="启用" value="0"></el-option>
-        </el-select>
-      </el-form-item>
+
       <!-- 按钮组 -->
       <el-form-item>
         <el-button type="primary" @click="findData">查询角色</el-button>

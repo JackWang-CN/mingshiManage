@@ -3,13 +3,13 @@
   <div id="activity_list" class="shadow_container">
     <div class="pageTitle">
       活动列表
-      <el-button type="success" @click="toDetails">创建活动</el-button>
+      <el-button type="success" @click="toDetails()">创建活动</el-button>
     </div>
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="进行中活动" name="propHouse"></el-tab-pane>
-      <el-tab-pane label="历史活动" name="propHouse"></el-tab-pane>
+      <el-tab-pane label="进行中活动" name="0"></el-tab-pane>
+      <el-tab-pane label="历史活动" name="1"></el-tab-pane>
     </el-tabs>
 
     <!-- 查询条件 -->
@@ -34,22 +34,39 @@
 
     <!-- 数据列表 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="aname" label="活动名称" width="150"></el-table-column>
-      <el-table-column prop="rpmtype" label="活动类型" width="100">
+      <el-table-column prop="merchantName" label="商户名称" width="150"></el-table-column>
+      <el-table-column prop="name" label="活动名称" width="200"></el-table-column>
+      <el-table-column prop="activityIcoID" label="活动图标" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.rpmtype==1">优惠券</span>
-          <span v-else-if="scope.row.rpmtype==2">道具</span>
-          <span v-else-if="scope.row.rpmtype==3">虚拟房产</span>
+          <el-avatar :size="80" :src="scope.row.imgUrl" shape="square"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="anum" label="数量" width="120"></el-table-column>
-      <el-table-column prop="aunitp" label="价格" width="120"></el-table-column>
-      <el-table-column prop="infoDes" label="活动描述" width="200"></el-table-column>
-      <el-table-column prop="expireTime" label="到期时间" width="160"></el-table-column>
-      <el-table-column prop="creationtime" label="创建时间" width="160"></el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column prop="activityTypeName" label="活动类型" width="100"></el-table-column>
+      <el-table-column prop="isEnable" label="状态" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isEnable==1">正常</span>
+          <span v-else-if="scope.row.isEnable==2">已过期</span>
+          <span v-else>停止</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="describe" label="活动描述" width="300"></el-table-column>
+      <el-table-column prop="startTime" label="开始时间" width="180"></el-table-column>
+      <el-table-column prop="endTime" label="结束时间" width="180"></el-table-column>
+      <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
+          <el-button
+            v-if="scope.row.isEnable==1"
+            @click="toDetails(scope.row.activityID)"
+            type="danger"
+            size="small"
+          >停止</el-button>
+          <el-button
+            v-else-if="scope.row.isEnable==0"
+            @click="toDetails(scope.row.activityID)"
+            type="success"
+            size="small"
+          >启动</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,16 +81,15 @@
     <!-- 弹出框 -->
     <el-dialog title="道具详情" :visible.sync="show_details" width="50%">
       <el-form label-width="100px">
-        <el-form-item label="物品名称">{{data_info.aname}}</el-form-item>
-        <el-form-item label="道具类型">{{data_info.rpmtype}}</el-form-item>
-        <el-form-item label="活动数量">{{data_info.anum}}</el-form-item>
-        <el-form-item label="拍品单价">{{data_info.aunitp}}</el-form-item>
-        <el-form-item label="拍品描述">{{data_info.infoDes}}</el-form-item>
-        <el-form-item label="上架时间">{{data_info.listingTime}}</el-form-item>
-        <el-form-item label="到期时间">{{data_info.expireTime}}</el-form-item>
-        <el-form-item label="卖家昵称">{{data_info.owner}}</el-form-item>
-        <el-form-item label="道具图片">
-          <el-avatar :size="80" :src="data_info.rpmico" shape="square"></el-avatar>
+        <el-form-item label="商户名称">{{data_info.merchantName}}</el-form-item>
+        <el-form-item label="活动名称">{{data_info.name}}</el-form-item>
+        <el-form-item label="活动类型">{{data_info.activityTypeName}}</el-form-item>
+        <el-form-item label="活动描述">{{data_info.describe}}</el-form-item>
+        <el-form-item label="状态">{{data_info.isEnable}}</el-form-item>
+        <el-form-item label="开始时间">{{data_info.startTime}}</el-form-item>
+        <el-form-item label="结束时间">{{data_info.endTime}}</el-form-item>
+        <el-form-item label="活动图标">
+          <el-avatar :size="120" :src="data_info.imgUrl" shape="square"></el-avatar>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -85,8 +101,8 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getDataList } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey } from "@/utils/common";
+import { getDataDetail, getDataList } from "@/utils/api/apis";
+import { createGet, filteObj, spliceKey, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -96,7 +112,7 @@ export default {
     this.find_form = createGet();
     var form = { ...this.find_form };
 
-    this.activeName = "";
+    this.activeName = "0";
   },
 
   data() {
@@ -108,8 +124,9 @@ export default {
 
       activeName: "",
       show_details: false,
-      model: "",
-      control: "",
+      model: "activity",
+      control: "activityManage",
+      operate: "getMerActivityList",
     };
   },
 
@@ -129,19 +146,15 @@ export default {
       // 1.打开模态框
       this.show_details = true;
       // 2.请求详情数据并渲染
-      getDataDetail(
-        this.model,
-        this.control,
-        1,
-        { assetsId },
-        this,
-        "data_info"
-      );
+      this.data_info = { ...row };
     },
 
     // 跳转到详情页
-    toDetails() {
-      this.$router.push("activity_details");
+    toDetails(id) {
+      this.$router.push({
+        path: "activity_details",
+        query: { id },
+      });
     },
 
     // 重置
@@ -160,8 +173,37 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      delete form.totalDataNum;
-      getDataList(this.model, this.control, 1, form, this, "data_list");
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        this.find_form,
+        this,
+        "data_list",
+        this.operate
+      );
+    },
+  },
+
+  watch: {
+    // 监听tab切换
+    activeName() {
+      this.find_form.currPage = 1;
+      this.find_form.data.isHistory = this.activeName;
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        this.find_form,
+        this,
+        "data_list",
+        this.operate
+      );
+    },
+
+    // 拼接图片url
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "activityIcoID");
     },
   },
 };

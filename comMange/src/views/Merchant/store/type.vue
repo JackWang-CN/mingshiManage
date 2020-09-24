@@ -38,7 +38,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="经验范围">
+        <el-form-item label="经营范围">
           <el-input v-model="data_info.range" type="textarea" :rows="3"></el-input>
         </el-form-item>
 

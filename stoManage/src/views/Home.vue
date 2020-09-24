@@ -130,7 +130,7 @@ export default {
       nav_list: [
         { name: "首页", haveChildren: false, url: "index", isActive: false },
         {
-          name: "商家活动",
+          name: "我的活动",
           haveChildren: true,
           showChildren: false,
           children: [

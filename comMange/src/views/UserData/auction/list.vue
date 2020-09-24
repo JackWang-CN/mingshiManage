@@ -29,9 +29,9 @@
     <el-table :data="data_list" border>
       <el-table-column prop="propName" label="拍品名称" width="150"></el-table-column>
 
-      <el-table-column prop="rpmico" label="拍品图片" width="120">
+      <el-table-column prop="imgUrl" label="拍品图片" width="120">
         <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.rpmico" shape="square"></el-avatar>
+          <el-avatar :size="80" :src="scope.row.imgUrl" shape="square"></el-avatar>
         </template>
       </el-table-column>
       <el-table-column prop="assetType" label="道具类型" width="100">
@@ -95,7 +95,13 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { getDataList, getDataDetails, offTheShelf } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey, hintMessage } from "@/utils/common";
+import {
+  createGet,
+  filteObj,
+  spliceKey,
+  hintMessage,
+  spliceImg,
+} from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -175,6 +181,12 @@ export default {
       var form = { ...this.find_form };
       delete form.totalDataNum;
       getDataList(this.model, this.control, 1, form, this, "data_list");
+    },
+  },
+
+  watch: {
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "facadeImageID");
     },
   },
 };

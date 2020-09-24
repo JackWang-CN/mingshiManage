@@ -67,6 +67,10 @@ export const getDataList = (
   operate = "list"
 ) => {
   getData(model, control, version, info, operate).then((res) => {
+    if (_this.find_form) {
+      _this.find_form.totalDataNum = res.resultObject.totalDataNum;
+    }
+
     switch (res.code) {
       case "C00501":
         _this.$message.info(res.resultMessage);
@@ -91,10 +95,6 @@ export const getDataList = (
     }
 
     _this[key] = res.resultObject.data;
-
-    if (_this.find_form) {
-      _this.find_form.totalDataNum = res.resultObject.totalDataNum;
-    }
   });
 };
 
@@ -119,9 +119,11 @@ export const getDataDetails = (
   version,
   info,
   _this,
-  key = "data_info"
+  key = "data_info",
+  operate = "details"
 ) => {
-  getDetails(model, control, version, info).then((res) => {
+  getDetails(model, control, version, info, operate).then((res) => {
+    console.log(res);
     switch (res.code) {
       case "000000":
         _this[key] = res.resultObject;
@@ -199,19 +201,39 @@ export const downloadFile = (type, version, resId) => {
   return axios.get(url);
 };
 
-// 4.文件禁用
-export const disableFile = (version, info) => {
-  var url = fileUrl + `file/info/disable/v${version}`;
+// 4.文件禁用 type: 1-普通资源 2-AR模型资源 3-AR媒体资源
+export const disableFile = (type, version, info) => {
+  switch (type) {
+    case 1:
+      var url = fileUrl + `file/info/disable/v${version}`;
+      break;
+    case 2:
+      var url = fileUrl + `file/info/u3dDisable/v${version}`;
+      break;
+    case 3:
+      var url = fileUrl + `file/info/ar2dDisable/v${version}`;
+      break;
+  }
   return axios.delete(url, { data: info });
 };
 
-// 5.文件恢复
-export const enableFile = (version, info) => {
-  var url = fileUrl + `file/info/enable/v${version}`;
+// 5.文件恢复 type: 1-普通资源 2-AR模型资源 3-AR媒体资源
+export const enableFile = (type, version, info) => {
+  switch (type) {
+    case 1:
+      var url = fileUrl + `file/info/enable/v${version}`;
+      break;
+    case 2:
+      var url = fileUrl + `file/info/u3dEnable/v${version}`;
+      break;
+    case 3:
+      var url = fileUrl + `file/info/ar2dEnable/v${version}`;
+      break;
+  }
   return axios.patch(url, info);
 };
 
-// 8.文件上传 type: 1-账号资源 2-公共资源 3-AR资源
+// 6.文件上传 type: 1-账号资源 2-公共资源 3-AR模型资源 4-AR媒体资源
 export const uploadFiles = (
   type, // 文件类型
   version, // 版本
@@ -229,7 +251,10 @@ export const uploadFiles = (
       var path = `file/upload/common/v${version}?Remarks=${parameter1}`;
       break;
     case 3:
-      var path = `file/upload/u3d/v${version}?ShowResourceName=${parameter1}&&Remarks=${parameter2}`;
+      var path = `file/upload/aru3d/v${version}?ShowResourceName=${parameter1}&&Remarks=${parameter2}`;
+      break;
+    case 4:
+      var path = `file/upload/ar2d/v${version}?IsMain=${parameter1}&&MainARResID=${parameter2}`;
       break;
   }
   var url = fileUrl + path;

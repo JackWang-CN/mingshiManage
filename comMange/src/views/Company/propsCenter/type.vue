@@ -17,7 +17,6 @@
 
     <!-- 列表 -->
     <el-table :data="data_list" tooltip-effect="dark" border>
-      <el-table-column prop="typeID" label="分类ID" width="200"></el-table-column>
       <el-table-column prop="name" label="分类名称" width="200"></el-table-column>
       <el-table-column prop="describe" label="描述说明"></el-table-column>
       <el-table-column label="操作">

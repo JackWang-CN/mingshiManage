@@ -5,39 +5,44 @@
     <!-- 活动发布 -->
     <el-form id="activity_form" label-width="100px">
       <el-form-item label="活动名称">
-        <el-input v-model="apply_form.name"></el-input>
+        <el-input v-model="data_info.name"></el-input>
       </el-form-item>
 
       <el-form-item label="发起人类型">
-        <el-select v-model="apply_form.agentType">
+        <el-select v-model="data_info.agentType">
           <el-option label="联合活动" value="1"></el-option>
           <el-option label="商家活动" value="2"></el-option>
         </el-select>
       </el-form-item>
       <!-- 备注：活动的类型取决于活动发起人类型，需要监听活动发起人类型的值，以请求不同值对应的不同活动类型列表。 -->
       <el-form-item label="活动类型">
-        <el-select v-model="apply_form.activtyTypeID">
-          <el-option label="联合活动" value="1"></el-option>
-          <el-option label="商家活动" value="2"></el-option>
+        <el-select v-model="data_info.activityTypeID">
+          <el-option
+            v-for="type in type_list"
+            :key="type.typeID"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="绑定委托">
-        <el-select v-model="apply_form.entrustID">
-          <el-option label="委托1" value="CODE0001"></el-option>
-          <el-option label="委托2" value="2"></el-option>
+        <el-select v-model="data_info.entrustID">
+          <el-option
+            v-for="item in entrust_list"
+            :key="item.entrustID"
+            :label="item.theme"
+            :value="item.entrustID"
+          ></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="活动期限:">
-        <el-date-picker
-          @change="dateChange"
-          v-model="select_date"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
+      <el-form-item label="开始时间">
+        <el-date-picker v-model="data_info.startTime" type="datetime" placeholder="选择日期"></el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="结束时间">
+        <el-date-picker v-model="data_info.endTime" type="datetime" placeholder="选择日期"></el-date-picker>
       </el-form-item>
 
       <el-form-item label="活动图片">
@@ -53,14 +58,15 @@
         <el-button type="success" @click="uploadImg" size="small">上传</el-button>
       </el-form-item>
       <el-form-item label="3D模型">
-        <span>{{select_model.name}}</span>
         <el-button type="primary" size="small" @click="showModel">选择模型</el-button>
+        <span>模型名称：{{data_info.resName}}</span>
+        <!-- <el-avatar :size="80" :src shape="square"></el-avatar> -->
       </el-form-item>
       <el-form-item label="活动描述:">
-        <el-input type="textarea" v-model="apply_form.describe" :rows="5"></el-input>
+        <el-input type="textarea" v-model="data_info.describe" :rows="5"></el-input>
       </el-form-item>
       <el-form-item label="活动内容:">
-        <el-input type="textarea" v-model="apply_form.content" :rows="5"></el-input>
+        <el-input type="textarea" v-model="data_info.content" :rows="5"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -76,56 +82,106 @@
 
     <!-- 弹出框-模型列表 -->
     <el-dialog title="选择模型" :visible.sync="show_model">
-      <el-form>
-        <el-form-item>
-          <!-- 模型列表 -->
-          <ul>
-            <li>最近上传模型：</li>
-            <li
-              v-for="(item,index) in model_list"
-              :key="index"
-              @click="selectModel(item.resID)"
-            >{{item.resID}}1</li>
-          </ul>
-        </el-form-item>
-        <el-form-item>
-          <div>已选模型</div>
-          <el-tag
-            v-for="(tag,index) in select_model"
-            :key="tag"
-            closable
-            @close="unSelect(index)"
-          >{{tag}}</el-tag>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="checkModel">确定</el-button>
-          <el-button @click="show_model=false">取消</el-button>
-        </el-form-item>
-      </el-form>
+      <!-- 模型 -->
+      <ul id="model_list">
+        <li
+          v-for="(model,index) in model_list"
+          :key="index"
+          @click="selectModel(model)"
+        >{{model.showResourceName}}</li>
+      </ul>
+      <!-- 分页插件 -->
+      <Pagination
+        :find="find_form"
+        @sizeChange="pageChange('size', $event)"
+        @currChange="pageChange('curr', $event)"
+      ></Pagination>
+      <!-- 标签 -->
+      <div class="select_model">
+        <span>已选择</span>
+        <el-tag
+          closable
+          v-if="select_model.showResourceName"
+          @close="unSelect"
+        >{{select_model.showResourceName}}</el-tag>
+      </div>
+      <!-- 操作 -->
+      <el-button type="primary" size="small" @click="confirmModel">确认</el-button>
+      <el-button size="small" @click="show_model=false">取消</el-button>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import Pagination from "@/components/Pagination";
 import { createGet, switchDateList } from "@/utils/common";
-import { updateDataDetails, getFileList, uploadFiles } from "@/utils/api/apis";
+import {
+  getDataList,
+  getDataDetails,
+  updateDataDetails,
+  getFileList,
+  uploadFiles,
+} from "@/utils/api/apis";
 export default {
+  components: {
+    Pagination,
+  },
   mounted() {
+    // 1.请求活动类型
+    getDataList(
+      this.model,
+      this.model + "Type",
+      1,
+      createGet(1, 999),
+      this,
+      "type_list",
+      "activityTypeList"
+    );
+
+    // 2.请求委托列表
+    this.find_form = createGet();
+    getDataList(
+      "merchant",
+      "merEntrustActivity",
+      1,
+      this.find_form,
+      this,
+      "entrust_list",
+      "ongoing/list"
+    );
+
+    var activityID = this.$route.query.id;
+    // 如果是修改就请求当前数据详情
+    if (activityID) {
+      this.operate = 1;
+      getDataDetails(
+        this.model,
+        this.control,
+        1,
+        { activityID },
+        this,
+        "data_info",
+        "getMerActivityDetail"
+      );
+    }
+
     this.activeName = "apply";
     this.find_form = createGet();
   },
 
   data() {
     return {
+      operate: 0,
       // 申请援助数据对象
-      apply_form: {},
+      data_info: {},
       // 搜索数据对象
       find_form: {},
       // 上传的图片列表
       img_list: [],
-
+      type_list: [], // 活动类型列表
       // 模型列表
       model_list: [],
+      entrust_list: [], // 委托列表
 
       // 选中的模型列表
       select_model: [],
@@ -147,14 +203,11 @@ export default {
       this.showMore = !this.showMore;
     },
 
-    // 点击显示模型按钮
+    // 打开模型列表框
     showModel() {
-      // 1.打开弹出框
       this.show_model = true;
-      var form = { ...this.find_form };
-      form.data.isArRes = 1;
-      // 2.请求模型列表并展示
-      getFileList(undefined, 1, form, this, "model_list");
+      this.find_form = createGet();
+      getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
     },
 
     // 点击模型添加到选中列表
@@ -168,13 +221,21 @@ export default {
 
     // 点击模型标签的X，取消选中模型
     unSelect(index) {
-      this.select_model.splice(index, 1);
+      this.select_model = {};
     },
 
-    // 确认模型
-    checkModel() {
+    // 确认选择
+    confirmModel() {
+      if (this.select_model.resID) {
+        this.data_info.resID = this.select_model.resID;
+        this.data_info.resName = this.select_model.showResourceName;
+        this.data_info.facadeImageID = this.select_model.mainImageID;
+      } else {
+        this.data_info.resID = "";
+        this.data_info.resName = "";
+        this.data_info.facadeImageID = "";
+      }
       this.show_model = false;
-      this.apply_form.resID = this.select_model;
     },
 
     // 文件状态改变
@@ -210,7 +271,7 @@ export default {
         switch (res.code) {
           case "000000":
             this.$message.success("上传成功！");
-            this.apply_form.activtyIcoID = res.resultObject;
+            this.data_info.activtyIcoID = res.resultObject[0].resID;
         }
       });
     },
@@ -229,33 +290,24 @@ export default {
       }
     },
 
+    // 点击选中模型
+    selectModel(mode) {
+      this.select_model = { ...mode };
+    },
+
     //  点击提交按钮
     sendSubmit() {
-      console.log(this.apply_form);
+      console.log(this.data_info);
 
       updateDataDetails(
         this.model,
         this.control,
         1,
-        this.apply_form,
+        this.data_info,
         this,
-        "merchant_activityList",
+        "activity_list",
         "createActivityInfo"
       );
-      // updateData(
-      //   this.model,
-      //   this.control,
-      //   1,
-      //   this.apply_form,
-      //   "createActivityInfo"
-      // ).then((res) => {
-      //   console.log(res);
-      //   switch (res.code) {
-      //     case "000000":
-      //       this.$message.success("活动创建成功！");
-      //       this.$router.push("merchant_activityList");
-      //   }
-      // });
     },
 
     // 时间选择器值改变
@@ -264,8 +316,21 @@ export default {
         return;
       }
       var date = switchDateList(this.select_date);
-      this.apply_form.startTime = date.startTime;
-      this.apply_form.endTime = date.endTime;
+      this.data_info.startTime = date.startTime;
+      this.data_info.endTime = date.endTime;
+    },
+
+    // 分页属性改变
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
     },
   },
 };
@@ -280,6 +345,30 @@ export default {
       .el-textarea {
         width: 300px;
       }
+    }
+  }
+
+  // 模型列表
+  #model_list {
+    margin-bottom: 20px;
+    li {
+      padding: 10px;
+      margin: 5px;
+      display: inline-block;
+      background-color: rgb(230, 230, 230);
+      border-radius: 5px;
+      cursor: pointer;
+      &:hover {
+        color: #409eff;
+      }
+    }
+  }
+
+  .select_model {
+    margin: 20px 0;
+    span {
+      margin-right: 10px;
+      line-height: 32px;
     }
   }
 }

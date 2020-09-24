@@ -77,16 +77,39 @@ export default {
     // 发送请求
     async sendSubmit() {
       var { ShowResourceName, Remarks } = this.data_info;
+      var flag = true;
+
       // 1.上传AR资源
-      var res = await uploadFiles(
-        3,
-        1,
-        this.file_ar,
-        ShowResourceName,
-        Remarks
-      );
-      var { resID } = res.resultObject[0];
-      console.log(resID);
+      if (this.file_ar.length > 0) {
+        var arRes = await uploadFiles(
+          3,
+          1,
+          this.file_ar,
+          ShowResourceName,
+          Remarks
+        );
+        if (arRes.code !== "000000") flag = false;
+      } else {
+        this.$message.error("请先添加模型文件");
+        return;
+      }
+
+      var { resID } = arRes.resultObject[0];
+      // 2.上传主图、子图
+      if (this.img_main.length > 0) {
+        var mainRes = await uploadFiles(4, 1, this.img_main, true, resID);
+        if (mainRes.code !== "000000") flag = false;
+      }
+      if (this.img_children.length > 0) {
+        var childRes = await uploadFiles(4, 1, this.img_children, false, resID);
+        if (childRes.code !== "000000") flag = false;
+      }
+
+      // 3.根据标杆做提示
+      if (flag) {
+        this.$message.success("上传成功！");
+        this.$router.push("ar_list");
+      }
     },
 
     // 取消
