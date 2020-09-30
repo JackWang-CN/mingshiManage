@@ -25,9 +25,18 @@
             <span>道具商城</span>
           </template>
           <el-menu-item index="props_store">商城道具</el-menu-item>
+          <el-menu-item index="props_records">交易记录</el-menu-item>
+        </el-submenu>
+
+        <!-- 道具管理 -->
+        <el-submenu index="props_manage">
+          <template slot="title">
+            <i class="el-icon-shopping-cart-2"></i>
+            <span>道具管理</span>
+          </template>
           <el-menu-item index="props_list">道具列表</el-menu-item>
           <el-menu-item index="props_type">道具类型</el-menu-item>
-          <el-menu-item index="props_records">交易记录</el-menu-item>
+          <el-menu-item index="house_style">房屋风格</el-menu-item>
         </el-submenu>
 
         <!-- 拍卖行 -->
@@ -151,13 +160,18 @@
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
           <el-breadcrumb-item>
             <div
-              style="margin-right:10px;font-weight:bold;font-size:15px;display:inline-block"
-            >当前位置:</div>
+              style="
+                margin-right: 10px;
+                font-weight: bold;
+                font-size: 15px;
+                display: inline-block;
+              "
+            >
+              当前位置:
+            </div>
           </el-breadcrumb-item>
           <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">
-            {{
-            v
-            }}
+            {{ v }}
           </el-breadcrumb-item>
         </el-breadcrumb>
 
@@ -167,29 +181,54 @@
           <el-dropdown placement="top" trigger="hover" :hide-on-click="true">
             <el-avatar :size="50" :src="circleUrl"></el-avatar>
             <el-dropdown-menu slot="dropdown" class="dropdown_menu">
-              <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
-              <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
-              <el-dropdown-item @click.native="logout">注销登录</el-dropdown-item>
+              <el-dropdown-item @click.native="toPersonalCenter"
+                >个人中心</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="changePassword"
+                >修改密码</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="logout"
+                >注销登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
 
         <!-- 弹出框 -->
-        <el-dialog title="修改密码" :visible.sync="dialogFormVisible" id="change_password" width="30%">
+        <el-dialog
+          title="修改密码"
+          :visible.sync="dialogFormVisible"
+          id="change_password"
+          width="30%"
+        >
           <el-form :model="changePwd">
             <el-form-item label="原密码" label-width="100px">
-              <el-input v-model="changePwd.old_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.old_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
             <el-form-item label="新密码" label-width="100px">
-              <el-input v-model="changePwd.new_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.new_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
             <el-form-item label="确认密码" label-width="100px">
-              <el-input v-model="changePwd.check_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.check_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false"
+              >确 定</el-button
+            >
           </div>
         </el-dialog>
       </el-header>

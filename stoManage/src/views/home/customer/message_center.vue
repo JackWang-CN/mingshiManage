@@ -11,38 +11,45 @@
           <li
             v-for="item in data_list"
             :key="item.headIco"
-            @click="switchCustomer(item,$event)"
-            :class="item.isActive?'active':''"
+            @click="switchCustomer(item, $event)"
+            :class="item.isActive ? 'active' : ''"
           >
-            <el-avatar :size="50" :src="item.headIco" shape="square"></el-avatar>
+            <el-avatar
+              :size="50"
+              :src="item.headIco"
+              shape="square"
+            ></el-avatar>
             <div class="chat">
               <!-- 昵称 -->
-              <span class="nickname">{{item.nickname}}</span>
+              <span class="nickname">{{ item.nickname }}</span>
               <!-- 消息 -->
-              <span class="message" v-if="item.draft&&!item.isActive">
+              <span class="message" v-if="item.draft && !item.isActive">
                 <span>[草稿]</span>
-                {{item.draft}}
+                {{ item.draft }}
               </span>
-              <span
-                class="message"
-                v-else-if="!item.draft||item.isActive"
-              >{{item.message[item.message.length-1].content}}</span>
+              <span class="message" v-else-if="!item.draft || item.isActive">{{
+                item.message[item.message.length - 1].content
+              }}</span>
             </div>
           </li>
         </ul>
       </el-aside>
       <!-- 会话窗口 -->
       <el-main>
-        <h3>{{data_info.nickname}}</h3>
+        <h3>{{ data_info.nickname }}</h3>
         <div class="chat_details">
           <ul class="message_box">
             <li
-              v-for="(item,index) in data_info.message"
+              v-for="(item, index) in data_info.message"
               :key="index"
-              :class="item.type==0?'send':''"
+              :class="item.type == 0 ? 'send' : ''"
             >
-              <el-avatar :size="50" :src="item.type==0?my_headIco:data_info.headIco" shape="square"></el-avatar>
-              <p :class="item.type==0?'send':''">{{item.content}}</p>
+              <el-avatar
+                :size="50"
+                :src="item.type == 0 ? my_headIco : data_info.headIco"
+                shape="square"
+              ></el-avatar>
+              <p :class="item.type == 0 ? 'send' : ''">{{ item.content }}</p>
             </li>
           </ul>
           <!-- 输入框 -->
@@ -57,15 +64,28 @@
 </template>
 
 <script>
-import "@/utils/api/imApi";
+// import "@/utils/api/imApi";
+import { getDataList } from "@/utils/api/apis";
 export default {
   mounted() {
     this.my_headIco = sessionStorage.getItem("headImg");
+
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      {},
+      this,
+      "data_list",
+      "merChatList"
+    );
   },
 
   data() {
     return {
       my_headIco: "",
+      model: "social",
+      control: "chatLog",
 
       data_info: {},
       data_list: [
@@ -157,6 +177,7 @@ export default {
 
     // 发送消息
     sendMessage() {
+      console.log(this.data_info);
       var content = this.data_info.draft;
       var nickname = this.data_info.nickname;
       var create = new Date().toJSON();
@@ -173,8 +194,12 @@ export default {
           break;
         }
       }
-
       this.data_info.draft = "";
+    },
+
+    // 测试
+    printA(v) {
+      console.log("测试成功", v);
     },
   },
 };

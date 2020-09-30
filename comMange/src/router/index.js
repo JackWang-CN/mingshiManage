@@ -31,29 +31,38 @@ export default new VueRouter({
           component: () => import("../views/Company/propsCenter/store.vue"),
           meta: ["道具商城", "商城道具"],
         },
-        // 道具商城-列表
-        {
-          path: "props_list",
-          component: () => import("../views/Company/propsCenter/list.vue"),
-          meta: ["道具商城", "道具列表"],
-        },
-        // 道具商城-详情
-        {
-          path: "props_details",
-          component: () => import("../views/Company/propsCenter/details.vue"),
-          meta: ["道具商城", "道具列表", "道具详情"],
-        },
-        // 道具商城-类型
-        {
-          path: "props_type",
-          component: () => import("../views/Company/propsCenter/type.vue"),
-          meta: ["道具商城", "道具类型"],
-        },
-        // 道具商城-记录
+
+        // 道具商城-交易记录
         {
           path: "props_records",
           component: () => import("../views/Company/propsCenter/records.vue"),
           meta: ["道具商城", "交易记录"],
+        },
+
+        // 道具管理-道具列表
+        {
+          path: "props_list",
+          component: () => import("../views/Company/propsCenter/list.vue"),
+          meta: ["道具管理", "道具列表"],
+        },
+        // 道具管理-详情
+        {
+          path: "props_details",
+          component: () => import("../views/Company/propsCenter/details.vue"),
+          meta: ["道具管理", "道具列表", "道具详情"],
+        },
+        // 道具管理-类型
+        {
+          path: "props_type",
+          component: () => import("../views/Company/propsCenter/type.vue"),
+          meta: ["道具管理", "道具类型"],
+        },
+        // 道具管理-房屋风格
+        {
+          path: "house_style",
+          component: () =>
+            import("../views/Company/propsCenter/house_style.vue"),
+          meta: ["道具管理", "房屋风格"],
         },
 
         // 资源管理-普通资源

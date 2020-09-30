@@ -38,11 +38,19 @@
       </el-form-item>
 
       <el-form-item label="开始时间">
-        <el-date-picker v-model="data_info.startTime" type="datetime" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+          v-model="data_info.startTime"
+          type="datetime"
+          placeholder="选择日期"
+        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="结束时间">
-        <el-date-picker v-model="data_info.endTime" type="datetime" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+          v-model="data_info.endTime"
+          type="datetime"
+          placeholder="选择日期"
+        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="活动图片">
@@ -55,18 +63,30 @@
         >
           <el-button size="small" type="primary">选择图片</el-button>
         </el-upload>
-        <el-button type="success" @click="uploadImg" size="small">上传</el-button>
+        <el-button type="success" @click="uploadImg" size="small"
+          >上传</el-button
+        >
       </el-form-item>
       <el-form-item label="3D模型">
-        <el-button type="primary" size="small" @click="showModel">选择模型</el-button>
-        <span>模型名称：{{data_info.resName}}</span>
+        <el-button type="primary" size="small" @click="showModel"
+          >选择模型</el-button
+        >
+        <span>模型名称：{{ data_info.resName }}</span>
         <!-- <el-avatar :size="80" :src shape="square"></el-avatar> -->
       </el-form-item>
       <el-form-item label="活动描述:">
-        <el-input type="textarea" v-model="data_info.describe" :rows="5"></el-input>
+        <el-input
+          type="textarea"
+          v-model="data_info.describe"
+          :rows="5"
+        ></el-input>
       </el-form-item>
       <el-form-item label="活动内容:">
-        <el-input type="textarea" v-model="data_info.content" :rows="5"></el-input>
+        <el-input
+          type="textarea"
+          v-model="data_info.content"
+          :rows="5"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -85,10 +105,12 @@
       <!-- 模型 -->
       <ul id="model_list">
         <li
-          v-for="(model,index) in model_list"
+          v-for="(model, index) in model_list"
           :key="index"
           @click="selectModel(model)"
-        >{{model.showResourceName}}</li>
+        >
+          {{ model.showResourceName }}
+        </li>
       </ul>
       <!-- 分页插件 -->
       <Pagination
@@ -103,11 +125,14 @@
           closable
           v-if="select_model.showResourceName"
           @close="unSelect"
-        >{{select_model.showResourceName}}</el-tag>
+          >{{ select_model.showResourceName }}</el-tag
+        >
       </div>
       <!-- 操作 -->
-      <el-button type="primary" size="small" @click="confirmModel">确认</el-button>
-      <el-button size="small" @click="show_model=false">取消</el-button>
+      <el-button type="primary" size="small" @click="confirmModel"
+        >确认</el-button
+      >
+      <el-button size="small" @click="show_model = false">取消</el-button>
     </el-dialog>
   </div>
 </template>
@@ -147,7 +172,7 @@ export default {
       this.find_form,
       this,
       "entrust_list",
-      "ongoing/list"
+      "getDelegationList"
     );
 
     var activityID = this.$route.query.id;

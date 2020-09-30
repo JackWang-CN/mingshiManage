@@ -6,7 +6,11 @@
 
     <!-- 查询条件 -->
     <div class="search">
-      <el-input v-model="find_form.info" placeholder="主题、描述、客户经理" prefix-icon="el-icon-search"></el-input>
+      <el-input
+        v-model="find_form.info"
+        placeholder="主题、描述、客户经理"
+        prefix-icon="el-icon-search"
+      ></el-input>
       <el-button type="primary" @click="showDetails(0)">创建分类</el-button>
     </div>
 
@@ -16,16 +20,29 @@
       row-key="code"
       border
       default-expand-all
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column prop="name" label="分类名称" sortable width="150"></el-table-column>
-      <el-table-column prop="namePath" label="分类路径" sortable width="200"></el-table-column>
-      <el-table-column prop="typeID" label="分类ID" sortable width="180"></el-table-column>
+      <el-table-column
+        prop="name"
+        label="分类名称"
+        sortable
+        width="150"
+      ></el-table-column>
       <el-table-column prop="describe" label="分类描述"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="showDetails(1,scope.row)">编辑</el-button>
-          <el-button size="small" type="danger" @click="delRow(1,scope.row.typeID)">删除</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            @click="showDetails(1, scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            size="small"
+            type="danger"
+            @click="delRow(1, scope.row.typeID)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -35,30 +52,26 @@
       title="添加类型"
       :visible.sync="show_details"
       id="details_form"
-      width="30%"
       @closed="clear"
     >
       <el-form label-width="80px">
-        <!-- <el-form-item label-width="80px" label="所属分类">
-          <el-select v-model="data_info.large_name" placeholder="请选择分类">
-            <el-option label="食品" value="1"></el-option>
-            <el-option label="日用" value="2"></el-option>
-            <el-option label="新增父类" value="0"></el-option>
-          </el-select>
-        </el-form-item>-->
-
-        <el-form-item label="分类路径">
-          <el-input v-model="data_info.name" placeholder="请输入分类名称"></el-input>
-        </el-form-item>
         <el-form-item label="分类名称">
-          <el-input v-model="data_info.namePath" placeholder="请输入分类名称"></el-input>
+          <el-input
+            v-model="data_info.name"
+            placeholder="请输入分类名称"
+          ></el-input>
         </el-form-item>
+
         <el-form-item label="分类描述">
-          <el-input type="textarea" v-model="data_info.describe" placeholder="请输入分类描述"></el-input>
+          <el-input
+            type="textarea"
+            v-model="data_info.describe"
+            placeholder="请输入分类描述"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">确 定</el-button>
-          <el-button @click="show_details=false">取 消</el-button>
+          <el-button @click="show_details = false">取 消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -66,8 +79,8 @@
     <!-- 分页插件 -->
     <pagination
       :find="find_form"
-      @sizeChange="pageChange('size',$event)"
-      @currChange="pageChange('curr',$event)"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
     ></pagination>
   </div>
 </template>

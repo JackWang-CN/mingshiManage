@@ -5,20 +5,18 @@
 
     <!-- 上方盒子 -->
     <div class="top">
-      <h2>总金币：{{gold_total}}</h2>
+      <h2>总金币：{{ gold_total }}</h2>
       <div class="btns">
         <el-button size="medium" type="primary">充值</el-button>
         <el-button size="medium">提现</el-button>
       </div>
       <div class="income">
-        <span>当日收入：{{income_day.incomeAmount}}</span>
-        <span>当日支出：{{income_day.expenditureAmount}}</span>
-        <span>总计收入：{{income_day.glodAmount}}</span>
+        <span>当日收入：{{ income_day.incomeAmount }}</span>
+        <span>总计收入：{{ income_day.glodAmount }}</span>
       </div>
       <div class="income">
-        <span>当月收入：{{income_month.incomeAmount}}</span>
-        <span>当月支出：{{income_month.expenditureAmount}}</span>
-        <span>总计收入：{{income_month.glodAmount}}</span>
+        <span>当月收入：{{ income_month.incomeAmount }}</span>
+        <span>总计收入：{{ income_month.glodAmount }}</span>
       </div>
     </div>
 
@@ -31,33 +29,53 @@
 
       <!-- 表格 -->
       <el-table :data="data_list" border>
-        <el-table-column prop="accountFlowID" label="订单号" width="200"></el-table-column>
-        <el-table-column prop="traderName" label="客户名称" width="180"></el-table-column>
+        <el-table-column
+          prop="accountFlowID"
+          label="订单号"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="traderName"
+          label="客户名称"
+          width="180"
+        ></el-table-column>
         <el-table-column prop="goldAmount" label="金币数量">
-          <template
-            slot-scope="scope"
-          >{{scope.row.incomeExpensesType==0?'+':'-'}}{{scope.row.goldAmount}}</template>
+          <template slot-scope="scope"
+            >{{ scope.row.incomeExpensesType == 0 ? "+" : "-"
+            }}{{ scope.row.goldAmount }}</template
+          >
         </el-table-column>
         <el-table-column prop="incomeExpensesType" label="收支类型">
-          <template slot-scope="scope">{{scope.row.incomeExpensesType==0?'收入':'支出'}}</template>
+          <template slot-scope="scope">{{
+            scope.row.incomeExpensesType == 0 ? "收入" : "支出"
+          }}</template>
         </el-table-column>
         <el-table-column prop="payMethod" label="支付方式"></el-table-column>
         <el-table-column prop="describe" label="备注"></el-table-column>
         <el-table-column prop="tradeTime" label="创建时间"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="warning" size="small" @click="addMark(scope.row)">备注</el-button>
+            <el-button type="warning" size="small" @click="addMark(scope.row)"
+              >备注</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 提示 -->
-      <p class="tips">提现规则：金币按照自然月结算，下一个提现日是2020-09-01。</p>
+      <p class="tips">
+        提现规则：金币按照自然月结算，下一个提现日是2020-09-01。
+      </p>
     </div>
 
     <!-- 备注-弹出框 -->
     <el-dialog title="备注" :visible.sync="showMark" width="30%">
-      <el-input type="textarea" placeholder="输入备注" :rows="4" v-model="remark"></el-input>
+      <el-input
+        type="textarea"
+        placeholder="输入备注"
+        :rows="4"
+        v-model="remark"
+      ></el-input>
 
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="showMark = false">确 定</el-button>

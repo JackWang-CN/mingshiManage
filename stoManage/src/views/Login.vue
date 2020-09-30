@@ -5,7 +5,12 @@
       名视商户营销平台
     </div>
     <div class="center">
-      <el-form class="loginForm" :model="loginForm" :rules="rules" ref="loginForm">
+      <el-form
+        class="loginForm"
+        :model="loginForm"
+        :rules="rules"
+        ref="loginForm"
+      >
         <h2>登录</h2>
         <!-- 商户名 -->
         <el-form-item prop="merchantName">
@@ -21,7 +26,11 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="passWord">
-          <el-input placeholder="请输入您的密码" v-model="loginForm.passWord" show-password>
+          <el-input
+            placeholder="请输入您的密码"
+            v-model="loginForm.passWord"
+            show-password
+          >
             <i slot="prefix" class="el-input__icon iconfont icon-lock"></i>
           </el-input>
         </el-form-item>
@@ -34,7 +43,9 @@
           <a href>忘记密码？</a>
         </div>
         <!-- 登录按钮 -->
-        <el-button class="btn_login" @click="submitLogin('loginForm')">立即登录</el-button>
+        <el-button class="btn_login" @click="submitLogin('loginForm')"
+          >立即登录</el-button
+        >
       </el-form>
     </div>
   </div>
@@ -91,6 +102,7 @@ export default {
     // 登录
     submitLogin(form) {
       this.$refs[form].validate((valid) => {
+        console.log(valid);
         // 表单验证
         if (valid) {
           // 滑动验证
@@ -111,6 +123,7 @@ export default {
 
               switch (res.code) {
                 case "000000":
+                  this.loading = false;
                   clearTimeout(timer);
                   var data = res.resultObject.result;
                   var token = data.accessToken,
@@ -123,7 +136,6 @@ export default {
                   sessionStorage.setItem("userName", userName);
                   sessionStorage.setItem("userId", userId);
                   sessionStorage.setItem("merchantname", merchantname);
-                  this.loading = false;
                   this.$message.success("登录成功");
                   this.$router.replace("home");
                   break;

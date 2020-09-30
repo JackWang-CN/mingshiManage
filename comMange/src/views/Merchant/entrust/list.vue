@@ -12,10 +12,16 @@
     <!-- 查询条件 -->
     <el-form class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="请求编号" label-width="100px">
-        <el-input v-model="find_form.data.reqId" placeholder="请输入请求编号"></el-input>
+        <el-input
+          v-model="find_form.data.reqId"
+          placeholder="请输入请求编号"
+        ></el-input>
       </el-form-item>
       <el-form-item label="客户经理" label-width="100px">
-        <el-input v-model="find_form.data.customManager" placeholder="请输入客户经理"></el-input>
+        <el-input
+          v-model="find_form.data.customManager"
+          placeholder="请输入客户经理"
+        ></el-input>
       </el-form-item>
       <el-form-item label="创建时间" label-width="100px">
         <el-date-picker
@@ -30,67 +36,137 @@
       </el-form-item>
     </el-form>
     <!-- 商户列表 -->
-    <el-table :data="data_list" border style="width: 100%" @selection-change="select">
+    <el-table
+      :data="data_list"
+      border
+      style="width: 100%"
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="entrustID" label="委托编号" width="120"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="150"></el-table-column>
-      <el-table-column prop="theme" label="委托主题" width="200"></el-table-column>
-      <el-table-column prop="content" label="委托描述" width="300"></el-table-column>
-      <el-table-column prop="phaseStatus" label="阶段状态" width="150"></el-table-column>
-      <el-table-column prop="applyTime" label="申请时间" width="200"></el-table-column>
-      <el-table-column prop="finishTime" label="完成时间" width="200"></el-table-column>
-      <el-table-column prop="managerName" label="客户经理" width="120"></el-table-column>
+      <el-table-column
+        prop="entrustID"
+        label="委托编号"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="theme"
+        label="委托主题"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="content"
+        label="委托描述"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="phaseStatus"
+        label="阶段状态"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="applyTime"
+        label="申请时间"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="finishTime"
+        label="完成时间"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="managerName"
+        label="客户经理"
+        width="120"
+      ></el-table-column>
       <el-table-column label="操作" width="160">
         <template slot-scope="scope">
           <!-- 未处理阶段 -->
-          <span v-if="scope.row.phaseStatus=='待受理'||!scope.row.phaseStatus">
-            <el-button @click="switchOperate(scope.row.entrustID,0)" type="warning" size="small">处理</el-button>
-            <el-button @click="switchOperate(scope.row.entrustID,1)" type="danger" size="small">拒绝</el-button>
+          <span
+            v-if="scope.row.phaseStatus == '待受理' || !scope.row.phaseStatus"
+          >
+            <el-button
+              @click="switchOperate(scope.row.entrustID, 0)"
+              type="warning"
+              size="small"
+              >处理</el-button
+            >
+            <el-button
+              @click="switchOperate(scope.row.entrustID, 1)"
+              type="danger"
+              size="small"
+              >拒绝</el-button
+            >
           </span>
           <!-- 已接受未完成阶段 -->
           <span v-if="update_list.includes(scope.row.phaseStatus)">
             <el-button
-              @click="switchOperate(scope.row.entrustID,3)"
+              @click="switchOperate(scope.row.entrustID, 3)"
               type="success"
               size="small"
-            >更新进度</el-button>
+              >更新进度</el-button
+            >
           </span>
           <!-- 待回访阶段 -->
-          <span v-if="scope.row.phaseStatus=='终止'">
-            <el-button @click="switchOperate(scope.row.entrustID,3)" type="warning" size="small">回访</el-button>
+          <span v-if="scope.row.phaseStatus == '终止'">
+            <el-button
+              @click="switchOperate(scope.row.entrustID, 3)"
+              type="warning"
+              size="small"
+              >回访</el-button
+            >
           </span>
           <!-- 回访已完成 -->
-          <span v-if="scope.row.phaseStatus=='回访'">
+          <span
+            v-if="
+              scope.row.phaseStatus == '回访' || scope.row.phaseStatus == '中止'
+            "
+          >
             <el-button
-              @click="switchOperate(scope.row.entrustID,3)"
+              @click="switchOperate(scope.row.entrustID, 3)"
               type="primary"
               size="small"
-            >查看记录</el-button>
+              >查看记录</el-button
+            >
           </span>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 弹出框 -->
-    <el-dialog title="委托处理" :visible.sync="show_details" width="30%" @close="closeOperate">
+    <el-dialog
+      title="委托处理"
+      :visible.sync="show_details"
+      width="30%"
+      @close="closeOperate"
+    >
       <el-form label-width="80px">
-        <el-form-item label="任务分配" v-show="this.operate==0">
+        <el-form-item label="任务分配" v-show="this.operate == 0">
           <el-radio-group v-model="data_info.managerID" @change="selectManger">
             <el-radio
               v-for="item in manager_list"
               :key="item.managerID"
               :label="item.managerID"
-            >{{item.managerName}}</el-radio>
+              >{{ item.managerName }}</el-radio
+            >
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="拒绝理由" v-show="this.operate==1">
-          <el-input type="textarea" v-model="data_info.describe" :rows="5"></el-input>
+        <el-form-item label="拒绝理由" v-show="this.operate == 1">
+          <el-input
+            type="textarea"
+            v-model="data_info.describe"
+            :rows="5"
+          ></el-input>
         </el-form-item>
 
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">确认</el-button>
-          <el-button type="info" @click="show_details=false">取消</el-button>
+          <el-button type="info" @click="show_details = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

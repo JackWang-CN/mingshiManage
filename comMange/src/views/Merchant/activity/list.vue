@@ -13,12 +13,23 @@
     </el-tabs>
 
     <!-- 查询条件 -->
-    <el-form ref="find_form" class="find_form" :model="find_form" label-width="80px">
+    <el-form
+      ref="find_form"
+      class="find_form"
+      :model="find_form"
+      label-width="80px"
+    >
       <el-form-item label="活动名称" label-width="100px">
-        <el-input v-model="find_form.data.aname" placeholder="请输入活动名称"></el-input>
+        <el-input
+          v-model="find_form.data.aname"
+          placeholder="请输入活动名称"
+        ></el-input>
       </el-form-item>
       <el-form-item label="活动类型" label-width="100px">
-        <el-select v-model="find_form.data.rpmtype" placeholder="请选择活动类型">
+        <el-select
+          v-model="find_form.data.rpmtype"
+          placeholder="请选择活动类型"
+        >
           <el-option label="全部" value></el-option>
           <el-option label="优惠券" value="1"></el-option>
           <el-option label="道具" value="2"></el-option>
@@ -34,39 +45,71 @@
 
     <!-- 数据列表 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="merchantName" label="商户名称" width="150"></el-table-column>
-      <el-table-column prop="name" label="活动名称" width="200"></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="name"
+        label="活动名称"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="activityIcoID" label="活动图标" width="120">
         <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.imgUrl" shape="square"></el-avatar>
+          <el-avatar
+            :size="80"
+            :src="scope.row.imgUrl"
+            shape="square"
+          ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="activityTypeName" label="活动类型" width="100"></el-table-column>
+      <el-table-column
+        prop="activityTypeName"
+        label="活动类型"
+        width="100"
+      ></el-table-column>
       <el-table-column prop="isEnable" label="状态" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.isEnable==1">正常</span>
-          <span v-else-if="scope.row.isEnable==2">已过期</span>
+          <span v-if="scope.row.isEnable == 1">正常</span>
+          <span v-else-if="scope.row.isEnable == 2">已过期</span>
           <span v-else>停止</span>
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="活动描述" width="300"></el-table-column>
-      <el-table-column prop="startTime" label="开始时间" width="180"></el-table-column>
-      <el-table-column prop="endTime" label="结束时间" width="180"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="活动描述"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="startTime"
+        label="开始时间"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="endTime"
+        label="结束时间"
+        width="180"
+      ></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
-          <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
+          <el-button @click="showDetails(scope.row)" type="primary" size="small"
+            >详情</el-button
+          >
           <el-button
-            v-if="scope.row.isEnable==1"
-            @click="toDetails(scope.row.activityID)"
+            v-if="scope.row.isEnable == 1"
+            @click="switchState('closeTheActivity', scope.row.activityID)"
             type="danger"
             size="small"
-          >停止</el-button>
+            >停止</el-button
+          >
           <el-button
-            v-else-if="scope.row.isEnable==0"
-            @click="toDetails(scope.row.activityID)"
+            v-else-if="scope.row.isEnable == 0"
+            @click="switchState('launchActivities', scope.row.activityID)"
             type="success"
             size="small"
-          >启动</el-button>
+            >启动</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -81,15 +124,23 @@
     <!-- 弹出框 -->
     <el-dialog title="道具详情" :visible.sync="show_details" width="50%">
       <el-form label-width="100px">
-        <el-form-item label="商户名称">{{data_info.merchantName}}</el-form-item>
-        <el-form-item label="活动名称">{{data_info.name}}</el-form-item>
-        <el-form-item label="活动类型">{{data_info.activityTypeName}}</el-form-item>
-        <el-form-item label="活动描述">{{data_info.describe}}</el-form-item>
-        <el-form-item label="状态">{{data_info.isEnable}}</el-form-item>
-        <el-form-item label="开始时间">{{data_info.startTime}}</el-form-item>
-        <el-form-item label="结束时间">{{data_info.endTime}}</el-form-item>
+        <el-form-item label="商户名称">{{
+          data_info.merchantName
+        }}</el-form-item>
+        <el-form-item label="活动名称">{{ data_info.name }}</el-form-item>
+        <el-form-item label="活动类型">{{
+          data_info.activityTypeName
+        }}</el-form-item>
+        <el-form-item label="活动描述">{{ data_info.describe }}</el-form-item>
+        <el-form-item label="状态">{{ data_info.isEnable }}</el-form-item>
+        <el-form-item label="开始时间">{{ data_info.startTime }}</el-form-item>
+        <el-form-item label="结束时间">{{ data_info.endTime }}</el-form-item>
         <el-form-item label="活动图标">
-          <el-avatar :size="120" :src="data_info.imgUrl" shape="square"></el-avatar>
+          <el-avatar
+            :size="120"
+            :src="data_info.imgUrl"
+            shape="square"
+          ></el-avatar>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -101,8 +152,14 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getDataDetail, getDataList } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey, spliceImg } from "@/utils/common";
+import { getDataDetail, getDataList, updateData } from "@/utils/api/apis";
+import {
+  createGet,
+  filteObj,
+  spliceKey,
+  spliceImg,
+  hintMessage,
+} from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -157,6 +214,28 @@ export default {
       });
     },
 
+    // 发布或停止活动
+    switchState(operate, activityID) {
+      updateData(
+        this.model,
+        this.control,
+        1,
+        { activityID, openType: 0 },
+        operate
+      ).then((res) => {
+        hintMessage(this, res);
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          this.find_form,
+          this,
+          "data_list",
+          this.operate
+        );
+      });
+    },
+
     // 重置
     resetForm() {
       this.find_form.data = {};
@@ -194,6 +273,7 @@ export default {
         this.model,
         this.control,
         1,
+
         this.find_form,
         this,
         "data_list",

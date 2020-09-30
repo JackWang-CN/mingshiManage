@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createFormData } from "@/utils/common";
 
 // 设置基础地址
 // axios.defaults.baseURL = "http://192.168.0.139:800";
@@ -65,20 +66,33 @@ export const offTheShelf = (version, info) => {
   return axios.post(url, info);
 };
 
-// 8.文件上传 resourceType = backAR || backWEB || app
+// 8.文件上传 type: 1-账号资源 2-公共资源 3-AR模型资源 4-AR媒体资源
 const fileUrl = "https://api.resources.scmsar.com/";
 
 export const uploadFiles = (
-  resourceType, // 文件类型
+  type, // 文件类型
   version, // 版本
-  resourceName, // 文件名称
-  remarks, // 备注
-  fileList // 文件列表
+  fileList, // 文件列表
+  parameter1, // 参数1
+  parameter2 // 参数2
 ) => {
   var formData = createFormData(fileList);
-  var url =
-    fileUrl +
-    `file/upload/${resourceType}/v${version}?ResourceName=${resourceName}&Remarks=${remarks}`;
+
+  switch (type) {
+    case 1:
+      var path = `file/upload/self/v${version}`;
+      break;
+    case 2:
+      var path = `file/upload/common/v${version}?Remarks=${parameter1}`;
+      break;
+    case 3:
+      var path = `file/upload/aru3d/v${version}?ShowResourceName=${parameter1}&&Remarks=${parameter2}`;
+      break;
+    case 4:
+      var path = `file/upload/ar2d/v${version}?IsMain=${parameter1}&&MainARResID=${parameter2}`;
+      break;
+  }
+  var url = fileUrl + path;
   return axios.put(url, formData);
 };
 
@@ -112,7 +126,6 @@ export const getDataList = (
       return;
     }
     _this[key] = res.resultObject;
-    console.log(_this[key]);
   });
 };
 

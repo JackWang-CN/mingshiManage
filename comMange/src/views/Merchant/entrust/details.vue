@@ -8,42 +8,82 @@
       <el-tab-pane label="当前阶段" name="current">
         <!-- 进度条 -->
         <el-steps :active="activeState" finish-status="success" :space="170">
-          <el-step v-for="item in progress_list" :key="item.stateID" :title="item.stateName"></el-step>
+          <el-step
+            v-for="item in progress_list"
+            :key="item.stateID"
+            :title="item.stateName"
+          ></el-step>
         </el-steps>
 
         <!-- 表单 -->
-        <el-form label-width="80px">
+        <el-form label-width="80px" v-if="isEnd">
           <el-form-item label="文件上传">
-            <el-upload class="upload-demo" :auto-upload="false" action="#" multiple :limit="3">
+            <el-upload
+              class="upload-demo"
+              :auto-upload="false"
+              action="#"
+              multiple
+              :limit="3"
+            >
               <el-button size="small" type="primary">选择文件</el-button>
             </el-upload>
           </el-form-item>
           <el-form-item label="阶段描述">
-            <el-input type="textarea" :rows="3" v-model="data_info.describe"></el-input>
+            <el-input
+              type="textarea"
+              :rows="3"
+              v-model="data_info.describe"
+            ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="updateProgress(0)">保存当前进度</el-button>
-            <el-button type="primary" @click="updateProgress(1)">保存进入下一步</el-button>
-            <el-button type="info" @click="cancel">返回</el-button>
-            <el-button type="text" @click="show_more=!show_more">{{show_more?'收起∧':'更多∨'}}</el-button>
-            <el-button type="danger" v-show="show_more" @click="shutdownEntrust">终止</el-button>
+            <el-button type="success" @click="updateProgress(0)"
+              >保存当前进度</el-button
+            >
+            <el-button type="primary" @click="updateProgress(1)"
+              >保存进入下一步</el-button
+            >
+            <el-button type="text" @click="show_more = !show_more">{{
+              show_more ? "收起∧" : "更多∨"
+            }}</el-button>
+            <el-button type="danger" v-show="show_more" @click="shutdownEntrust"
+              >中止</el-button
+            >
           </el-form-item>
         </el-form>
+        <el-button type="info" @click="cancel">返回</el-button>
       </el-tab-pane>
 
       <!-- 历史进度 -->
       <el-tab-pane label="历史进度" name="history">
         <el-table :data="data_list" border>
-          <el-table-column prop="EntrustID" label="委托编号" width="150"></el-table-column>
-          <el-table-column prop="MerchantName" label="商户名称" width="120"></el-table-column>
-          <el-table-column prop="Theme" label="委托主题" width="150"></el-table-column>
-          <el-table-column prop="PhaseStatus" label="处理阶段" width="120"></el-table-column>
-          <el-table-column prop="PhaseStatus" label="阶段描述" width="120"></el-table-column>
-          <el-table-column prop="ApplyTime" label="申请日期" width="200"></el-table-column>
-          <el-table-column prop="ManagerName" label="客户经理" width="100"></el-table-column>
+          <el-table-column
+            prop="phaseStatus"
+            label="阶段"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="describe"
+            label="阶段描述"
+            width="300"
+          ></el-table-column>
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="customerManager"
+            label="客户经理"
+            width="100"
+          ></el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
-              <el-button @click="showDetails(scope.row)" type="primary" size="small">详情</el-button>
+              <el-button
+                @click="showDetails(scope.row)"
+                type="primary"
+                size="small"
+                >详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -79,14 +119,11 @@ export default {
     this.entrustID = this.$route.query.id;
 
     // 1.获取商家委托阶段列表（一共有几个阶段）
-    getDataList(
-      this.model,
-      this.control,
-      1,
-      createGet(1, 99),
-      this,
-      "progress_list",
-      "stage/list"
+    getData(this.model, this.control, 1, createGet(1, 99), "stage/list").then(
+      (res) => {
+        this.progress_list = res.resultObject;
+        this.breakOff = this.progress_list.pop();
+      }
     );
 
     // 2.获取委托进度信息列表
@@ -95,15 +132,26 @@ export default {
 
   data() {
     return {
+      roll_list: [
+        "待受理",
+        "受理",
+        "需求确认",
+        "签订合同",
+        "策划执行",
+        "完结待商户确认",
+        "商户确认完结",
+      ],
       data_list: [],
       data_info: {},
       progress_list: [], // 商家委托列表
+      breakOff: {}, // 中断的阶段数据模型
       entrustID: "",
       activeName: "",
       show_details: false, // 展示详情
       show_more: false, // 显示隐藏按钮
       activeObj: {}, // 当前的委托阶段数据对象
       activeState: 0, // 当前的委托阶段
+      isEnd: false,
       model: "merchant",
       control: "merEntrustActivity",
     };
@@ -122,15 +170,27 @@ export default {
             "progress/current"
           ).then((res) => {
             this.activeObj = res.resultObject;
-            var phaseStatus = this.activeObj.phaseStatus;
             // 获取当前的阶段名称，遍历所有阶段，取得当前阶段在所有阶段中的序号
-            this.progress_list.some((item, index) => {
-              if (item.stateName == phaseStatus) {
-                this.activeState = index;
-              }
-              // 满足条件终止循环
-              return item.stateName == phaseStatus;
-            });
+            var phaseStatus = this.activeObj.phaseStatus;
+            this.isEnd = this.roll_list.includes(phaseStatus);
+            if (phaseStatus == "中止" && !this.progress_list.includes("中止")) {
+              this.progress_list.some((item, index) => {
+                if (item.stateName == this.activeObj.prePhaseStatus) {
+                  this.progress_list.splice(index, 0, this.breakOff);
+                  this.activeState = index;
+                }
+                // 满足条件终止循环
+                return item.stateName == this.activeObj.prePhaseStatus;
+              });
+            } else {
+              this.progress_list.some((item, index) => {
+                if (item.stateName == phaseStatus) {
+                  this.activeState = index;
+                }
+                // 满足条件终止循环
+                return item.stateName == phaseStatus;
+              });
+            }
           });
           break;
         case "history":
@@ -140,7 +200,9 @@ export default {
             1,
             { value: this.entrustID },
             "progress/list"
-          ).then((res) => {});
+          ).then((res) => {
+            this.data_list = res.resultObject;
+          });
           break;
       }
     },
@@ -191,7 +253,7 @@ export default {
       });
     },
 
-    // 终止委托
+    // 中止委托
     shutdownEntrust() {
       this.data_info.entrustID = this.entrustID;
       console.log(this.data_info);

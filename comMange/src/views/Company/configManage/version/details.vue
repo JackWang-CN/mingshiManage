@@ -19,7 +19,11 @@
         <el-input v-model="data_info.title"></el-input>
       </el-form-item>
       <el-form-item label="更新内容">
-        <el-input v-model="data_info.content" type="textarea" :rows="3"></el-input>
+        <el-input
+          v-model="data_info.content"
+          type="textarea"
+          :rows="3"
+        ></el-input>
       </el-form-item>
       <el-form-item label="受众类型">
         <el-select v-model="data_info.audience">
@@ -27,9 +31,7 @@
           <el-option label="全部用户" :value="-1"></el-option>
           <el-option label="白嫖用户" :value="2"></el-option>
           <el-option label="付费用户" :value="3"></el-option>
-          <el-option label="注册半年内用户" :value="10"></el-option>
           <el-option label="全部商户" :value="100"></el-option>
-          <el-option label="注册半年内商户" :value="110"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="强制更新">

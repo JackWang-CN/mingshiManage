@@ -5,24 +5,29 @@
     <el-aside width="200px" class="left_wrap">
       <div class="title">名视商户营销平台</div>
       <ul id="navigation">
-        <li v-for="(item,index) in nav_list" :key="item.name">
+        <li v-for="(item, index) in nav_list" :key="item.name">
           <!-- 有下拉 -->
           <div class="nav_item" v-if="item.haveChildren">
-            <div @click="showChildren(index,$event)">
-              {{item.name}}
+            <div @click="showChildren(index, $event)">
+              {{ item.name }}
               <i class="triangle close"></i>
             </div>
             <span
-              v-for="(child,childIndex) in  item.children"
+              v-for="(child, childIndex) in item.children"
               v-show="item.showChildren"
-              :class="child.isActive?'active':''"
+              :class="child.isActive ? 'active' : ''"
               :key="child.name"
-              @click="toPage(index,childIndex)"
-            >{{child.name}}</span>
+              @click="toPage(index, childIndex)"
+              >{{ child.name }}</span
+            >
           </div>
           <!-- 无下拉 -->
-          <div class="nav_item" v-else-if="!item.haveChildren" @click="toPage(index)">
-            <div :class="item.isActive?'active':''">{{item.name}}</div>
+          <div
+            class="nav_item"
+            v-else-if="!item.haveChildren"
+            @click="toPage(index)"
+          >
+            <div :class="item.isActive ? 'active' : ''">{{ item.name }}</div>
           </div>
         </li>
       </ul>
@@ -36,10 +41,19 @@
         <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
           <el-breadcrumb-item>
             <div
-              style="margin-right:10px;font-weight:bold;font-size:15px;display:inline-block"
-            >当前位置:</div>
+              style="
+                margin-right: 10px;
+                font-weight: bold;
+                font-size: 15px;
+                display: inline-block;
+              "
+            >
+              当前位置:
+            </div>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">{{v}}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">{{
+            v
+          }}</el-breadcrumb-item>
         </el-breadcrumb>
 
         <!-- 下拉 -->
@@ -49,29 +63,54 @@
               <el-avatar :size="45" :src="circleUrl"></el-avatar>
             </span>
             <el-dropdown-menu slot="dropdown" class="dropdown_menu">
-              <el-dropdown-item @click.native="toPersonalCenter">个人中心</el-dropdown-item>
-              <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
-              <el-dropdown-item @click.native="logout">注销登录</el-dropdown-item>
+              <el-dropdown-item @click.native="toPersonalCenter"
+                >个人中心</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="changePassword"
+                >修改密码</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="logout"
+                >注销登录</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
           <span>尊敬的{{ userName }}，欢迎您！</span>
         </div>
 
         <!-- 弹出框 -->
-        <el-dialog title="修改密码" :visible.sync="dialogFormVisible" id="change_password" width="30%">
+        <el-dialog
+          title="修改密码"
+          :visible.sync="dialogFormVisible"
+          id="change_password"
+          width="30%"
+        >
           <el-form :model="changePwd">
             <el-form-item label="原密码" label-width="100px">
-              <el-input v-model="changePwd.old_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.old_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
             <el-form-item label="新密码" label-width="100px">
-              <el-input v-model="changePwd.new_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.new_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
             <el-form-item label="确认密码" label-width="100px">
-              <el-input v-model="changePwd.check_password" autocomplete="off" show-password></el-input>
+              <el-input
+                v-model="changePwd.check_password"
+                autocomplete="off"
+                show-password
+              ></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false"
+              >确 定</el-button
+            >
             <el-button @click="dialogFormVisible = false">取 消</el-button>
           </div>
         </el-dialog>
@@ -86,22 +125,23 @@
 </template>
 
 <script>
-import { ws, sendIm } from "@/utils/api/imApi";
 export default {
   created() {
     var token = sessionStorage.getItem("token");
     var merchantname = sessionStorage.getItem("merchantname");
+    this.initWebsocket();
 
-    ws.onopen = () => {
-      // 1.创建IM报文
-      var imObj = {
-        Authorization: token,
-        Type: "6",
-        MerchantsId: merchantname,
-      };
-      // 2.发送
-      sendIm(imObj);
+    var imObj = {
+      Authorization: token,
+      Type: "6",
+      MerchantsId: "123123123123",
     };
+
+    // 监听websocket状态
+    window.websocket.addEventListener("open", function () {
+      imObj = JSON.stringify(imObj);
+      window.websocket.onsend(imObj);
+    });
 
     if (!token) {
       this.$router.replace("/login");
@@ -183,7 +223,10 @@ export default {
         },
       ],
       // 激活导航的路径
+
       activeIndex: 0,
+
+      websocket: null,
     };
   },
   methods: {
@@ -247,6 +290,32 @@ export default {
           break;
       }
     },
+
+    // 初始化websocket
+    initWebsocket() {
+      window.websocket = new WebSocket("ws://192.168.0.168:7774");
+      window.websocket.onmessage = this.webMessage;
+      window.websocket.onopen = this.webConnect;
+      window.websocket.onsend = this.webSend;
+      window.websocket.onerror = this.webError;
+      window.websocket.onclose = this.webClose;
+    },
+
+    // 接收消息
+    webMessage(res) {
+      console.log(res.data);
+    },
+
+    // 建立连接
+    webConnect() {},
+
+    // 发送消息
+    webSend(data) {
+      window.websocket.send(data);
+    },
+
+    // 连接建立失败
+    webError() {},
   },
 
   watch: {

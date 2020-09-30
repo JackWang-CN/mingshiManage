@@ -13,10 +13,16 @@
     <!-- 表单 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="道具名称" label-width="100px">
-        <el-input v-model="find_form.data.name" placeholder="请输入道具名称"></el-input>
+        <el-input
+          v-model="find_form.data.name"
+          placeholder="请输入道具名称"
+        ></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
-        <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
+        <el-select
+          v-model="find_form.data.rpmtype"
+          placeholder="请选择道具类型"
+        >
           <el-option
             v-for="item in type_list"
             :key="item.typeID"
@@ -27,7 +33,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="道具状态" label-width="100px">
-        <el-select v-model="find_form.data.isEnable" placeholder="请选择道具状态">
+        <el-select
+          v-model="find_form.data.isEnable"
+          placeholder="请选择道具状态"
+        >
           <el-option label="上架中" value="1"></el-option>
           <el-option label="已下架" value="0"></el-option>
           <el-option label="全部" value></el-option>
@@ -43,7 +52,11 @@
 
     <!-- 表格 -->
     <el-table :data="data_list" border style="width: 100%">
-      <el-table-column prop="name" label="道具名称" width="120"></el-table-column>
+      <el-table-column
+        prop="name"
+        label="道具名称"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="typeID" label="道具类型" width="120">
         <!-- <template slot-scope="scope">
           <span v-if="scope.row.typeID==1">户型风格</span>
@@ -59,32 +72,53 @@
       </el-table-column>
       <el-table-column prop="isEnable" label="道具状态" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.isEnable=1">启用</span>
+          <span v-if="(scope.row.isEnable = 1)">启用</span>
           <span v-else>禁用</span>
         </template>
       </el-table-column>
       <el-table-column prop="facadeImageID" label="道具缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar shape="square" :size="80" :src="scope.row.imgUrl"></el-avatar>
+          <el-avatar
+            v-if="scope.row.facadeImageID"
+            shape="square"
+            :size="80"
+            :src="fileUrl + 'ar2d/v1?Mark=' + scope.row.facadeImageID"
+          ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="道具描述" width="300"></el-table-column>
-      <el-table-column prop="createTime" label="上架时间" width="170"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="道具描述"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="上架时间"
+        width="170"
+      ></el-table-column>
       <el-table-column prop="validityTimestamp" label="有效期限" width="170">
         <template slot-scope="scope">
-          <span v-if="scope.row.validityTimestamp==-1">永久有效</span>
-          <span v-else-if="scope.row.validityTimestamp!==-1">{{scope.row.validityTimestamp}}</span>
+          <span v-if="scope.row.validityTimestamp == -1">永久有效</span>
+          <span v-else-if="scope.row.validityTimestamp !== -1">{{
+            scope.row.validityTimestamp
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.propID)" type="primary" size="small">修改</el-button>
+          <el-button
+            @click="toDetails(scope.row.propID)"
+            type="primary"
+            size="small"
+            >修改</el-button
+          >
           <el-button
             v-if="!scope.row.isShelfPropMall"
             @click="onshelve(scope.row.propID)"
             type="success"
             size="small"
-          >上架</el-button>
+            >上架</el-button
+          >
           <!-- <el-button @click="delRow(scope.row.propID)" type="danger" size="small">删除</el-button> -->
         </template>
       </el-table-column>
@@ -125,6 +159,7 @@ export default {
       type_list: [], // 选中的列表
       activeName: "",
 
+      fileUrl: "https://api.resources.scmsar.com/file/download/",
       model: "prop",
       control: "prop",
     };

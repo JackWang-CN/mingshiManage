@@ -86,7 +86,9 @@ export const getDataList = (
     if (
       operate == "getSpecialConfig" ||
       operate == "stage/list" ||
-      operate == "managerType/list"
+      operate == "managerType/list" ||
+      operate == "getDelegationList" ||
+      operate == "getActivityList"
     ) {
       _this[key] = res.resultObject;
 

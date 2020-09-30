@@ -21,7 +21,6 @@ import "@/assets/css/common.scss";
 
 //路由守卫
 router.beforeEach((to, from, next) => {
-  // document.title = "名视商户营销平台";
   if (to.meta.notNeed) {
     // 判断该路由是否需要登录权限
     next();

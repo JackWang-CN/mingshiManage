@@ -6,18 +6,34 @@
     <el-form id="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
       <div class="search">
-        <el-input v-model="find_form.info" placeholder="主题、描述、客户经理" prefix-icon="el-icon-search"></el-input>
+        <el-input
+          v-model="find_form.info"
+          placeholder="主题、描述、客户经理"
+          prefix-icon="el-icon-search"
+        ></el-input>
         <div class="btns">
-          <el-button type="success" style="margin-left:50px" @click="showDetails(0)">添加商品</el-button>
-          <el-button type="danger" @click="delList" size="medium">删除商品</el-button>
-          <el-button type="text" @click="switchMore">{{showMore?'收起∧':'筛选∨'}}</el-button>
+          <el-button
+            type="success"
+            style="margin-left: 50px"
+            @click="showDetails(0)"
+            >添加商品</el-button
+          >
+          <el-button type="danger" @click="delList" size="medium"
+            >删除商品</el-button
+          >
+          <el-button type="text" @click="switchMore">{{
+            showMore ? "收起∧" : "筛选∨"
+          }}</el-button>
         </div>
       </div>
 
       <!-- 高级筛选 -->
       <div class="more">
         <el-form-item label="商品类型" v-if="showMore">
-          <el-select v-model="find_form.productType" placeholder="请选择商品类型">
+          <el-select
+            v-model="find_form.productType"
+            placeholder="请选择商品类型"
+          >
             <el-option label="大类一" value="大类一"></el-option>
             <el-option label="大类二" value="大类二"></el-option>
           </el-select>
@@ -30,7 +46,9 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" size="medium" v-if="showMore">搜索</el-button>
+          <el-button type="primary" size="medium" v-if="showMore"
+            >搜索</el-button
+          >
         </el-form-item>
       </div>
     </el-form>
@@ -44,20 +62,65 @@
       @selection-change="select"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="goodstNumber" label="商品编号" width="150" sortable></el-table-column>
-      <el-table-column prop="name" label="商品名称" width="150" sortable></el-table-column>
-      <el-table-column prop="imageID" label="商品图片" width="150"></el-table-column>
-      <el-table-column prop="describe" label="详情描述" width="300"></el-table-column>
-      <el-table-column prop="goodsTypeName" label="商品类型" width="150"></el-table-column>
-      <el-table-column prop="dismountTime" label="下架时间" width="200"></el-table-column>
+      <el-table-column
+        prop="goodsNumber"
+        label="商品编号"
+        width="150"
+        sortable
+      ></el-table-column>
+      <el-table-column
+        prop="name"
+        label="商品名称"
+        width="150"
+        sortable
+      ></el-table-column>
+      <el-table-column prop="imageID" label="商品图片" width="150">
+        <template slot-scope="scope">
+          <el-avatar
+            :size="80"
+            :src="
+              'https://api.resources.scmsar.com/file/download/source/v1?Mark=' +
+              scope.row.imageID
+            "
+            shape="square"
+          ></el-avatar>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="describe"
+        label="详情描述"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="goodsTypeName"
+        label="商品类型"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="dismountTime"
+        label="下架时间"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="onShelfState" label="是否上架" width="100">
-        <template slot-scope="scope">{{scope.row.onShelfState?'是':'否'}}</template>
+        <template slot-scope="scope">{{
+          scope.row.onShelfState ? "是" : "否"
+        }}</template>
       </el-table-column>
 
       <el-table-column label="操作" width="160px" fixed="right">
         <template slot-scope="scope">
-          <el-button @click="showDetails(1,scope.row)" type="primary" size="small">编辑</el-button>
-          <el-button @click="delRow(scope.row.goodstID)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="showDetails(1, scope.row)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
+          <el-button
+            @click="delRow(scope.row.goodstID)"
+            type="danger"
+            size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -65,12 +128,12 @@
     <!-- 分页插件 -->
     <pagination
       :find="find_form"
-      @sizeChange="pageChange('size',$event)"
-      @currChange="pageChange('curr',$event)"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
     ></pagination>
 
     <!-- 弹出框 -->
-    <el-dialog title="商品详情" :visible.sync="show_details" width="20%" @closed="clear">
+    <el-dialog title="商品详情" :visible.sync="show_details" @closed="clear">
       <el-form label-width="100px" id="details_form">
         <el-form-item label="商品编号">
           <el-input v-model="data_info.goodsNumber"></el-input>
@@ -79,7 +142,11 @@
           <el-input v-model="data_info.name"></el-input>
         </el-form-item>
         <el-form-item label="详情描述">
-          <el-input type="textarea" :rows="4" v-model="data_info.describe"></el-input>
+          <el-input
+            type="textarea"
+            :rows="4"
+            v-model="data_info.describe"
+          ></el-input>
         </el-form-item>
         <el-form-item label="商品类型">
           <el-select v-model="data_info.goodsTypeNumber">
@@ -98,12 +165,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="下架时间">
-          <el-date-picker v-model="data_info.dismountTime" type="datetime" placeholder="选择时间"></el-date-picker>
+          <el-date-picker
+            v-model="data_info.dismountTime"
+            type="datetime"
+            placeholder="选择时间"
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item label="资源预览" v-show="operate">
+        <el-form-item label="商品预览" v-show="operate">
           <img :src="data_info.imageID" alt height="300" />
         </el-form-item>
-        <el-form-item label="资源上传">
+        <el-form-item label="商品图片">
           <el-upload
             action="#"
             list-type="picture-card"
@@ -114,13 +185,19 @@
             :disabled="!!file_list.length"
           >
             <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
+            <div slot="file" slot-scope="{ file }">
               <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
               <span class="el-upload-list__item-actions">
-                <span class="el-upload-list__item-preview" @click="imgPreview(file)">
+                <span
+                  class="el-upload-list__item-preview"
+                  @click="imgPreview(file)"
+                >
                   <i class="el-icon-zoom-in"></i>
                 </span>
-                <span class="el-upload-list__item-delete" @click="imgRemove(file)">
+                <span
+                  class="el-upload-list__item-delete"
+                  @click="imgRemove(file)"
+                >
                   <i class="el-icon-delete"></i>
                 </span>
               </span>
@@ -128,8 +205,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item>
-          <el-button size="small" type="primary" @click="sendSubmit">确定</el-button>
-          <el-button size="small" @click="show_details=false">取消</el-button>
+          <el-button size="small" type="primary" @click="sendSubmit"
+            >确定</el-button
+          >
+          <el-button size="small" @click="show_details = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -142,8 +221,14 @@
 </template>
 
 <script>
-import { createGet } from "@/utils/common";
-import { getData, addData, delData, getDataList } from "@/utils/api/apis";
+import { createGet, hintMessage } from "@/utils/common";
+import {
+  getData,
+  addData,
+  delData,
+  getDataList,
+  uploadFiles,
+} from "@/utils/api/apis";
 import pagination from "@/components/Pagination";
 export default {
   components: {
@@ -188,23 +273,36 @@ export default {
 
   methods: {
     // 发送提交
-    sendSubmit() {
+    async sendSubmit() {
+      var data_info = { ...this.data_info };
       this.show_details = false;
+
+      // 判断是否上传图片
+      if (this.file_list.length > 0) {
+        var res = await uploadFiles(2, 1, this.file_list, "商户商品图片");
+        data_info.imageID = res.resultObject[0].resID;
+      }
       switch (this.operate) {
         case 0:
-          getData(this.model, this.control, 1, this.data_info, "create").then(
+          getData(this.model, this.control, 1, data_info, "create").then(
             (res) => {
-              console.log(res);
+              hintMessage(this, res);
+              var form = { ...this.find_form };
+              getDataList(
+                this.model,
+                this.control,
+                1,
+                form,
+                this,
+                "goods_list"
+              );
             }
           );
           break;
         case 1:
-          addData(this.model, this.control, 1, this.data_info, "update").then(
+          addData(this.model, this.control, 1, data_info, "update").then(
             (res) => {
-              switch (res.code) {
-                case "000000":
-                  this.$message.success("修改成功！");
-              }
+              hintMessage(this, res);
               var form = { ...this.find_form };
               getDataList(
                 this.model,

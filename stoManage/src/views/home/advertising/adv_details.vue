@@ -1,13 +1,17 @@
 <template>
   <!-- 详情页  -->
   <div id="adv_details" class="shadow_container">
-    <div class="pageTitle">{{type=='add'?'新增广告':'修改广告'}}</div>
+    <div class="pageTitle">{{ type == "add" ? "新增广告" : "修改广告" }}</div>
 
     <!-- 表单 -->
     <el-form label-width="100px">
-      <el-form-item label="广告编号" v-if="type=='update'">{{data_info.reqId}}</el-form-item>
-      <el-form-item label="创建时间" v-if="type=='update'">{{data_info.creationTime}}</el-form-item>
-      <el-form-item label="资源预览" v-if="type=='update'">
+      <el-form-item label="广告编号" v-if="type == 'update'">{{
+        data_info.reqId
+      }}</el-form-item>
+      <el-form-item label="创建时间" v-if="type == 'update'">{{
+        data_info.creationTime
+      }}</el-form-item>
+      <el-form-item label="资源预览" v-if="type == 'update'">
         <img :src="data_info.adUrl" alt height="300" />
       </el-form-item>
 
@@ -28,13 +32,19 @@
           :multiple="false"
         >
           <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
+          <div slot="file" slot-scope="{ file }">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+              <span
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(file)"
+              >
                 <i class="el-icon-zoom-in"></i>
               </span>
-              <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+              <span
+                class="el-upload-list__item-delete"
+                @click="handleRemove(file)"
+              >
                 <i class="el-icon-delete"></i>
               </span>
             </span>
@@ -59,7 +69,7 @@ import {
   addDataList,
   updateDataList,
 } from "@/utils/api/api";
-import { creatFormData, spliceUrl } from "@/utils/common";
+import { createFormData, spliceUrl } from "@/utils/common";
 export default {
   created() {
     // 获取reqId

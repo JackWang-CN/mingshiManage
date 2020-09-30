@@ -4,35 +4,35 @@
     <div class="pageTitle">店铺信息</div>
     <el-form label-width="100px">
       <el-form-item label="店铺名称">
-        <span>{{data_info.name}}</span>
+        <span>{{ data_info.name }}</span>
       </el-form-item>
-      <el-form-item label="店铺类型">{{data_info.manageTypeID}}</el-form-item>
+      <el-form-item label="店铺类型">{{ data_info.manageTypeID }}</el-form-item>
       <el-form-item label="手机号">
-        <span v-show="mode">{{data_info.tel}}</span>
+        <span v-show="mode">{{ data_info.tel }}</span>
         <el-input v-model="data_info.tel" v-show="!mode"></el-input>
       </el-form-item>
       <el-form-item label="状态">
-        <span>{{data_info.isEnable?'启用':'禁用'}}</span>
+        <span>{{ data_info.isEnable ? "启用" : "禁用" }}</span>
       </el-form-item>
       <el-form-item label="身份证正面">
-        <span v-show="mode">{{data_info.iDdFacePhoto}}</span>
+        <span v-show="mode">{{ data_info.iDdFacePhoto }}</span>
         <el-input v-model="data_info.iDdFacePhoto" v-show="!mode"></el-input>
       </el-form-item>
       <el-form-item label="身份证反面">
-        <span v-show="mode">{{data_info.idBackPhoto}}</span>
+        <span v-show="mode">{{ data_info.idBackPhoto }}</span>
         <el-input v-model="data_info.idBackPhoto" v-show="!mode"></el-input>
       </el-form-item>
       <el-form-item label="创建时间">
-        <span>{{data_info.createTime}}</span>
+        <span>{{ data_info.createTime }}</span>
       </el-form-item>
       <el-form-item label="审核状态">
-        <span>{{data_info.checkStatus}}</span>
+        <span>{{ data_info.checkStatus }}</span>
       </el-form-item>
       <el-form-item label="审核人员">
-        <span>{{data_info.checker}}</span>
+        <span>{{ data_info.checker }}</span>
       </el-form-item>
       <el-form-item label="审核时间">
-        <span>{{data_info.checkTime}}</span>
+        <span>{{ data_info.checkTime }}</span>
       </el-form-item>
 
       <el-form-item label="商户头像">
@@ -54,14 +54,20 @@
       </el-form-item>
 
       <el-form-item label="商户地址">
-        <span>{{data_info.address}}</span>
+        <span>{{ data_info.address }}</span>
       </el-form-item>
 
       <!-- 按钮组 -->
       <el-form-item>
-        <el-button type="primary" @click="switchModel(0)" v-show="mode">编辑</el-button>
-        <el-button type="primary" @click="sendSubmit" v-show="!mode">保存</el-button>
-        <el-button type="danger" @click="switchModel(1)" v-show="!mode">取消</el-button>
+        <el-button type="primary" @click="switchModel(0)" v-show="mode"
+          >编辑</el-button
+        >
+        <el-button type="primary" @click="sendSubmit" v-show="!mode"
+          >保存</el-button
+        >
+        <el-button type="danger" @click="switchModel(1)" v-show="!mode"
+          >取消</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -69,7 +75,7 @@
 
 <script>
 import { getDataList } from "@/utils/api/apis";
-import { createGet, creatFormData, spliceUrl } from "@/utils/common";
+import { createGet, createFormData, spliceUrl } from "@/utils/common";
 export default {
   mounted() {
     var form = createGet();

@@ -7,9 +7,12 @@
     <el-form class="create_form" label-width="100px">
       <el-form-item label="活动绑定">
         <el-select v-model="data_info.activityID" clearable>
-          <el-option label="活动1" value="1">活动1</el-option>
-          <el-option label="活动2" value="2">活动2</el-option>
-          <el-option label="活动3" value="3">活动3</el-option>
+          <el-option
+            v-for="item in activity_list"
+            :key="item.activityID"
+            :value="item.activityID"
+            :label="item.activityName"
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -19,17 +22,26 @@
 
       <el-form-item label="券类型">
         <el-select v-model="data_info.couponTypeID" clearable>
-          <el-option label="类型1" value="1">类型1</el-option>
-          <el-option label="类型2" value="2">类型2</el-option>
-          <el-option label="类型3" value="3">类型3</el-option>
+          <el-option
+            v-for="item in type_list"
+            :key="item.typeID"
+            :label="item.name"
+            :value="item.typeID"
+          ></el-option>
         </el-select>
       </el-form-item>
 
       <!-- 券图片 -->
       <el-form-item label="券图片">
-        <el-upload class="upload-demo" ref="upload" action="#" :auto-upload="false">
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <el-button style="margin-left: 10px;" size="small" type="success">上传到服务器</el-button>
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          action="#"
+          :auto-upload="false"
+        >
+          <el-button slot="trigger" size="small" type="primary"
+            >选取文件</el-button
+          >
         </el-upload>
       </el-form-item>
 
@@ -65,7 +77,6 @@
 
       <el-form-item label="有效期限">
         <el-date-picker
-          @change="dateChange"
           v-model="select_date"
           type="datetimerange"
           range-separator="至"
@@ -76,14 +87,11 @@
 
       <!-- AR资源上传 -->
       <el-form-item label="AR资源">
-        <el-upload class="upload-demo" ref="upload" action="#" :auto-upload="false">
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <el-button style="margin-left: 10px;" size="small" type="success">上传到服务器</el-button>
-        </el-upload>
+        <el-button size="small" type="primary">选择模型</el-button>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="sendLogin">提交</el-button>
+        <el-button type="primary" @click="sendSubmit">提交</el-button>
         <el-button type="info" @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
@@ -91,15 +99,32 @@
 </template>
 
 <script>
-import { switchDateList } from "@/utils/common";
+import { switchDateList, createGet, hintMessage } from "@/utils/common";
+import { getDataList, updateDataDetails, updateData } from "@/utils/api/apis";
 export default {
+  mounted() {
+    // 请求活动列表
+    var form = createGet(1, 999);
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      form,
+      this,
+      "activity_list",
+      "getActivityList"
+    );
+    // 请求券类型
+    getDataList(this.model, this.control + "Type", 1, form, this, "type_list");
+  },
   data() {
     return {
       data_info: { totalCount: 1 },
       select_date: [],
-
-      model: "",
-      control: "",
+      activity_list: [], // 活动列表
+      type_list: [], // 类型列表
+      model: "coupon",
+      control: "coupon",
     };
   },
 
@@ -110,19 +135,18 @@ export default {
     },
 
     // 提交
-    sendLogin() {
+    sendSubmit() {
       console.log(this.data_info);
-    },
-
-    // 时间选择器值改变
-    dateChange() {
-      if (!this.select_date) {
-        return;
-      }
-      var date = switchDateList(this.select_date);
-      this.data_info.startTime = date.startTime;
-      this.data_info.endTime = date.endTime;
-      console.log(this.data_info);
+      updateData(
+        "activity",
+        "activityManage",
+        1,
+        this.data_info,
+        "createActivityCoupon"
+      ).then((res) => {
+        hintMessage(this, res);
+        this.$router.push("coupon_list");
+      });
     },
 
     // 返回上一页

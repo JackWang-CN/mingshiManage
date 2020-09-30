@@ -1,8 +1,7 @@
-<!-- 券类型 -->
 <template>
-  <div id="store_type" class="shadow_container">
+  <div id="house_style" class="shadow_container">
     <div class="pageTitle">
-      券类型
+      房屋风格
       <el-button type="success" @click="showDetails(0)">添加类型</el-button>
     </div>
 
@@ -10,7 +9,12 @@
     <el-table :data="data_list" border>
       <el-table-column
         prop="name"
-        label="类型名称"
+        label="风格名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="resName"
+        label="模型名称"
         width="180"
       ></el-table-column>
       <el-table-column
@@ -20,7 +24,7 @@
       ></el-table-column>
       <el-table-column
         prop="describe"
-        label="类型描述"
+        label="风格说明"
         width="300"
       ></el-table-column>
       <el-table-column
@@ -103,8 +107,8 @@ export default {
 
       operate: 0,
       show_details: false,
-      model: "coupon",
-      control: "couponType",
+      model: "propHouseStyle",
+      control: "propHouseStyle",
     };
   },
 
@@ -192,7 +196,7 @@ export default {
 </script>
 
 <style lang='scss'>
-#store_type {
+#house_style {
   .details_form {
     .el-input,
     .el-textarea {

@@ -10,7 +10,7 @@
 
       <el-form-item label="绑定模型">
         <el-button type="success" @click="showModel">选择模型</el-button>
-        <span>{{data_info.resName}}</span>
+        <span>{{ data_info.resName }}</span>
       </el-form-item>
 
       <el-form-item label="道具状态">
@@ -32,18 +32,32 @@
       </el-form-item>
 
       <el-form-item label="上架时间">
-        <el-date-picker v-model="data_info.listingTime" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+          v-model="data_info.listingTime"
+          type="date"
+          placeholder="选择日期"
+        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="下架时间">
-        <el-date-picker v-model="data_info.dismountTime" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+          v-model="data_info.dismountTime"
+          type="date"
+          placeholder="选择日期"
+        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="道具说明">
-        <el-input type="textarea" v-model="data_info.describe" :rows="3"></el-input>
+        <el-input
+          type="textarea"
+          v-model="data_info.describe"
+          :rows="3"
+        ></el-input>
       </el-form-item>
 
-      <el-form-item label="创建时间" v-if="operate">{{data_info.createTime}}</el-form-item>
+      <el-form-item label="创建时间" v-if="operate">{{
+        data_info.createTime
+      }}</el-form-item>
       <el-form-item>
         <el-button type="primary" @click="sendSubmit">保存</el-button>
         <el-button type="info" @click="cancel">返回</el-button>
@@ -58,7 +72,9 @@
           v-for="model in model_list"
           :key="model.resID"
           @click="selectModel(model)"
-        >{{model.showResourceName}}</li>
+        >
+          {{ model.showResourceName }}
+        </li>
       </ul>
       <!-- 分页插件 -->
       <Pagination
@@ -73,10 +89,13 @@
           closable
           v-if="select_model.showResourceName"
           @close="unSelect"
-        >{{select_model.showResourceName}}</el-tag>
+          >{{ select_model.showResourceName }}</el-tag
+        >
       </div>
       <!-- 操作 -->
-      <el-button type="primary" size="small" @click="confirmMode">确认</el-button>
+      <el-button type="primary" size="small" @click="confirmMode"
+        >确认</el-button
+      >
       <el-button size="small">取消</el-button>
     </el-dialog>
   </div>
@@ -174,6 +193,7 @@ export default {
     // 点击选中模型
     selectModel(mode) {
       this.select_model = { ...mode };
+      console.log(this.select_model);
     },
 
     // 取消选中
@@ -186,7 +206,7 @@ export default {
       if (this.select_model.resID) {
         this.data_info.resID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
-        this.data_info.facadeImageID = this.select_model.facadeImageID;
+        this.data_info.facadeImageID = this.select_model.mainImageID;
       }
       this.show_mode = false;
     },

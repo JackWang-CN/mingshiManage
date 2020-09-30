@@ -62,7 +62,7 @@ export const createGet = (currPage, pageSize, order) => {
 };
 
 // 创建一个formData对象
-export const creatFormData = (file) => {
+export const createFormData = (file) => {
   var formData = new window.FormData();
   file.forEach((item, index) => {
     formData.append("files" + index, item.raw);

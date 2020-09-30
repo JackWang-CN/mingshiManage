@@ -1,16 +1,23 @@
 <template>
   <!-- 详情页  -->
   <div id="goods_details" class="shadow_container">
-    <div class="pageTitle">{{type=='add'?'新增商品':'修改商品'}}</div>
+    <div class="pageTitle">{{ type == "add" ? "新增商品" : "修改商品" }}</div>
 
     <!-- 表单 -->
     <el-form :model="data_info" label-width="100px">
-      <el-form-item label="商品编号" v-if="type=='update'">{{data_info.productId}}</el-form-item>
+      <el-form-item label="商品编号" v-if="type == 'update'">{{
+        data_info.productId
+      }}</el-form-item>
 
-      <el-form-item label="创建时间" v-if="type=='update'">{{data_info.creationTime}}</el-form-item>
+      <el-form-item label="创建时间" v-if="type == 'update'">{{
+        data_info.creationTime
+      }}</el-form-item>
 
       <el-form-item label="商品名称">
-        <el-input v-model="data_info.productName" placeholder="请输入商品名称"></el-input>
+        <el-input
+          v-model="data_info.productName"
+          placeholder="请输入商品名称"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="商品类型">
@@ -28,7 +35,11 @@
       </el-form-item>
 
       <el-form-item label="下架时间">
-        <el-date-picker v-model="data_info.dismountTime" type="datetime" placeholder="选择时间"></el-date-picker>
+        <el-date-picker
+          v-model="data_info.dismountTime"
+          type="datetime"
+          placeholder="选择时间"
+        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="资源预览">
@@ -47,13 +58,19 @@
           :disabled="!!file_list.length"
         >
           <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
+          <div slot="file" slot-scope="{ file }">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
             <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="imgPreview(file)">
+              <span
+                class="el-upload-list__item-preview"
+                @click="imgPreview(file)"
+              >
                 <i class="el-icon-zoom-in"></i>
               </span>
-              <span class="el-upload-list__item-delete" @click="imgRemove(file)">
+              <span
+                class="el-upload-list__item-delete"
+                @click="imgRemove(file)"
+              >
                 <i class="el-icon-delete"></i>
               </span>
             </span>
@@ -83,7 +100,7 @@ import {
   addDataList,
   updateDataList,
 } from "@/utils/api/api";
-import { creatFormData, spliceUrl } from "@/utils/common";
+import { createFormData, spliceUrl } from "@/utils/common";
 export default {
   beforeMount() {
     // 获取reqId
