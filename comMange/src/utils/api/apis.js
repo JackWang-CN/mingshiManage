@@ -88,14 +88,13 @@ export const getDataList = (
       operate == "stage/list" ||
       operate == "managerType/list" ||
       operate == "getDelegationList" ||
-      operate == "getActivityList"
+      operate == "getActivityList" ||
+      operate == "getClacRuleList" ||
+      operate == "allPropsType"
     ) {
       _this[key] = res.resultObject;
-
-      console.log(key, _this[key]);
       return;
     }
-
     _this[key] = res.resultObject.data;
   });
 };
@@ -136,7 +135,7 @@ export const getDataDetails = (
 };
 
 // 4) 修改数据
-export const updateDataDetails = (
+export const updateDetails = (
   model,
   control,
   version,
@@ -159,7 +158,7 @@ export const updateDataDetails = (
 const fileUrl = "https://api.resources.scmsar.com/";
 
 // 1.获取文件
-export const geFile = (operate = "infoList", version, info) => {
+export const getFile = (operate = "infoList", version, info) => {
   var url = fileUrl + `file/info/${operate}/v${version}`;
   return axios.post(url, info);
 };
@@ -172,7 +171,7 @@ export const getFileList = (
   _this,
   key
 ) => {
-  geFile(operate, version, info).then((res) => {
+  getFile(operate, version, info).then((res) => {
     switch (res.code) {
       case "C00501":
         _this.$message.info(res.resultMessage);
@@ -241,7 +240,8 @@ export const uploadFiles = (
   version, // 版本
   fileList, // 文件列表
   parameter1, // 参数1
-  parameter2 // 参数2
+  parameter2, // 参数2
+  parameter3 // 参数3
 ) => {
   var formData = createFormData(fileList);
 
@@ -253,7 +253,7 @@ export const uploadFiles = (
       var path = `file/upload/common/v${version}?Remarks=${parameter1}`;
       break;
     case 3:
-      var path = `file/upload/aru3d/v${version}?ShowResourceName=${parameter1}&&Remarks=${parameter2}`;
+      var path = `file/upload/aru3d/v${version}?TypeID=${parameter1}&&ShowResourceName=${parameter2}&&Remarks=${parameter3}`;
       break;
     case 4:
       var path = `file/upload/ar2d/v${version}?IsMain=${parameter1}&&MainARResID=${parameter2}`;
@@ -261,4 +261,17 @@ export const uploadFiles = (
   }
   var url = fileUrl + path;
   return axios.put(url, formData);
+};
+
+// 7.添加文件类型 method: 0-put 1-patch
+export const changeFileInfo = (operate, method, version, info) => {
+  var url = fileUrl + `file/info/${operate}/v${version}`;
+  switch (method) {
+    case 0:
+      return axios.put(url, info);
+    case 1:
+      return axios.patch(url, info);
+    case 2:
+      return axios.delete(url, { data: info });
+  }
 };

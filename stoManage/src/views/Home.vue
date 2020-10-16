@@ -125,16 +125,24 @@
 </template>
 
 <script>
+import { getDetail } from "@/utils/api/apis";
 export default {
   created() {
-    var token = sessionStorage.getItem("token");
-    var merchantname = sessionStorage.getItem("merchantname");
+    var Authorization = sessionStorage.getItem("token");
     this.initWebsocket();
 
+    // 获取商户ID
+    var MerchantsId = sessionStorage.getItem("MerchantsId");
+    if (!MerchantsId) {
+      getDetail("global", "merchant", 1, {}, "info").then((res) => {
+        sessionStorage.setItem("MerchantsId", res.resultObject.merchantID);
+      });
+    }
+
     var imObj = {
-      Authorization: token,
+      Authorization,
       Type: "6",
-      MerchantsId: "123123123123",
+      MerchantsId,
     };
 
     // 监听websocket状态
@@ -143,7 +151,7 @@ export default {
       window.websocket.onsend(imObj);
     });
 
-    if (!token) {
+    if (!Authorization) {
       this.$router.replace("/login");
       this.$message.error("账号已注销，请重新登录！");
     }
@@ -242,6 +250,7 @@ export default {
     logout() {
       sessionStorage.clear(); // 清空用户缓存
       this.$router.replace("/login");
+      window.websocket.onclose();
     },
 
     // 显示子节点
@@ -293,7 +302,7 @@ export default {
 
     // 初始化websocket
     initWebsocket() {
-      window.websocket = new WebSocket("ws://192.168.0.168:7774");
+      window.websocket = new WebSocket("ws://121.196.189.118:7774");
       window.websocket.onmessage = this.webMessage;
       window.websocket.onopen = this.webConnect;
       window.websocket.onsend = this.webSend;
@@ -303,7 +312,7 @@ export default {
 
     // 接收消息
     webMessage(res) {
-      console.log(res.data);
+      console.log("接收消息", res.data);
     },
 
     // 建立连接
@@ -316,6 +325,11 @@ export default {
 
     // 连接建立失败
     webError() {},
+
+    // 连接关闭
+    webClose() {
+      console.log("连接关闭");
+    },
   },
 
   watch: {

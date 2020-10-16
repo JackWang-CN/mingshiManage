@@ -3,7 +3,7 @@
   <div id="coupon_list" class="shadow_container">
     <div class="pageTitle">
       优惠券列表
-      <el-button type="success" @click="toDetails">创建优惠券</el-button>
+      <el-button type="success" @click="toDetails()">创建优惠券</el-button>
     </div>
     <!-- 查询条件 -->
     <el-form ref="find_form" :model="find_form" label-width="80px">
@@ -17,24 +17,14 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="满减金额" label-width="100px">
-        <el-input
-          v-model="find_form.data.eXchangeMoney"
-          placeholder="请输入满减金额"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="面值" label-width="100px">
-        <el-input
-          v-model="find_form.data.couponValue"
-          placeholder="请输入面值"
-        ></el-input>
-      </el-form-item>
+
       <el-form-item label="状态" label-width="100px">
-        <el-select v-model="find_form.data.status" placeholder="请选择状态">
-          <el-option label="未领取" value="0"></el-option>
-          <el-option label="已领取" value="1"></el-option>
+        <el-select v-model="find_form.data.isEnable" placeholder="请选择状态">
+          <el-option label="禁用" :value="0"></el-option>
+          <el-option label="启用" :value="1"></el-option>
         </el-select>
       </el-form-item>
+
       <el-form-item label="创建时间" label-width="100px">
         <el-date-picker
           v-model="find_form.data.creationTime"
@@ -56,9 +46,9 @@
         label="优惠券名称"
         width="180"
       ></el-table-column>
-      <el-table-column prop="couponTypeID" label="券类型" width="180">
+      <el-table-column prop="couponTypeID" label="券类型ID" width="180">
       </el-table-column>
-      <el-table-column prop="imageID" label="缩略图" width="120">
+      <el-table-column prop="imgUrl" label="缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar
             :size="80"
@@ -78,19 +68,19 @@
         width="120"
       ></el-table-column>
       <el-table-column
-        prop="couponValue"
-        label="面值"
-        width="120"
+        prop="describe"
+        label="优惠券描述"
+        width="300"
       ></el-table-column>
       <el-table-column
         prop="startTime"
         label="开始时间"
-        width="120"
+        width="180"
       ></el-table-column>
       <el-table-column
         prop="endTime"
         label="过期时间"
-        width="120"
+        width="180"
       ></el-table-column>
       <el-table-column prop="status" label="状态" width="120">
         <template slot-scope="scope">{{
@@ -98,20 +88,27 @@
         }}</template>
       </el-table-column>
       <el-table-column
-        prop="creationtime"
+        prop="createTime"
         label="创建时间"
-        width="120"
+        width="180"
       ></el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column
+        prop="updateTime"
+        label="修改时间"
+        width="180"
+      ></el-table-column>
+      <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="show_edit(scope.row)" type="text" size="small"
+          <el-button
+            @click="toDetails(scope.row.couponID)"
+            type="primary"
+            size="small"
             >编辑</el-button
           >
           <el-button
-            @click="user_delete(scope.row)"
-            type="text"
+            @click="delRow(scope.row.couponID)"
+            type="danger"
             size="small"
-            class="btns_delete"
             >删除</el-button
           >
         </template>
@@ -129,8 +126,8 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceImg } from "@/utils/common";
-import { getDataList } from "@/utils/api/apis";
+import { createGet, spliceImg, hintMessage } from "@/utils/common";
+import { getDataList, delData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -168,8 +165,19 @@ export default {
 
   methods: {
     // 跳转到详情页
-    toDetails() {
-      this.$router.push("coupon_details");
+    toDetails(id) {
+      this.$router.push({
+        path: "coupon_details",
+        query: { id },
+      });
+    },
+
+    // 删除当前行
+    async delRow(couponID) {
+      var res = await delData(this.model, this.control, 1, { couponID });
+      hintMessage(this, res);
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 分页属性改变

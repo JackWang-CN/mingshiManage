@@ -8,21 +8,56 @@
 
     <!-- 列表 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="name" label="类型名称" width="180"></el-table-column>
-      <el-table-column prop="type" label="类型标识" width="120"></el-table-column>
-      <el-table-column prop="describe" label="类型描述" width="300"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
+      <el-table-column
+        prop="name"
+        label="类型名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="type"
+        label="类型标识"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="类型描述"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="updateTime"
+        label="修改时间"
+        width="180"
+      ></el-table-column>
       <el-table-column label="操作" width="180">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="showDetails(1,scope.row)">编辑</el-button>
-          <el-button size="small" type="danger" @click="delRow(scope.row.typeID)">删除</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            @click="showDetails(1, scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            size="small"
+            type="danger"
+            @click="delRow(scope.row.typeID)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 弹出框 -->
-    <el-dialog title="类型详情" :visible.sync="show_details" width="30%" @closed="clear">
+    <el-dialog
+      title="类型详情"
+      :visible.sync="show_details"
+      width="30%"
+      @closed="clear"
+    >
       <el-form label-width="100px" class="details_form">
         <el-form-item label="类型名称">
           <el-input v-model="data_info.name"></el-input>
@@ -33,11 +68,17 @@
         </el-form-item>
 
         <el-form-item label="类型描述">
-          <el-input v-model="data_info.describe" type="textarea" :rows="3"></el-input>
+          <el-input
+            v-model="data_info.describe"
+            type="textarea"
+            :rows="3"
+          ></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button size="small" type="primary" @click="sendSubmit">提交</el-button>
+          <el-button size="small" type="primary" @click="sendSubmit"
+            >提交</el-button
+          >
           <el-button size="small" type="info" @click="cancel">取消</el-button>
         </el-form-item>
       </el-form>
@@ -160,11 +201,5 @@ export default {
 
 <style lang='scss'>
 #store_type {
-  .details_form {
-    .el-input,
-    .el-textarea {
-      width: 500px;
-    }
-  }
 }
 </style>

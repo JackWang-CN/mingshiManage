@@ -6,7 +6,7 @@
     <!-- 查询表单 -->
     <el-form :model="find_form" class="find_form" label-width="80px">
       <!-- 查询条件 -->
-      <el-form-item label="上传端" v-if="activeName!='company'">
+      <el-form-item label="上传端" v-if="activeName != 'company'">
         <el-select v-model="find_form.data.client" placeholder="用户/商户/公司">
           <el-option label="用户" :value="0"></el-option>
           <el-option label="商户" :value="1"></el-option>
@@ -14,16 +14,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="文件后缀">
-        <el-input v-model="find_form.data.resExtName" placeholder="如：jpg"></el-input>
+        <el-input
+          v-model="find_form.data.resExtName"
+          placeholder="如：jpg"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="是否禁用" v-if="activeName =='user'">
+      <el-form-item label="是否禁用" v-if="activeName == 'user'">
         <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="上传用户">
-        <el-input v-model="find_form.data.uploadId" placeholder="上传用户ID"></el-input>
+        <el-input
+          v-model="find_form.data.uploadId"
+          placeholder="上传用户名"
+        ></el-input>
       </el-form-item>
 
       <!-- 日期查询 -->
@@ -49,17 +55,51 @@
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
-      <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
-      <el-table-column prop="resExtName" label="资源后缀名" width="100"></el-table-column>
-      <el-table-column prop="scene" label="业务场景" width="100"></el-table-column>
-      <el-table-column prop="clientIdentity" label="上传端口" width="100"></el-table-column>
-      <el-table-column prop="uploadID" label="上传用户" width="100"></el-table-column>
+      <el-table-column
+        prop="uploadFileName"
+        label="原文件名"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="storeFileName"
+        label="存储文件名"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="resExtName"
+        label="资源后缀名"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="scene"
+        label="业务场景"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="clientIdentity"
+        label="上传端口"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="uploadID"
+        label="上传用户"
+        width="100"
+      ></el-table-column>
       <el-table-column prop="isDelete" label="是否禁用" width="100">
-        <template slot-scope="scope">{{scope.row.isDelete?'是':'否'}}</template>
+        <template slot-scope="scope">{{
+          scope.row.isDelete ? "是" : "否"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="describe" label="资源说明" width="250"></el-table-column>
-      <el-table-column prop="creationTime" label="上传时间" width="250"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="资源说明"
+        width="250"
+      ></el-table-column>
+      <el-table-column
+        prop="creationTime"
+        label="上传时间"
+        width="250"
+      ></el-table-column>
       <el-table-column label="操作" width="210" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -67,18 +107,21 @@
             type="danger"
             size="small"
             v-if="!scope.row.isDelete"
-          >禁用</el-button>
+            >禁用</el-button
+          >
           <el-button
             @click="enableRow(scope.row.resID)"
             type="success"
             size="small"
             v-if="scope.row.isDelete"
-          >恢复</el-button>
+            >恢复</el-button
+          >
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl+'file/download/source/v1?Mark='+scope.row.resID"
-          >下载文件</el-link>
+            :href="fileUrl + 'file/download/source/v1?Mark=' + scope.row.resID"
+            >下载文件</el-link
+          >
         </template>
       </el-table-column>
     </el-table>

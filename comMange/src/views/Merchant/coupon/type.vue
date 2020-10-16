@@ -13,16 +13,7 @@
         label="类型名称"
         width="180"
       ></el-table-column>
-      <el-table-column
-        prop="type"
-        label="类型标识"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="describe"
-        label="类型描述"
-        width="300"
-      ></el-table-column>
+
       <el-table-column
         prop="createTime"
         label="创建时间"
@@ -61,18 +52,6 @@
       <el-form label-width="100px" class="details_form">
         <el-form-item label="类型名称">
           <el-input v-model="data_info.name"></el-input>
-        </el-form-item>
-
-        <el-form-item label="类型标识">
-          <el-input v-model="data_info.type" placeholder="例：0"></el-input>
-        </el-form-item>
-
-        <el-form-item label="类型描述">
-          <el-input
-            v-model="data_info.describe"
-            type="textarea"
-            :rows="3"
-          ></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -120,25 +99,10 @@ export default {
 
     // 删除当前行
     async delRow(typeID) {
-      console.log(typeID);
-      var res = await delData(
-        this.model,
-        this.control,
-        1,
-        { typeID },
-        "activityTypeDel"
-      );
+      var res = await delData(this.model, this.control, 1, { typeID });
       hintMessage(this, res);
       var form = { ...this.find_form };
-      getDataList(
-        this.model,
-        this.control,
-        1,
-        form,
-        this,
-        "data_list",
-        "activityTypeList"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 清空内容
@@ -152,35 +116,15 @@ export default {
       this.show_details = false;
       switch (this.operate) {
         case 0:
-          var res = await addData(
-            this.model,
-            this.control,
-            1,
-            data,
-            "activityTypeCreate"
-          );
+          var res = await addData(this.model, this.control, 1, data);
           break;
         case 1:
-          var res = await updateData(
-            this.model,
-            this.control,
-            1,
-            data,
-            "activityTypeEdit"
-          );
+          var res = await updateData(this.model, this.control, 1, data);
           break;
       }
       hintMessage(this, res);
       var form = { ...this.find_form };
-      getDataList(
-        this.model,
-        this.control,
-        1,
-        form,
-        this,
-        "data_list",
-        "activityTypeList"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 取消
@@ -194,10 +138,6 @@ export default {
 <style lang='scss'>
 #store_type {
   .details_form {
-    .el-input,
-    .el-textarea {
-      width: 500px;
-    }
   }
 }
 </style>

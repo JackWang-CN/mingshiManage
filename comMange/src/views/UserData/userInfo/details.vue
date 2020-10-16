@@ -18,11 +18,11 @@
         </el-form-item>
 
         <el-form-item label="性别">
-          <span>{{ data_info.sex }}</span>
+          <span>{{ data_info.sex ? "男" : "女" }}</span>
         </el-form-item>
 
         <el-form-item label="状态">
-          <span>{{ data_info.isEnable }}</span>
+          <span>{{ data_info.isEnable ? "正常" : "封禁" }}</span>
         </el-form-item>
 
         <el-form-item label="用户邮箱">
@@ -63,8 +63,8 @@
 
       <!-- 链接 -->
       <ul class="btns">
+        <li>金币余额：{{ gold_info.goldNum }}</li>
         <li>
-          金币余额：{{ gold_info.goldNum }}
           <el-button
             type="primary"
             size="small"
@@ -82,12 +82,15 @@
           >优惠券</el-button
         >
         <li>
-          <el-button type="warning" size="small" @click="toDetails('assets')"
+          <el-button
+            type="success"
+            size="small"
+            @click="toDetails('user_assets')"
             >个人道具</el-button
           >
         </li>
         <li>
-          <el-button type="warning" size="small" @click="toDetails('assets')"
+          <el-button type="info" size="small" @click="showList('cusHouse')"
             >个人房产</el-button
           >
         </li>
@@ -96,12 +99,18 @@
             >个人宠物</el-button
           >
         </li>
+        <li>
+          <el-button size="small" @click="showList('cusCampaign')"
+            >活动参与</el-button
+          >
+        </li>
       </ul>
     </div>
 
     <!-- 弹出框 -->
     <el-dialog :title="title" :visible.sync="show_details" width="30%">
-      <el-table :data="data_list" style="width: 100%">
+      <!-- 获奖记录表 -->
+      <el-table v-show="dialog_type == 0" :data="data_list" style="width: 100%">
         <el-table-column
           prop="title"
           label="标题"
@@ -119,7 +128,137 @@
           width="180"
         ></el-table-column>
         <el-table-column prop="signInDay" label="签到天数"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="showDetails(scope.row)"
+              size="small"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
+
+      <!-- 优惠券列表 -->
+      <el-table v-show="dialog_type == 1" :data="data_list" style="width: 100%">
+        <el-table-column
+          prop="cusCouponID"
+          label="优惠券ID"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="type" label="类型" width="100"></el-table-column>
+        <el-table-column
+          prop="describe"
+          label="说明"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="获奖时间"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="signInDay" label="签到天数"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="showDetails(scope.row)"
+              size="small"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 宠物列表 -->
+      <el-table v-show="dialog_type == 2" :data="data_list" style="width: 100%">
+        <el-table-column
+          prop="assetID"
+          label="宠物ID"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="type" label="类型" width="100"></el-table-column>
+        <el-table-column
+          prop="number"
+          label="数量"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="useState"
+          label="绑定状态"
+          width="120"
+        ></el-table-column>
+        <el-table-column prop="isFrozen" label="是否冻结"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="showDetails(scope.row)"
+              size="small"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 房产列表 -->
+      <el-table v-show="dialog_type == 4" :data="data_list" style="width: 100%">
+        <el-table-column
+          prop="assetID"
+          label="房产ID"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="type" label="类型" width="100"></el-table-column>
+        <el-table-column
+          prop="number"
+          label="数量"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="useState"
+          label="绑定状态"
+          width="120"
+        ></el-table-column>
+        <el-table-column prop="isFrozen" label="是否冻结"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="showDetails(scope.row)"
+              size="small"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 活动参与 -->
+      <el-table v-show="dialog_type == 5" :data="data_list" style="width: 100%">
+        <el-table-column
+          prop="campaignID"
+          label="参与活动ID"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="type" label="类型" width="100"></el-table-column>
+
+        <el-table-column
+          prop="joinTime"
+          label="参加时间"
+          width="180"
+        ></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              @click="showDetails(scope.row)"
+              size="small"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+
       <!-- 分页插件 -->
       <Pagination
         :find="find_form"
@@ -132,11 +271,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import {
-  getDataList,
-  getDataDetails,
-  updateDataDetails,
-} from "@/utils/api/apis";
+import { getDataList, getDataDetails, updateDetails } from "@/utils/api/apis";
 import { createGet, filteObj } from "@/utils/common";
 export default {
   components: {
@@ -169,6 +304,7 @@ export default {
       find_form: {},
       data_list: [],
       customerID: "",
+      dialog_type: 0, // 弹出框表格类型 0-获奖记录 1-优惠券 2-个人宠物
 
       title: "",
 
@@ -182,7 +318,7 @@ export default {
   methods: {
     // 提交保存
     sendSubmit() {
-      updateDataDetails(
+      updateDetails(
         this.model,
         this.control,
         filteObj(this.data_info),
@@ -211,18 +347,46 @@ export default {
       switch (type) {
         case "cusWinning":
           this.title = "获奖记录";
-          getDataList(this.model, type + "Log", 1, form, this);
+          this.model = "cusInfo";
+          this.control = type + "Log";
+          this.dialog_type = 0;
           break;
         case "cusCoupon":
           this.title = "个人优惠券";
-          getDataList(type, type + "Log", 1, form, this);
+          this.model = type;
+          this.control = type + "Log";
+          this.dialog_type = 1;
           break;
         case "cusPropPet":
           this.title = "个人宠物";
-          getDataList("cusPet", type, 1, form, this);
+          this.model = "cusPet";
+          this.control = type;
+          this.dialog_type = 2;
+          break;
+        case "cusPropAsset":
+          this.title = "个人道具";
+          this.model = "cusProp";
+          this.control = "cusPropAsset";
+          this.dialog_type = 3;
+          break;
+        case "cusHouse":
+          this.title = "个人房产";
+          this.model = type;
+          this.control = type;
+          this.dialog_type = 4;
+          break;
+        case "cusCampaign":
+          this.title = "个人房产";
+          this.model = "cusInfo";
+          this.control = type;
+          this.dialog_type = 5;
           break;
       }
+      getDataList(this.model, this.control, 1, form, this);
     },
+
+    // 二级弹窗
+    showDetails() {},
 
     // 分页属性改变
     pageChange(type, page) {
@@ -235,7 +399,7 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      getDataList(this.model, "cusWinningLog", 1, form, this);
+      getDataList(this.model, this.control, 1, form, this);
     },
   },
 };

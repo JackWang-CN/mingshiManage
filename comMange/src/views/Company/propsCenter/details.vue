@@ -55,6 +55,20 @@
         ></el-input>
       </el-form-item>
 
+      <el-form-item
+        label="房屋风格"
+        v-show="model == 'propHouse' && operate == 0"
+      >
+        <el-checkbox-group v-model="data_info.houseStyleIDList">
+          <el-checkbox
+            v-for="item in style_list"
+            :label="item.propID"
+            :key="item.propID"
+            >{{ item.name }}</el-checkbox
+          >
+        </el-checkbox-group>
+      </el-form-item>
+
       <el-form-item label="创建时间" v-if="operate">{{
         data_info.createTime
       }}</el-form-item>
@@ -117,7 +131,7 @@ export default {
   components: {
     Pagination,
   },
-  mounted() {
+  async created() {
     var propID = this.$route.query.id;
     this.model = this.$route.query.type;
     this.control = this.$route.query.type;
@@ -135,16 +149,29 @@ export default {
       this,
       "type_list"
     );
+
+    // 如果是房屋，请求风格列表
+    if (this.model == "propHouse" && this.operate == 0) {
+      getDataList(
+        this.model + "Style",
+        this.model + "Style",
+        1,
+        createGet(1, 999),
+        this,
+        "style_list"
+      );
+    }
   },
 
   data() {
     return {
-      data_info: {},
+      data_info: { houseStyleIDList: [] },
       find_form: {},
       operate: 0, // 0新增 1修改
       show_mode: false,
       model_list: [], // 模型列表
       type_list: [], // 道具类型
+      style_list: [], // 房屋风格列表
 
       // 上传的图片列表
       img_list: [],
@@ -166,14 +193,7 @@ export default {
           addDataList(this.model, this.control, 1, form, this, "props_list");
           break;
         case 1:
-          updateDataDetails(
-            this.model,
-            this.control,
-            1,
-            form,
-            this,
-            "props_list"
-          );
+          updateDetails(this.model, this.control, 1, form, this, "props_list");
           break;
       }
     },

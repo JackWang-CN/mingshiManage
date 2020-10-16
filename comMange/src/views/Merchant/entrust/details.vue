@@ -111,7 +111,7 @@ import {
   getDataList,
   getData,
   updateData,
-  updateDataDetails,
+  updateDetails,
 } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
@@ -257,7 +257,7 @@ export default {
     shutdownEntrust() {
       this.data_info.entrustID = this.entrustID;
       console.log(this.data_info);
-      updateDataDetails(
+      updateDetails(
         this.model,
         this.control,
         1,

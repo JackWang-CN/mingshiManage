@@ -4,34 +4,47 @@
     <div class="pageTitle">交易记录</div>
 
     <!-- 表单 -->
-    <el-form ref="find_form" class="find_form" :model="find_form" label-width="80px">
+    <el-form
+      ref="find_form"
+      class="find_form"
+      :model="find_form"
+      label-width="80px"
+    >
       <el-form-item label="道具名称" label-width="100px">
-        <el-input v-model="find_form.data.aname" placeholder="请输入道具名称"></el-input>
+        <el-input
+          v-model="find_form.data.name"
+          placeholder="请输入道具名称"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="道具类型" label-width="100px">
-        <el-select v-model="find_form.data.rpmtype" placeholder="请选择道具类型">
-          <el-option label="户型风格" :value="1"></el-option>
+
+      <el-form-item label="道具场景" label-width="100px">
+        <el-select v-model="assetScene" placeholder="请选择道具场景">
+          <el-option label="全部" :value="0"></el-option>
+          <el-option label="房产道具" :value="1"></el-option>
           <el-option label="屋内道具" :value="2"></el-option>
-          <el-option label="AR宠物" :value="3"></el-option>
-          <el-option label="全部" value></el-option>
+          <el-option label="宠物道具" :value="3"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="交易金额" label-width="100px">
-        <el-input v-model="find_form.data.aunitp" placeholder="请输入交易金额"></el-input>
+
+      <el-form-item label="道具类型" label-width="100px">
+        <el-select
+          v-model="find_form.data.propTypeID"
+          placeholder="请选择道具类型"
+        >
+          <el-option
+            v-for="type in type_list"
+            :key="type.name"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
+        </el-select>
       </el-form-item>
+
       <el-form-item label="买家昵称" label-width="100px">
-        <el-input v-model="find_form.data.name1" placeholder="买家昵称"></el-input>
-      </el-form-item>
-      <el-form-item label="交易时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.creationTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
+        <el-input
+          v-model="find_form.data.nickname"
+          placeholder="买家昵称"
+        ></el-input>
       </el-form-item>
 
       <!-- 按钮组 -->
@@ -43,30 +56,67 @@
     <!-- 表格 -->
     <el-table :data="data_list" border style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="logID" label="交易单号" width="120"></el-table-column>
-      <el-table-column prop="buyID" label="买家昵称" width="120"></el-table-column>
-      <el-table-column prop="name" label="道具名称" width="120"></el-table-column>
+      <el-table-column
+        prop="logID"
+        label="交易单号"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="buyID"
+        label="买家昵称"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="name"
+        label="道具名称"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="propTypeID" label="道具类型" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.propTypeID==1">户型风格</span>
-          <span v-else-if="scope.row.propTypeID==2">屋内道具</span>
-          <span v-else-if="scope.row.propTypeID==3">AR宠物</span>
+          <span v-if="scope.row.propTypeID == 1">房产道具</span>
+          <span v-else-if="scope.row.propTypeID == 2">屋内道具</span>
+          <span v-else-if="scope.row.propTypeID == 3">宠物道具</span>
           <el-avatar :size="50" :src="scope.row.rpmico"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="sellNum" label="数量" width="120"></el-table-column>
-      <el-table-column prop="unitPrice" label="单价" width="120"></el-table-column>
+      <el-table-column
+        prop="sellNum"
+        label="数量"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="unitPrice"
+        label="单价"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="propIco" label="道具缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar shape="square" :size="80" :src="scope.row.resId"></el-avatar>
-          {{scope.row.propIco}}
+          <el-avatar
+            shape="square"
+            :size="80"
+            :src="scope.row.resId"
+          ></el-avatar>
+          {{ scope.row.propIco }}
         </template>
       </el-table-column>
-      <el-table-column prop="describe" label="描述" width="120"></el-table-column>
-      <el-table-column prop="tradeTime" label="交易时间" width="180"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="描述"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="tradeTime"
+        label="交易时间"
+        width="180"
+      ></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <el-button @click="showDetails(scope.row.logID)" type="primary" size="small">详情</el-button>
+          <el-button
+            @click="showDetails(scope.row.logID)"
+            type="primary"
+            size="small"
+            >详情</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -81,16 +131,20 @@
     <!-- 弹出框 -->
     <el-dialog title="交易详情" :visible.sync="isShowDetails">
       <el-form label-width="100px">
-        <el-form-item label="交易单号">{{data_info.logID}}</el-form-item>
-        <el-form-item label="道具名称">{{data_info.name}}</el-form-item>
-        <el-form-item label="道具类型">{{data_info.propTypeID}}</el-form-item>
+        <el-form-item label="交易单号">{{ data_info.logID }}</el-form-item>
+        <el-form-item label="道具名称">{{ data_info.name }}</el-form-item>
+        <el-form-item label="道具类型">{{ data_info.propTypeID }}</el-form-item>
         <el-form-item label="道具缩略图">
-          <el-avatar :size="80" :src="data_info.propIco" shape="square"></el-avatar>
+          <el-avatar
+            :size="80"
+            :src="data_info.propIco"
+            shape="square"
+          ></el-avatar>
         </el-form-item>
-        <el-form-item label="交易金额">{{data_info.totalPrice}}</el-form-item>
-        <el-form-item label="交易时间">{{data_info.tradeTime}}</el-form-item>
+        <el-form-item label="交易金额">{{ data_info.totalPrice }}</el-form-item>
+        <el-form-item label="交易时间">{{ data_info.tradeTime }}</el-form-item>
         <el-form-item>
-          <el-button @click="isShowDetails=false">关闭</el-button>
+          <el-button @click="isShowDetails = false">关闭</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -118,7 +172,9 @@ export default {
         data: {},
       },
       data_list: [],
+      type_list: [],
       data_info: [],
+      assetScene: null,
       isShowDetails: false,
 
       model: "propMall",
@@ -158,8 +214,39 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      delete form.totalDataNum;
       getDataList(this.model, this.control, 1, form, this);
+    },
+  },
+
+  watch: {
+    // 道具场景下拉框
+    assetScene() {
+      var form = createGet(1, 999);
+      switch (this.assetScene) {
+        // 1-房产道具 2-屋内道具 3-宠物道具
+        case 1:
+          var model = "propHouse";
+          break;
+        case 2:
+          var model = "prop";
+          break;
+        case 3:
+          var model = "propPet";
+          break;
+        case 0:
+          getDataList(
+            this.model,
+            this.control,
+            1,
+            form,
+            this,
+            "type_list",
+            "allPropsType"
+          );
+          return;
+      }
+      var control = model + "Type";
+      getDataList(model, control, 1, form, this, "type_list");
     },
   },
 };

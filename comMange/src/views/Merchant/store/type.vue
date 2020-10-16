@@ -8,27 +8,64 @@
 
     <!-- 列表 -->
     <el-table :data="data_list" border>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-      <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="180"
+      ></el-table-column>
     </el-table>
 
     <!-- 弹出框 -->
-    <el-dialog title="类型详情" :visible.sync="show_details" width="30%" :closed="clear">
-      <el-form label-width="100px" class="details_form">
+    <el-dialog
+      title="类型详情"
+      :visible.sync="show_details"
+      width="30%"
+      :closed="clear"
+    >
+      <el-form label-width="70px" class="details_form">
+        <el-form-item label="类型名称">
+          <el-input v-model="data_info.name"></el-input>
+        </el-form-item>
+
         <el-form-item label="所属分支">
           <el-select v-model="data_info.typeID">
             <el-option label="新增类型" :value="0"></el-option>
           </el-select>
-        </el-form-item>
-
-        <el-form-item label="类型名称">
-          <el-input v-model="data_info.name"></el-input>
         </el-form-item>
 
         <el-form-item label="是否启用">
@@ -39,7 +76,11 @@
         </el-form-item>
 
         <el-form-item label="经营范围">
-          <el-input v-model="data_info.range" type="textarea" :rows="3"></el-input>
+          <el-input
+            v-model="data_info.range"
+            type="textarea"
+            :rows="3"
+          ></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -97,11 +138,5 @@ export default {
 
 <style lang='scss'>
 #store_type {
-  .details_form {
-    .el-input,
-    .el-textarea {
-      width: 500px;
-    }
-  }
 }
 </style>

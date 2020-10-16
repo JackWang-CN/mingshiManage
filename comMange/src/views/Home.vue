@@ -57,6 +57,7 @@
           </template>
           <el-menu-item index="normal_list">普通资源管理</el-menu-item>
           <el-menu-item index="ar_list">AR资源管理</el-menu-item>
+          <el-menu-item index="ar_type">AR资源类型</el-menu-item>
         </el-submenu>
 
         <!-- 活动管理 -->
@@ -67,6 +68,7 @@
           </template>
           <el-menu-item index="activity_list">商户活动</el-menu-item>
           <el-menu-item index="activity_type">活动类型</el-menu-item>
+          <el-menu-item index="activity_rule">活动规则</el-menu-item>
           <el-menu-item index="coupon_list">优惠券</el-menu-item>
           <el-menu-item index="coupon_type">优惠券类型</el-menu-item>
           <!-- <el-menu-item index="user_accFlow">帐户流水</el-menu-item>

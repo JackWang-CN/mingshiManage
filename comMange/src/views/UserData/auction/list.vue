@@ -92,12 +92,12 @@
       ></el-table-column>
       <el-table-column label="操作" width="180">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             @click="showDetails(scope.row.auctionID)"
             type="primary"
             size="small"
             >详情</el-button
-          >
+          > -->
           <el-button @click="switchState(scope.row)" type="warning" size="small"
             >下架</el-button
           >

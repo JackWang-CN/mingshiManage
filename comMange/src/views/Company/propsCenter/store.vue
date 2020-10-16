@@ -19,10 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
-        <el-select
-          v-model="find_form.data.rpmtype"
-          placeholder="请选择道具类型"
-        >
+        <el-select v-model="find_form.data.typeID" placeholder="请选择道具类型">
           <el-option
             v-for="type in type_list"
             :key="type.typeID"
@@ -164,7 +161,7 @@ export default {
         form,
         this,
         "data_list",
-        this.activeName
+        this.activeName + "List"
       );
     },
 
@@ -236,6 +233,7 @@ export default {
     // 监听激活页面以请求不同数据
     activeName() {
       var form = { ...this.find_form };
+      this.resetForm();
 
       // 请求商城道具列表
       getDataList(

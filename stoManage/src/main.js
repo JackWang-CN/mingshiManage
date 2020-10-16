@@ -37,12 +37,6 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-Vue.prototype.$vision = {
-  company: "c1",
-  merchant: "m1",
-  userdata: "u1",
-};
-
 new Vue({
   router,
   render: (h) => h(App),

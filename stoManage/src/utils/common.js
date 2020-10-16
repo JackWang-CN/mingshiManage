@@ -1,13 +1,13 @@
 /* 公共方法 */
 
-const fileUrl = "https://api.resources.scmsar.com/";
+const fileUrl =
+  "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
 
 // 拼接文件URL
 export const spliceUrl = (arr, imgKey) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
-      item.originally = item[imgKey];
-      item[imgKey] = fileUrl + "file/download/source/v1?Mark=" + item[imgKey];
+      item.imgUrl = fileUrl + item[imgKey];
     }
   });
   return arr;
@@ -49,13 +49,13 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  if (order) {
-    obj.orderByFileds = order + " desc";
-  } else {
-    obj.orderByFileds = "creationtime desc";
-  }
+  // if (order) {
+  //   obj.orderByFileds = order + " desc";
+  // } else {
+  //   obj.orderByFileds = "creationtime desc";
+  // }
 
-  obj.totalDataNum = 0;
+  // obj.totalDataNum = 0;
   obj.data = {};
 
   return obj;

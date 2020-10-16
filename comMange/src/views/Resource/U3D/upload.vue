@@ -6,7 +6,12 @@
     <el-form label-width="100px">
       <!-- 文件上传 -->
       <el-form-item label="AR文件">
-        <el-upload class="upload-demo" action="#" :on-change="arChange" :auto-upload="false">
+        <el-upload
+          class="upload-demo"
+          action="#"
+          :on-change="arChange"
+          :auto-upload="false"
+        >
           <el-button size="small" type="primary">添加模型</el-button>
         </el-upload>
       </el-form-item>
@@ -37,12 +42,27 @@
         </el-upload>
       </el-form-item>
 
+      <el-form-item label="所属分类">
+        <el-select v-model="data_info.TypeID">
+          <el-option
+            v-for="type in type_list"
+            :key="type.typeID"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="模型名称">
         <el-input v-model="data_info.ShowResourceName" clearable></el-input>
       </el-form-item>
 
       <el-form-item label="备注信息">
-        <el-input v-model="data_info.Remarks" type="textarea" :rows="3"></el-input>
+        <el-input
+          v-model="data_info.Remarks"
+          type="textarea"
+          :rows="3"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -54,14 +74,19 @@
 </template>
 
 <script>
-import { uploadFiles } from "@/utils/api/apis";
-import { createFormData } from "@/utils/common";
+import { uploadFiles, getFileList } from "@/utils/api/apis";
+import { createFormData, createGet } from "@/utils/common";
 export default {
-  mounted() {},
+  mounted() {
+    // 请求ar资源类型列表
+    this.find_form = createGet(1, 999);
+    getFileList("u3dTypeList", 1, this.find_form, this, "type_list");
+  },
 
   data() {
     return {
       data_info: {},
+      type_list: [],
       file_ar: [], // ar文件对象
       img_main: [], // 主缩略图文件对象
       img_children: [], // 子多图文件对象
@@ -76,7 +101,7 @@ export default {
 
     // 发送请求
     async sendSubmit() {
-      var { ShowResourceName, Remarks } = this.data_info;
+      var { ShowResourceName, Remarks, TypeID } = this.data_info;
       var flag = true;
 
       // 1.上传AR资源
@@ -85,6 +110,7 @@ export default {
           3,
           1,
           this.file_ar,
+          TypeID,
           ShowResourceName,
           Remarks
         );

@@ -3,11 +3,15 @@
 const fileUrl =
   "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
 
+const arUrl = "https://api.resources.scmsar.com/file/download/ar2d/v1?Mark=";
+
 // 拼接图片URL
-export const spliceImg = (arr, imgKey) => {
+export const spliceImg = (arr, imgKey, flag) => {
   arr.forEach((item) => {
+    // debugger;
     if (item[imgKey]) {
-      item.imgUrl = fileUrl + item[imgKey];
+      var url = flag ? arUrl : fileUrl;
+      item.imgUrl = url + item[imgKey];
     }
   });
   return arr;

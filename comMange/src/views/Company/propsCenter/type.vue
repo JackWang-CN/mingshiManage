@@ -11,25 +11,43 @@
 
     <!-- 查询组件 -->
     <div class="search">
-      <el-input v-model="find_form.info" placeholder="分类名称" prefix-icon="el-icon-search"></el-input>
+      <el-input
+        v-model="find_form.info"
+        placeholder="分类名称"
+        prefix-icon="el-icon-search"
+      ></el-input>
       <el-button type="success" @click="showDetails(0)">新增分类</el-button>
     </div>
 
     <!-- 列表 -->
     <el-table :data="data_list" tooltip-effect="dark" border>
-      <el-table-column prop="name" label="分类名称" width="200"></el-table-column>
+      <el-table-column
+        prop="name"
+        label="分类名称"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="describe" label="描述说明"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="warning" size="small" @click="showDetails(1,scope.row)">修改</el-button>
-          <el-button type="danger" size="small" @click="delRow(scope.row.typeID)">删除</el-button>
+          <el-button
+            type="warning"
+            size="small"
+            @click="showDetails(1, scope.row)"
+            >修改</el-button
+          >
+          <el-button
+            type="danger"
+            size="small"
+            @click="delRow(scope.row.typeID)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 弹出框 -->
     <el-dialog
-      :title="operate==0?'添加类型':'类型详情'"
+      :title="operate == 0 ? '添加类型' : '类型详情'"
       :visible.sync="show_details"
       width="30%"
       @closed="closeDetails"
@@ -40,13 +58,13 @@
           <!-- 下拉框一 -->
           <el-form-item label="所属父类">
             <el-select v-model="data_info.parentID">
+              <el-option label="无" value></el-option>
               <el-option
                 v-for="item in data_list"
                 :key="item.typeID"
                 :label="item.name"
                 :value="item.typeID"
               ></el-option>
-              <el-option label="新增父类" value></el-option>
             </el-select>
           </el-form-item>
           <!-- 下拉框二 -->
@@ -54,48 +72,62 @@
             <el-input v-model="data_info.name"></el-input>
           </el-form-item>
           <el-form-item label="类型描述">
-            <el-input type="textarea" v-model="data_info.describe" :rows="4"></el-input>
+            <el-input
+              type="textarea"
+              v-model="data_info.describe"
+              :rows="4"
+            ></el-input>
           </el-form-item>
         </div>
         <!-- 特性 -->
         <div class="special">
-          <div class="group" v-if="model=='prop'">
+          <div class="group" v-if="model == 'prop'">
             <h3>媒体附加</h3>
             <el-checkbox-group v-model="data_info.mediaSpecial">
               <el-checkbox
                 v-for="item in prop_special.media"
                 :key="item.majoKey"
                 :label="item.majoKey"
-              >{{item.value}}</el-checkbox>
+                >{{ item.value }}</el-checkbox
+              >
             </el-checkbox-group>
           </div>
 
-          <div class="group" v-if="model=='prop'">
+          <div class="group" v-if="model == 'prop'">
             <h3>摆放规则</h3>
             <el-checkbox-group v-model="data_info.putSpecial">
               <el-checkbox
                 v-for="item in prop_special.put"
                 :key="item.majoKey"
                 :label="item.majoKey"
-              >{{item.value}}</el-checkbox>
+                >{{ item.value }}</el-checkbox
+              >
             </el-checkbox-group>
           </div>
 
-          <div class="group" v-if="model=='propPet'">
+          <div class="group" v-if="model == 'propPet'">
             <h3>AI特性</h3>
             <el-checkbox-group v-model="data_info.aiSpecial">
               <el-checkbox
                 v-for="item in AI_special"
                 :key="item.majoKey"
                 :label="item.majoKey"
-              >{{item.value}}</el-checkbox>
+                >{{ item.value }}</el-checkbox
+              >
             </el-checkbox-group>
           </div>
         </div>
         <el-form-item>
-          <el-button type="primary" v-if="operate==0" @click="sendSubmit(0)">添加</el-button>
-          <el-button type="primary" v-else-if="operate==1" @click="sendSubmit(1)">确定</el-button>
-          <el-button type="info" @click="show_details=false">取消</el-button>
+          <el-button type="primary" v-if="operate == 0" @click="sendSubmit(0)"
+            >添加</el-button
+          >
+          <el-button
+            type="primary"
+            v-else-if="operate == 1"
+            @click="sendSubmit(1)"
+            >确定</el-button
+          >
+          <el-button type="info" @click="show_details = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

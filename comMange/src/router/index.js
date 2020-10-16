@@ -77,6 +77,12 @@ export default new VueRouter({
           component: () => import("../views/Resource/U3D/list.vue"),
           meta: ["资源管理", "AR资源"],
         },
+        // 资源管理-AR资源类型
+        {
+          path: "ar_type",
+          component: () => import("../views/Resource/U3D/type.vue"),
+          meta: ["资源管理", "AR资源类型"],
+        },
         // 资源管理-AR资源-AR资源上传
         {
           path: "ar_upload",
@@ -241,8 +247,8 @@ export default new VueRouter({
         },
         // 用户管理-个人资产
         {
-          path: "assets",
-          component: () => import("../views/UserData/userInfo/assets.vue"),
+          path: "user_assets",
+          component: () => import("../views/UserData/userInfo/user_assets.vue"),
           meta: ["用户管理", "道具资产"],
         },
         // 用户管理-拍卖行
@@ -310,6 +316,12 @@ export default new VueRouter({
           path: "activity_type",
           component: () => import("../views/Merchant/activity/type.vue"),
           meta: ["商户管理", "活动类型"],
+        },
+        // 商户管理-商户活动规则
+        {
+          path: "activity_rule",
+          component: () => import("../views/Merchant/activity/rule.vue"),
+          meta: ["商户管理", "活动规则"],
         },
 
         // 活动管理-优惠券列表

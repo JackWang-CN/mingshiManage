@@ -49,11 +49,7 @@
 </template>
 
 <script>
-import {
-  getDataDetails,
-  addDataList,
-  updateDataDetails,
-} from "@/utils/api/apis";
+import { getDataDetails, addDataList, updateDetails } from "@/utils/api/apis";
 export default {
   mounted() {
     var { id } = this.$route.query;
@@ -80,14 +76,7 @@ export default {
     sendSubmit() {
       var form = { ...this.data_info };
       if (this.operate) {
-        updateDataDetails(
-          this.model,
-          this.control,
-          1,
-          form,
-          this,
-          "version_list"
-        );
+        updateDetails(this.model, this.control, 1, form, this, "version_list");
       } else {
         addDataList(this.model, this.control, 1, form, this, "version_list");
       }

@@ -3,7 +3,9 @@
     <!-- AR资源列表 -->
     <div class="pageTitle">
       AR资源列表
-      <el-button type="primary" size="medium" @click="toUpload">上转AR资源</el-button>
+      <el-button type="primary" size="medium" @click="toUpload"
+        >上转AR资源</el-button
+      >
     </div>
 
     <!-- 查询表单 -->
@@ -19,7 +21,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="上传用户">
-        <el-input v-model="find_form.data.uploadID" placeholder="请输入上传用户ID"></el-input>
+        <el-input
+          v-model="find_form.data.uploadID"
+          placeholder="上传用户名"
+        ></el-input>
       </el-form-item>
 
       <!-- 日期查询 -->
@@ -39,34 +44,68 @@
       <el-form-item>
         <el-button type="primary" @click="findData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="danger" style="margin-left:50px">批量删除</el-button>
+        <el-button type="danger" style="margin-left: 50px">批量删除</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="showResourceName" label="模型名称" width="150"></el-table-column>
-      <el-table-column prop="uploadFileName" label="原文件名" width="150"></el-table-column>
-      <el-table-column prop="storeFileName" label="存储文件名" width="150"></el-table-column>
+      <el-table-column
+        prop="showResourceName"
+        label="模型名称"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="uploadFileName"
+        label="原文件名"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="storeFileName"
+        label="存储文件名"
+        width="150"
+      ></el-table-column>
       <el-table-column prop="mainImageID" label="资源缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar
             v-if="scope.row.mainImageID"
             :size="80"
-            :src="fileUrl+'ar2d/v1?Mark='+scope.row.mainImageID"
+            :src="fileUrl + 'ar2d/v1?Mark=' + scope.row.mainImageID"
             shape="square"
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="resExtName" label="资源后缀名" width="100"></el-table-column>
-      <el-table-column prop="scene" label="业务场景" width="100"></el-table-column>
-      <el-table-column prop="uploadID" label="上传用户" width="100"></el-table-column>
+      <el-table-column
+        prop="resExtName"
+        label="资源后缀名"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="scene"
+        label="业务场景"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="uploadID"
+        label="上传用户"
+        width="100"
+      ></el-table-column>
       <el-table-column prop="isDelete" label="是否禁用" width="100">
-        <template slot-scope="scope">{{scope.row.isDelete?'是':'否'}}</template>
+        <template slot-scope="scope">{{
+          scope.row.isDelete ? "是" : "否"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="describe" label="资源说明" width="250"></el-table-column>
-      <el-table-column prop="creationTime" label="上传时间" width="250"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="资源说明"
+        width="250"
+      ></el-table-column>
+      <el-table-column
+        prop="creationTime"
+        label="上传时间"
+        width="250"
+      ></el-table-column>
       <el-table-column label="操作" width="220" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -74,18 +113,21 @@
             type="danger"
             size="small"
             v-if="!scope.row.isDelete"
-          >禁用</el-button>
+            >禁用</el-button
+          >
           <el-button
             @click="enableRow(scope.row.resID)"
             type="success"
             size="small"
             v-if="scope.row.isDelete"
-          >恢复</el-button>
+            >恢复</el-button
+          >
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl+'aru3d/v1?Mark='+scope.row.resID"
-          >下载文件</el-link>
+            :href="fileUrl + 'aru3d/v1?Mark=' + scope.row.resID"
+            >下载文件</el-link
+          >
         </template>
       </el-table-column>
     </el-table>

@@ -71,7 +71,7 @@
         <el-button type="primary" size="small" @click="showModel"
           >选择模型</el-button
         >
-        <span>模型名称：{{ data_info.resName }}</span>
+        <span>模型名称：{{ data_info.resID }}</span>
         <!-- <el-avatar :size="80" :src shape="square"></el-avatar> -->
       </el-form-item>
       <el-form-item label="活动描述:">
@@ -109,7 +109,7 @@
           :key="index"
           @click="selectModel(model)"
         >
-          {{ model.showResourceName }}
+          {{ model.resID }}
         </li>
       </ul>
       <!-- 分页插件 -->
@@ -121,12 +121,9 @@
       <!-- 标签 -->
       <div class="select_model">
         <span>已选择</span>
-        <el-tag
-          closable
-          v-if="select_model.showResourceName"
-          @close="unSelect"
-          >{{ select_model.showResourceName }}</el-tag
-        >
+        <el-tag closable v-if="select_model.resID" @close="unSelect">{{
+          select_model.resID
+        }}</el-tag>
       </div>
       <!-- 操作 -->
       <el-button type="primary" size="small" @click="confirmModel"
@@ -143,7 +140,7 @@ import { createGet, switchDateList } from "@/utils/common";
 import {
   getDataList,
   getDataDetails,
-  updateDataDetails,
+  updateDetails,
   getFileList,
   uploadFiles,
 } from "@/utils/api/apis";
@@ -204,8 +201,7 @@ export default {
       // 上传的图片列表
       img_list: [],
       type_list: [], // 活动类型列表
-      // 模型列表
-      model_list: [],
+      model_list: [], // 模型列表
       entrust_list: [], // 委托列表
 
       // 选中的模型列表
@@ -237,11 +233,18 @@ export default {
 
     // 点击模型添加到选中列表
     selectModel(id) {
+      console.log(id);
       if (this.select_model.includes(id)) {
         return;
       } else {
         this.select_model.push(id);
       }
+    },
+
+    // 点击选中模型
+    selectModel(mode) {
+      console.log(mode);
+      this.select_model = { ...mode };
     },
 
     // 点击模型标签的X，取消选中模型
@@ -315,16 +318,11 @@ export default {
       }
     },
 
-    // 点击选中模型
-    selectModel(mode) {
-      this.select_model = { ...mode };
-    },
-
     //  点击提交按钮
     sendSubmit() {
       console.log(this.data_info);
 
-      updateDataDetails(
+      updateDetails(
         this.model,
         this.control,
         1,

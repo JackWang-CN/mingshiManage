@@ -21,7 +21,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="公告内容">
-        <el-input type="textarea" :rows="5" v-model="data_info.content"></el-input>
+        <el-input
+          type="textarea"
+          :rows="5"
+          v-model="data_info.content"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -33,11 +37,7 @@
 </template>
 
 <script>
-import {
-  getDataDetails,
-  addDataList,
-  updateDataDetails,
-} from "@/utils/api/apis";
+import { getDataDetails, addDataList, updateDetails } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {
@@ -83,7 +83,7 @@ export default {
           break;
         // 修改
         case "1":
-          updateDataDetails(
+          updateDetails(
             this.model,
             this.control,
             1,

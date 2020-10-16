@@ -7,23 +7,59 @@
       <el-tab-pane label="待审核" name="check/applyingList">
         <!-- 表格 -->
         <el-table :data="data_list" border>
-          <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-          <el-table-column prop="headImage" label="商户头像" width="150"></el-table-column>
-          <el-table-column prop="manageTypeName" label="经营类别" width="150"></el-table-column>
-          <el-table-column prop="tel" label="联系电话" width="200"></el-table-column>
-          <el-table-column prop="inteThrCode" label="统一社会信用代码" width="200"></el-table-column>
+          <el-table-column
+            prop="merchantName"
+            label="商户名称"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="headImage"
+            label="商户头像"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="manageTypeName"
+            label="经营类别"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="tel"
+            label="联系电话"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="inteThrCode"
+            label="统一社会信用代码"
+            width="200"
+          ></el-table-column>
           <el-table-column prop="accountType" label="账号类型" width="150">
             <template slot-scope="scope">
-              <span v-if="scope.row.accountType==0">商户</span>
+              <span v-if="scope.row.accountType == 0">商户</span>
               <span v-else>商圈</span>
             </template>
           </el-table-column>
-          <el-table-column prop="tel" label="联系电话" width="180"></el-table-column>
-          <el-table-column prop="address" label="地址" width="300"></el-table-column>
-          <el-table-column label="操作" width="180" v-if="activeName=='check/applyingList'">
+          <el-table-column
+            prop="tel"
+            label="联系电话"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="address"
+            label="地址"
+            width="300"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            width="180"
+            v-if="activeName == 'check/applyingList'"
+          >
             <template slot-scope="scope">
-              <el-button type="success" @click="showDetails(scope.row)" size="small">审核</el-button>
-              <!-- <el-button type="danger" @click="switchState(scope.row)" size="small">删除</el-button> -->
+              <el-button
+                type="success"
+                @click="showDetails(scope.row)"
+                size="small"
+                >审核</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -31,14 +67,39 @@
 
       <el-tab-pane label="历史审核" name="check/recordList">
         <el-table :data="record_list" border>
-          <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
-          <el-table-column prop="checkeRemark" label="审核意见" width="200"></el-table-column>
-          <el-table-column prop="checkStatus" label="审核结果" width="150"></el-table-column>
-          <el-table-column prop="checkerName" label="审核人员" width="150"></el-table-column>
-          <el-table-column prop="checkTime" label="审核时间" width="200"></el-table-column>
+          <el-table-column
+            prop="merchantName"
+            label="商户名称"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="checkeRemark"
+            label="审核意见"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="checkStatus"
+            label="审核结果"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="checkerName"
+            label="审核人员"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="checkTime"
+            label="审核时间"
+            width="200"
+          ></el-table-column>
           <el-table-column label="操作" width="180">
             <template slot-scope="scope">
-              <el-button type="primary" @click="showDetails(scope.row)" size="small">详情</el-button>
+              <el-button
+                type="primary"
+                @click="showDetails(scope.row)"
+                size="small"
+                >详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -53,37 +114,46 @@
     ></Pagination>
 
     <!-- 弹出框 -->
-    <el-dialog title="提示" :visible.sync="show_details" width="30%" closed="clear">
+    <el-dialog
+      title="提示"
+      :visible.sync="show_details"
+      width="30%"
+      closed="clear"
+    >
       <el-form label-width="100px">
         <el-form-item label="商户名称">
-          <span>{{data_info.name}}</span>
+          <span>{{ data_info.name }}</span>
         </el-form-item>
         <el-form-item label="商户头像">
-          <span>{{data_info.headImage}}</span>
+          <span>{{ data_info.headImage }}</span>
         </el-form-item>
         <el-form-item label="经营类别">
-          <span>{{data_info.manageTypeName}}</span>
+          <span>{{ data_info.manageTypeName }}</span>
         </el-form-item>
         <el-form-item label="联系电话">
-          <span>{{data_info.tel}}</span>
+          <span>{{ data_info.tel }}</span>
         </el-form-item>
         <el-form-item label="信用代码">
-          <span>{{data_info.inteThrCode}}</span>
+          <span>{{ data_info.inteThrCode }}</span>
         </el-form-item>
         <el-form-item label="身份证正面">
-          <span>{{data_info.iDdFacePhoto}}</span>
+          <span>{{ data_info.iDdFacePhoto }}</span>
         </el-form-item>
         <el-form-item label="身份证反面">
-          <span>{{data_info.idBackPhoto}}</span>
+          <span>{{ data_info.idBackPhoto }}</span>
         </el-form-item>
         <el-form-item label="身份证持证">
-          <span>{{data_info.inteThrCode}}</span>
+          <span>{{ data_info.inteThrCode }}</span>
         </el-form-item>
         <el-form-item label="商户地址">
-          <span>{{data_info.address}}</span>
+          <span>{{ data_info.address }}</span>
         </el-form-item>
         <el-form-item label="审核意见">
-          <el-input type="textarea" v-model="check_form.checkeRemark" :rows="4"></el-input>
+          <el-input
+            type="textarea"
+            v-model="check_form.checkeRemark"
+            :rows="4"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sendSubmit(1)">通过</el-button>
