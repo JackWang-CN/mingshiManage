@@ -54,8 +54,7 @@
 <script>
 import Verify from "@/components/verify.vue";
 import { getData } from "@/utils/api/apis";
-
-import { spliceUrl } from "@/utils/common";
+import { spliceImg } from "@/utils/common";
 export default {
   components: { Verify },
   data() {
@@ -102,7 +101,6 @@ export default {
     // 登录
     submitLogin(form) {
       this.$refs[form].validate((valid) => {
-        console.log(valid);
         // 表单验证
         if (valid) {
           // 滑动验证
@@ -119,15 +117,13 @@ export default {
               this.loginForm,
               "account"
             ).then((res) => {
-              console.log(res);
-
               switch (res.code) {
                 case "000000":
                   this.loading = false;
                   clearTimeout(timer);
-                  var data = res.resultObject.result;
+                  var data = res.resultObject;
                   var token = data.accessToken,
-                    headImg = spliceUrl([data.user], "headIco")[0].headIco,
+                    headImg = spliceImg([data.user], "headIco")[0].headIco,
                     userName = data.user.name,
                     userId = data.user.userId,
                     merchantname = this.loginForm.merchantname;

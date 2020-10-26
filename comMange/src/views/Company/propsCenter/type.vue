@@ -20,7 +20,15 @@
     </div>
 
     <!-- 列表 -->
-    <el-table :data="data_list" tooltip-effect="dark" border>
+    <el-table
+      :data="type_list"
+      style="width: 100%"
+      row-key="name"
+      border
+      lazy
+      :load="getChildren"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    >
       <el-table-column
         prop="name"
         label="分类名称"
@@ -56,16 +64,17 @@
         <!-- 基本类别 -->
         <div class="basic">
           <!-- 下拉框一 -->
-          <el-form-item label="所属父类">
-            <el-select v-model="data_info.parentID">
-              <el-option label="无" value></el-option>
-              <el-option
-                v-for="item in data_list"
-                :key="item.typeID"
-                :label="item.name"
-                :value="item.typeID"
-              ></el-option>
-            </el-select>
+          <el-form-item label="所属父类" v-if="!operate">
+            <el-cascader
+              @change="typeChange"
+              :show-all-levels="false"
+              :options="select_list"
+              :props="{
+                lazy: true,
+                lazyLoad: getSelectChildren,
+                leaf: 'isLeaf',
+              }"
+            ></el-cascader>
           </el-form-item>
           <!-- 下拉框二 -->
           <el-form-item label="类型名称">
@@ -135,7 +144,13 @@
 </template>
 
 <script>
-import { getDataList, addData, delData, updateData } from "@/utils/api/apis";
+import {
+  getData,
+  getDataList,
+  addData,
+  delData,
+  updateData,
+} from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
   mounted() {
@@ -148,6 +163,7 @@ export default {
       find_form: {},
       data_list: [],
       type_list: [],
+      select_list: [],
 
       // 弹出框表单对象
       data_info: {
@@ -178,13 +194,20 @@ export default {
   },
 
   methods: {
+    // 新增类型选择下拉框改变时
+    typeChange(res) {
+      var length = res.length;
+      if (length) {
+        this.data_info.parentID = res[length - 1];
+      }
+    },
+
     // 点击添加数据，打开弹出框
     showDetails(type, row) {
       this.show_details = !this.show_details;
       if (this.show_details) {
         this.operate = type;
       }
-
       var form = createGet(1, 99);
       switch (this.activeName) {
         case "prop":
@@ -210,10 +233,9 @@ export default {
           );
           break;
       }
-      console.log(this.data_list);
 
       if (type) {
-        this.data_info = { ...row };
+        this.data_info = { ...row, ...this.data_info };
       }
     },
 
@@ -279,6 +301,62 @@ export default {
         getDataList(this.model, this.control, 1, form, this);
       });
     },
+
+    // 请求子类
+    getChildren(row, treeNode, resolve) {
+      var form = createGet(1, 999);
+      form.data = { parentID: row.typeID };
+      getData(this.model, this.control, 1, form).then((res) => {
+        var list = this.toTableTree(res.resultObject.data);
+        resolve(list);
+        console.log(list, this.type_list);
+      });
+    },
+
+    // 请求下拉框子类
+    getSelectChildren(node, resolve) {
+      var form = createGet(1, 999);
+      form.data = { parentID: node.value };
+      getData(this.model, this.control, 1, form).then((res) => {
+        var list = this.toSelectTree(res.resultObject.data);
+        resolve(list);
+      });
+    },
+
+    // 表格树形模型编译
+    toTableTree(arr) {
+      var newArr = [];
+      arr.forEach((item, index) => {
+        var obj = {
+          name: item.name,
+          typeID: item.typeID,
+          describe: item.describe,
+        };
+        if (item.hasChild) {
+          obj.children = [];
+        }
+        obj.hasChildren = item.hasChild;
+        newArr.push(obj);
+      });
+      return newArr;
+    },
+
+    // 下拉框树形模型编译
+    toSelectTree(arr) {
+      var newArr = [];
+      arr.forEach((item, index) => {
+        var obj = {
+          label: item.name,
+          value: item.typeID,
+          isLeaf: !item.hasChild,
+        };
+        if (item.hasChild) {
+          obj.children = [];
+        }
+        newArr.push(obj);
+      });
+      return newArr;
+    },
   },
 
   watch: {
@@ -289,6 +367,12 @@ export default {
       this.control = this.activeName + "Type";
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
+    },
+
+    // 监听data_list，以编译数据模型
+    data_list() {
+      this.type_list = [...this.toTableTree(this.data_list)];
+      this.select_list = this.toSelectTree(this.data_list);
     },
   },
 };

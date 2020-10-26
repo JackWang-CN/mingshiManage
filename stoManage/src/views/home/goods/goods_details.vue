@@ -95,11 +95,11 @@
 
 <script>
 import {
-  getDetailsInfo,
-  upLoadFiles,
+  getDataDetail,
+  uploadFiles,
   addDataList,
-  updateDataList,
-} from "@/utils/api/api";
+  updateDetails,
+} from "@/utils/api/apis";
 import { createFormData, spliceUrl } from "@/utils/common";
 export default {
   beforeMount() {
@@ -108,7 +108,7 @@ export default {
     if (id) {
       this.type = "update";
       var get_form = { productId: id };
-      getDetailsInfo(
+      getDataDetail(
         this.$vision.merchant,
         "Productinfo",
         get_form,
@@ -177,7 +177,7 @@ export default {
           if (this.file_list.length) {
             upLoadFiles("商品", creatFormData(this.file_list)).then((res) => {
               this.data_info.productIco = res.list[0].resId;
-              updateDataList(
+              updateDetails(
                 this.$vision.merchant,
                 "Productinfo",
                 this.data_info,
@@ -188,7 +188,7 @@ export default {
           } else {
             var form = { ...this.data_info };
             delete form.productIco;
-            updateDataList(
+            updateDetails(
               this.$vision.merchant,
               "Productinfo",
               form,

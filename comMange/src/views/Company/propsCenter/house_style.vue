@@ -13,9 +13,10 @@
         width="180"
       ></el-table-column>
 
-      <el-table-column prop="imgUrl" label="缩略图" width="180">
+      <el-table-column prop="imgUrl" label="缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar
+            v-show="scope.row.mainImageID"
             :size="80"
             :src="scope.row.imgUrl"
             shape="square"
@@ -66,7 +67,12 @@
     </el-table>
 
     <!-- 弹出框 -->
-    <el-dialog title="风格详情" :visible.sync="show_details" @closed="clear">
+    <el-dialog
+      title="风格详情"
+      :visible.sync="show_details"
+      @closed="clear"
+      width="30%"
+    >
       <el-form label-width="70px" class="details_form">
         <el-form-item label="风格名称">
           <el-input v-model="data_info.name"></el-input>
@@ -92,7 +98,14 @@
           <el-button size="small" type="primary" @click="showModel"
             >选择模型</el-button
           >
-          <span>模型名称：{{ data_info.resID }}</span>
+          <el-tag
+            style="margin-left: 10px"
+            v-if="data_info.resID"
+            @close="unSelect"
+            >{{
+              data_info.resName ? data_info.resName : data_info.resID
+            }}</el-tag
+          >
         </el-form-item>
 
         <el-form-item>
@@ -126,7 +139,9 @@
       <div class="select_model">
         <span>已选择</span>
         <el-tag closable v-if="select_model.resID" @close="unSelect">{{
-          select_model.resID
+          select_model.showResourceName
+            ? select_model.showResourceName
+            : select_model.resID
         }}</el-tag>
       </div>
       <!-- 操作 -->

@@ -46,7 +46,7 @@
         label="优惠券名称"
         width="180"
       ></el-table-column>
-      <el-table-column prop="couponTypeID" label="券类型ID" width="180">
+      <el-table-column prop="couponTypeName" label="券类型" width="180">
       </el-table-column>
       <el-table-column prop="imgUrl" label="缩略图" width="120">
         <template slot-scope="scope">

@@ -133,6 +133,11 @@
           <el-menu-item index="user_list">账号管理</el-menu-item>
         </el-submenu>
 
+        <el-menu-item index="test">
+          <i class="el-icon-setting"></i>
+          <span slot="title">测试页</span>
+        </el-menu-item>
+
         <!-- 
           【无下拉菜单】
           <el-menu-item index="4">
@@ -172,8 +177,12 @@
               当前位置:
             </div>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(v, i) in this.$route.meta" :key="i">
-            {{ v }}
+          <el-breadcrumb-item
+            v-for="item in this.$route.meta"
+            :key="item.path"
+            :to="item.path || '#'"
+          >
+            <router-link :to="item.path">{{ item.name }}</router-link>
           </el-breadcrumb-item>
         </el-breadcrumb>
 
@@ -293,6 +302,11 @@ export default {
   height: 100%;
   // 左侧栏
   .left_wrap {
+    -moz-user-select: none; /*火狐*/
+    -webkit-user-select: none; /*webkit浏览器*/
+    -ms-user-select: none; /*IE10*/
+    -khtml-user-select: none; /*早期浏览器*/
+
     height: 100%;
     display: flex;
     flex-direction: column;

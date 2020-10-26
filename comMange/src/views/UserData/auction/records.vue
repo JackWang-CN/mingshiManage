@@ -14,7 +14,7 @@
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select
-          v-model="find_form.data.rpmtype"
+          v-model="find_form.data.assetType"
           placeholder="请选择房产类型"
         >
           <el-option label="全部" value></el-option>
@@ -40,7 +40,7 @@
         width="120"
       ></el-table-column>
       <el-table-column
-        prop="assetsID"
+        prop="assetsName"
         label="道具名称"
         width="120"
       ></el-table-column>
@@ -67,11 +67,15 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="owner"
-        label="卖家ID"
+        prop="ownerName"
+        label="卖家昵称"
         width="120"
       ></el-table-column>
-      <el-table-column prop="buy" label="买家ID" width="120"></el-table-column>
+      <el-table-column
+        prop="buyName"
+        label="买家昵称"
+        width="120"
+      ></el-table-column>
       <el-table-column
         prop="price"
         label="交易金额"
@@ -83,16 +87,6 @@
         label="交易时间"
         width="180"
       ></el-table-column>
-      <el-table-column fixed="right" label="操作" width="280">
-        <template slot-scope="scope">
-          <el-button
-            @click="toDetails(scope.row.dataId, 0)"
-            type="primary"
-            size="small"
-            >详情</el-button
-          >
-        </template>
-      </el-table-column>
     </el-table>
 
     <!-- 分页插件 -->

@@ -144,6 +144,14 @@ export default {
       getDetails(this.model, this.control, 1, { value: merchantID }).then(
         (res) => {
           this.data_info = res.resultObject.result;
+
+          var imgUrl =
+            "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
+          this.headImg = imgUrl + this.data_info.headImage;
+          this.idFaceImg = imgUrl + this.data_info.iDdFacePhoto;
+          this.idBackImg = imgUrl + this.data_info.idBackPhoto;
+          this.idHoldImg = imgUrl + this.data_info.idLicense;
+          this.businessImg = imgUrl + this.data_info.thrAttaPhoto;
         }
       );
     }
@@ -174,42 +182,33 @@ export default {
   methods: {
     //   发送提交
     async sendSubmit() {
-      // 验证是否上传头像
-      if (this.head_file.length === 0) {
-        this.$message.error("请上传商户头像");
-        return;
-      }
-      // 验证是否上传身份证
-      if (
-        this.idFace_file.length === 0 ||
-        this.idBack_file.length === 0 ||
-        this.idHold_file.length === 0
-      ) {
-        this.$message.error("请上传商户业主身份证照片");
-        return;
-      }
-
-      console.log(
-        this.head_file,
-        this.idFace_file,
-        this.idBack_file,
-        this.idHold_file
-      );
-      // 上传图片
-      var head = await uploadFiles(1, 1, this.head_file);
-      var idFace = await uploadFiles(1, 1, this.idFace_file);
-      var idBack = await uploadFiles(1, 1, this.idBack_file);
-      var idHold = await uploadFiles(1, 1, this.idHold_file);
-      var business = await uploadFiles(1, 1, this.business_file);
-
-      this.data_info.headImage = head.resultObject[0].resID;
-      this.data_info.iDdFacePhoto = idFace.resultObject[0].resID;
-      this.data_info.idBackPhoto = idBack.resultObject[0].resID;
-      this.data_info.idLicense = idHold.resultObject[0].resID;
-      this.data_info.thrAttaPhoto = business.resultObject[0].resID;
-
       switch (this.opreate) {
         case 0:
+          /* 1.操作为新增时 */
+          // 验证是否上传图片
+          if (
+            this.head_file.length === 0 ||
+            this.idFace_file.length === 0 ||
+            this.idBack_file.length === 0 ||
+            this.idHold_file.length === 0 ||
+            this.business_file.length === 0
+          ) {
+            this.$message.error("请上传头像、商户业主身份证等照片");
+            return;
+          }
+          // 上传图片
+          var head = await uploadFiles(1, 1, this.head_file);
+          var face = await uploadFiles(1, 1, this.idFace_file);
+          var back = await uploadFiles(1, 1, this.idBack_file);
+          var hold = await uploadFiles(1, 1, this.idHold_file);
+          var business = await uploadFiles(1, 1, this.business_file);
+
+          this.data_info.headImage = head.resultObject[0].resID;
+          this.data_info.iDdFacePhoto = face.resultObject[0].resID;
+          this.data_info.idBackPhoto = back.resultObject[0].resID;
+          this.data_info.idLicense = hold.resultObject[0].resID;
+          this.data_info.thrAttaPhoto = business.resultObject[0].resID;
+          // 发送请求
           addDataList(
             this.model,
             this.control,
@@ -219,7 +218,38 @@ export default {
             "merchant_list"
           );
           break;
+
+        /* 2.操作为修改时 */
         case 1:
+          // 是否新上传头像
+
+          if (this.head_file.length > 0) {
+            var res = await uploadFiles(1, 1, this.head_file);
+            this.data_info.headImage = res.resultObject[0].resID;
+          }
+          // 是否新上传身份证正面
+          if (this.idFace_file.length > 0) {
+            var res = await uploadFiles(1, 1, this.idFace_file);
+            this.data_info.iDdFacePhoto = res.resultObject[0].resID;
+          }
+          // 是否新上传身份证反面
+          if (this.idBack_file.length > 0) {
+            var res = await uploadFiles(1, 1, this.idBack_file);
+            this.data_info.idBackPhoto = res.resultObject[0].resID;
+          }
+          // 是否新上传身份证持证照
+          if (this.idHold_file.length > 0) {
+            var res = await uploadFiles(1, 1, this.idHold_file);
+            this.data_info.idLicense = res.resultObject[0].resID;
+          }
+          // 是否新上传营业执照
+          if (this.business_file.length > 0) {
+            var res = await uploadFiles(1, 1, this.business_file);
+            this.data_info.thrAttaPhoto = res.resultObject[0].resID;
+          }
+
+          console.log(this.data_info);
+          // 发送请求
           updateDetails(
             this.model,
             this.control,

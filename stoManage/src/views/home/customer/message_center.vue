@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { spliceUrl, createGet } from "@/utils/common";
+import { spliceImg, createGet } from "@/utils/common";
 import { getDataList, getDetail } from "@/utils/api/apis";
 export default {
   created() {
@@ -175,7 +175,7 @@ export default {
       }
 
       // 2.判断当前聊天窗口是否为消息来源用户
-      if (mesInfo.OutUserId == this.data_info.receiveID) {
+      if (mesInfo.OutUserId && mesInfo.OutUserId == this.data_info.receiveID) {
         this.find_form = createGet(1, 20);
         this.find_form.data = { receiveID: this.data_info.receiveID };
         console.log("重新请求聊天记录");
@@ -223,7 +223,7 @@ export default {
 
   watch: {
     data_list() {
-      this.data_list = spliceUrl(this.data_list, "userHeadpng");
+      this.data_list = spliceImg(this.data_list, "userHeadpng");
     },
   },
 };

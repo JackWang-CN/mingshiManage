@@ -55,7 +55,7 @@
 
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">保存</el-button>
-          <el-button type="danger" @click="toDetails('customer_list')"
+          <el-button type="info" @click="toDetails('customer_list')"
             >返回</el-button
           >
         </el-form-item>

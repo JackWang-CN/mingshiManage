@@ -11,7 +11,10 @@
         placeholder="主题、描述、客户经理"
         prefix-icon="el-icon-search"
       ></el-input>
-      <el-button type="primary" @click="showDetails(0)">创建分类</el-button>
+      <div>
+        <el-button type="primary" @click="showDetails(0)">创建分类</el-button>
+        <el-button type="warning" @click="resetType(0)">重置分类</el-button>
+      </div>
     </div>
 
     <!-- 类型列表 -->
@@ -22,13 +25,46 @@
       default-expand-all
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
+      <el-table-column prop="sort" label="顺序调整" width="250">
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            @click="shiftUp(0, scope.row.sort)"
+            :disabled="scope.row.sort == 1"
+            >最前</el-button
+          >
+          <el-button
+            size="small"
+            @click="shiftUp(1, scope.row.sort)"
+            :disabled="scope.row.sort == 1"
+            >∧</el-button
+          >
+          <el-button
+            size="small"
+            @click="shiftDown(1, scope.row.sort)"
+            :disabled="scope.row.sort == length"
+            >∨</el-button
+          >
+          <el-button
+            size="small"
+            @click="shiftDown(0, scope.row.sort)"
+            :disabled="scope.row.sort == length"
+            >最后</el-button
+          >
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="sort"
+        label="序号"
+        sortable
+        width="150"
+      ></el-table-column>
       <el-table-column
         prop="name"
         label="分类名称"
         sortable
         width="150"
       ></el-table-column>
-      <el-table-column prop="describe" label="分类描述"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
@@ -37,10 +73,7 @@
             @click="showDetails(1, scope.row)"
             >编辑</el-button
           >
-          <el-button
-            size="small"
-            type="danger"
-            @click="delRow(1, scope.row.typeID)"
+          <el-button size="small" type="danger" @click="delRow(scope.row.sort)"
             >删除</el-button
           >
         </template>
@@ -62,13 +95,6 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="分类描述">
-          <el-input
-            type="textarea"
-            v-model="data_info.describe"
-            placeholder="请输入分类描述"
-          ></el-input>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">确 定</el-button>
           <el-button @click="show_details = false">取 消</el-button>
@@ -86,7 +112,7 @@
 </template>
 
 <script>
-import { getData, addData, delData, getDataList } from "@/utils/api/apis";
+import { getData, getDataList } from "@/utils/api/apis";
 import pagination from "@/components/Pagination";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
@@ -96,7 +122,15 @@ export default {
   mounted() {
     this.find_form = createGet();
     var form = { ...this.find_form };
-    getDataList(this.model, this.control, 1, form, this, "type_list");
+    getDataList(
+      this.model,
+      this.control,
+      1,
+      {},
+      this,
+      "type_list",
+      "classDetailsList"
+    );
   },
 
   data() {
@@ -110,6 +144,7 @@ export default {
 
       show_details: false, // 弹出框隐藏显示
       operate: 0,
+      length: 0,
 
       model: "merGoods",
       control: "goodClass",
@@ -118,31 +153,44 @@ export default {
   methods: {
     // 发送提交请求
     sendSubmit() {
+      var list = [...this.type_list];
+      this.show_details = false;
+
+      // 1.判断新增或修改
       switch (this.operate) {
+        // 1-1 新增
         case 0:
-          getData(this.model, this.control, 1, this.data_info, "create").then(
-            (res) => {
-              console.log(res);
-            }
-          );
+          this.data_info.sort = this.type_list.length + 1;
+          this.data_info.typeID = "";
+          list.push(this.data_info);
           break;
+        // 1-2 修改
         case 1:
-          addData(this.model, this.control, 1, this.data_info, "update").then(
-            (res) => {
-              this.show_details = false;
-              hintMessage(this, res.code);
-              // 重新加载刷新列表
-              var form = { ...this.find_form };
-              getDataList(this.model, this.control, 1, form, this, "type_list");
-            }
-          );
+          var index = this.data_info.sort - 1;
+          list.splice(index, 1, this.data_info);
           break;
       }
+
+      // 2.发送请求
+      getData(this.model, this.control, 1, list, "editTypeList").then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "type_list",
+          "classDetailsList"
+        );
+      });
     },
 
     // 展示详情
     showDetails(type, row) {
       this.show_details = true;
+      console.log(row);
       if (type) {
         this.operate = type;
         this.data_info = { ...row };
@@ -164,10 +212,92 @@ export default {
     },
 
     // 删除当前行
-    delRow(value) {
-      delData(this.model, this.control, 1, { value }).then((res) => {
-        hintMessage(this, res.code, "删除成功！");
-        // 重新加载刷新列表
+    delRow(sort) {
+      var list = [...this.type_list];
+      var index = sort - 1;
+      list.splice(index, 1);
+      list = this.reSort(list);
+      console.log(list);
+
+      getData(this.model, this.control, 1, list, "editTypeList").then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "type_list",
+          "classDetailsList"
+        );
+      });
+    },
+
+    // 上移调整
+    shiftUp(type, sort) {
+      var list = JSON.parse(JSON.stringify(this.type_list));
+      var index = sort - 1;
+      var newArr = list.splice(index, 1);
+      if (type) {
+        // 1.上移一位
+        list.splice(index - 1, 0, newArr[0]);
+      } else {
+        // 2.上移到最前
+        list.unshift(newArr[0]);
+      }
+      list = this.reSort(list);
+
+      //  发送请求并重载
+      getData(this.model, this.control, 1, list, "editTypeList").then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "type_list",
+          "classDetailsList"
+        );
+      });
+    },
+
+    // 下移调整
+    shiftDown(type, sort) {
+      var list = JSON.parse(JSON.stringify(this.type_list));
+      var index = sort - 1;
+      var newArr = list.splice(index, 1);
+      if (type) {
+        // 1.下移一位
+        list.splice(index + 1, 0, newArr[0]);
+      } else {
+        // 2.下移到最后
+        list.push(newArr[0]);
+      }
+      list = this.reSort(list);
+
+      //  发送请求并重载
+      getData(this.model, this.control, 1, list, "editTypeList").then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "type_list",
+          "classDetailsList"
+        );
+      });
+    },
+
+    // 重置分类
+    resetType() {
+      getData(this.model, this.control, 1, {}, "resetTypeList").then((res) => {
+        hintMessage(this, res);
         var form = { ...this.find_form };
         getDataList(this.model, this.control, 1, form, this, "type_list");
       });
@@ -176,6 +306,20 @@ export default {
     // 清空
     clear() {
       this.data_info = {};
+    },
+
+    // 重新排序
+    reSort(list) {
+      list.forEach((item, index) => {
+        item.sort = index + 1;
+      });
+      return list;
+    },
+  },
+
+  watch: {
+    type_list() {
+      if (this.type_list instanceof Array) this.length = this.type_list.length;
     },
   },
 };

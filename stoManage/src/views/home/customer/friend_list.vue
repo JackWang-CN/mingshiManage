@@ -6,22 +6,48 @@
     <!-- 查询条件 -->
     <div class="search">
       <div class="filter">
-        <el-input v-model="find_form.data.reqId" placeholder="好友名称"></el-input>
+        <el-input
+          v-model="find_form.data.reqId"
+          placeholder="好友名称"
+        ></el-input>
       </div>
     </div>
 
     <!-- 委托列表 -->
-    <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
+    <el-table
+      :data="data_list"
+      tooltip-effect="dark"
+      :border="true"
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="reqId" label="好友名称" width="200" sortable></el-table-column>
-      <el-table-column prop="desInfo" label="头像" width="250"></el-table-column>
+      <el-table-column
+        prop="reqId"
+        label="好友名称"
+        width="200"
+        sortable
+      ></el-table-column>
+      <el-table-column
+        prop="desInfo"
+        label="头像"
+        width="250"
+      ></el-table-column>
       <el-table-column prop="reqStatus" label="添加时间" width="100">
-        <template slot-scope="scope">{{scope.row.reqStatus?'禁用':'启用'}}</template>
+        <template slot-scope="scope">{{
+          scope.row.reqStatus ? "禁用" : "启用"
+        }}</template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.reqId)" type="primary" size="small">编辑</el-button>
-          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="toDetails(scope.row.reqId)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
+          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -29,7 +55,7 @@
 </template>
 
 <script>
-import { getDataList, delData } from "@/utils/api/api";
+import { getDataList, delData } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   mounted() {

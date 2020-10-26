@@ -22,72 +22,104 @@ export default new VueRouter({
         {
           path: "index",
           component: () => import("../views/home/index.vue"),
-          meta: ["首页"],
+          meta: [{ name: "首页", path: "index" }],
         },
 
         // 道具商城-商城道具
         {
           path: "props_store",
           component: () => import("../views/Company/propsCenter/store.vue"),
-          meta: ["道具商城", "商城道具"],
+          meta: [
+            { name: "道具商城", path: "" },
+            { name: "商城道具", path: "props_store" },
+          ],
         },
 
         // 道具商城-交易记录
         {
           path: "props_records",
           component: () => import("../views/Company/propsCenter/records.vue"),
-          meta: ["道具商城", "交易记录"],
+          meta: [
+            { name: "道具商城", path: "" },
+            { name: "交易记录", path: "props_records" },
+          ],
         },
 
         // 道具管理-道具列表
         {
           path: "props_list",
           component: () => import("../views/Company/propsCenter/list.vue"),
-          meta: ["道具管理", "道具列表"],
+          meta: [
+            { name: "道具管理", path: "" },
+            { name: "道具列表", path: "props_list" },
+          ],
         },
         // 道具管理-详情
         {
           path: "props_details",
           component: () => import("../views/Company/propsCenter/details.vue"),
-          meta: ["道具管理", "道具列表", "道具详情"],
+          meta: [
+            { name: "道具管理", path: "" },
+            { name: "道具列表", path: "props_list" },
+            { name: "道具详情", path: "props_details" },
+          ],
         },
         // 道具管理-类型
         {
           path: "props_type",
           component: () => import("../views/Company/propsCenter/type.vue"),
-          meta: ["道具管理", "道具类型"],
+          meta: [
+            { name: "道具管理", path: "" },
+            { name: "道具类型", path: "props_type" },
+          ],
         },
         // 道具管理-房屋风格
         {
           path: "house_style",
           component: () =>
             import("../views/Company/propsCenter/house_style.vue"),
-          meta: ["道具管理", "房屋风格"],
+          meta: [
+            { name: "道具管理", path: "" },
+            { name: "房屋风格", path: "house_style" },
+          ],
         },
 
         // 资源管理-普通资源
         {
           path: "normal_list",
           component: () => import("../views/Resource/Normal/list.vue"),
-          meta: ["资源管理", "普通资源"],
+          meta: [
+            { name: "资源管理", path: "" },
+            { name: "普通资源", path: "normal_list" },
+          ],
         },
         // 资源管理-AR资源
         {
           path: "ar_list",
           component: () => import("../views/Resource/U3D/list.vue"),
-          meta: ["资源管理", "AR资源"],
+          meta: [
+            { name: "资源管理", path: "" },
+            { name: "AR资源", path: "ar_list" },
+          ],
         },
         // 资源管理-AR资源类型
         {
           path: "ar_type",
           component: () => import("../views/Resource/U3D/type.vue"),
-          meta: ["资源管理", "AR资源类型"],
+          meta: [
+            { name: "资源管理", path: "" },
+            { name: "AR资源类型", path: "ar_type" },
+          ],
         },
         // 资源管理-AR资源-AR资源上传
         {
           path: "ar_upload",
           component: () => import("../views/Resource/U3D/upload.vue"),
-          meta: ["资源管理", "AR资源", "AR资源上传"],
+          meta: [
+            { name: "资源管理", path: "" },
+            { name: "AR资源", path: "ar_list" },
+            { name: "AR资源上传", path: "ar_upload" },
+          ],
         },
 
         // 配置管理-角色管理
@@ -95,104 +127,154 @@ export default new VueRouter({
           path: "role_list",
           component: () =>
             import("../views/Company/configManage/account/role/list.vue"),
-          meta: ["配置管理", "角色权限"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "角色权限", path: "role_list" },
+          ],
         },
         // 配置管理-角色新增
         {
           path: "role_details",
           component: () =>
             import("../views/Company/configManage/account/role/details.vue"),
-          meta: ["配置管理", "角色权限", "角色编辑"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "角色管理", path: "role_list" },
+            { name: "角色编辑", path: "role_details" },
+          ],
         },
         // 配置管理-账号管理
         {
           path: "user_list",
           component: () =>
             import("../views/Company/configManage/account/user/list.vue"),
-          meta: ["配置管理", "账号管理"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "账号管理", path: "user_list" },
+          ],
         },
         // 配置管理-充值配置
         {
           path: "recharge_list",
           component: () =>
             import("../views/Company/configManage/recharge/index.vue"),
-          meta: ["配置管理", "充值配置"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "充值配置", path: "recharge_list" },
+          ],
         },
         // 配置管理-充值配置-模板编辑
         {
           path: "recharge_details",
           component: () =>
             import("../views/Company/configManage/recharge/details.vue"),
-          meta: ["配置管理", "充值配置", "模板编辑"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "充值配置", path: "recharge_list" },
+            { name: "模板编辑", path: "recharge_details" },
+          ],
         },
         // 配置管理-版本控制
         {
           path: "version_list",
           component: () =>
             import("../views/Company/configManage/version/list.vue"),
-          meta: ["配置管理", "版本控制"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "版本控制", path: "version_list" },
+          ],
         },
         // 配置管理-版本控制-版本详情
         {
           path: "version_details",
           component: () =>
             import("../views/Company/configManage/version/details.vue"),
-          meta: ["配置管理", "版本控制", "版本详情"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "版本控制", path: "version_list" },
+            { name: "版本详情", path: "version_details" },
+          ],
         },
 
         // 公告管理-公告记录
         {
           path: "notice_list",
           component: () => import("../views/Company/notice/notice/list.vue"),
-          meta: ["公告管理", "公告记录"],
+          meta: [
+            { name: "公告管理", path: "" },
+            { name: "公告记录", path: "notice_list" },
+          ],
         },
 
         // 公告管理-公告记录-公告详情
         {
           path: "notice_details",
           component: () => import("../views/Company/notice/notice/details.vue"),
-          meta: ["公告管理", "公告记录", "公告详情"],
+          meta: [
+            { name: "公告管理", path: "" },
+            { name: "公告记录", path: "notice_list" },
+            { name: "公告详情", path: "notice_details" },
+          ],
         },
 
         // 公告管理-推送记录
         {
           path: "push_list",
           component: () => import("../views/Company/notice/push/list.vue"),
-          meta: ["公告管理", "推送记录"],
+          meta: [
+            { name: "公告管理", path: "" },
+            { name: "推送记录", path: "push_list" },
+          ],
         },
         // 公告管理-推送记录-推送详情
         {
           path: "push_details",
           component: () => import("../views/Company/notice/push/details.vue"),
-          meta: ["公告管理", "推送记录", "推送详情"],
+          meta: [
+            { name: "公告管理", path: "" },
+            { name: "推送记录", path: "push_list" },
+            { name: "推送详情", path: "push_details" },
+          ],
         },
 
         // 拍卖行-拍卖列表
         {
           path: "auction_list",
           component: () => import("../views/UserData/auction/list.vue"),
-          meta: ["拍卖行", "拍卖列表"],
+          meta: [
+            { name: "拍卖行", path: "" },
+            { name: "拍卖列表", path: "auction_list" },
+          ],
         },
 
         // 拍卖行-交易记录
         {
           path: "auction_records",
           component: () => import("../views/UserData/auction/records.vue"),
-          meta: ["拍卖行", "交易记录"],
+          meta: [
+            { name: "拍卖行", path: "" },
+            { name: "交易记录", path: "auction_records" },
+          ],
         },
 
         // 用户管理-用户列表
         {
           path: "customer_list",
           component: () => import("../views/UserData/userInfo/list.vue"),
-          meta: ["用户管理", "用户列表"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "用户列表", path: "customer_list" },
+          ],
         },
 
         // 用户管理-用户详情
         {
           path: "user_details",
           component: () => import("../views/UserData/userInfo/details.vue"),
-          meta: ["用户管理", "用户管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "用户详情", path: "user_details" },
+          ],
         },
 
         // 用户管理-帐户流水
@@ -200,21 +282,30 @@ export default new VueRouter({
           path: "user_accFlow",
           component: () =>
             import("../views/UserData/userInfo/account_flow.vue"),
-          meta: ["用户管理", "帐户流水"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "帐户流水", path: "user_accFlow" },
+          ],
         },
 
         // 用户管理-群组管理
         {
           path: "user_group",
           component: () => import("../views/UserData/userInfo/group.vue"),
-          meta: ["用户管理", "群组管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "群组管理", path: "user_group" },
+          ],
         },
 
         // 用户管理-地产数据管理
         {
           path: "userdata_spaceData",
           component: () => import("../views/UserData/userdata_spaceData.vue"),
-          meta: ["用户管理", "空间数据管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "空间数据管理", path: "userdata_spaceData" },
+          ],
         },
 
         // 用户管理-地产数据管理
@@ -222,20 +313,29 @@ export default new VueRouter({
           path: "userdata_spaEstLicense",
           component: () =>
             import("../views/UserData/userdata_spaEstLicense.vue"),
-          meta: ["用户管理", "地产数据管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "地产数据管理", path: "userdata_spaEstLicense" },
+          ],
         },
 
         // 用户管理-房产列表
         {
           path: "userdata_houseList",
           component: () => import("../views/UserData/userHouse/list.vue"),
-          meta: ["用户管理", "房产数据管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "房产列表", path: "userdata_houseList" },
+          ],
         },
         // 用户管理-房产详情
         {
           path: "userdata_houseDetails",
           component: () => import("../views/UserData/userHouse/details.vue"),
-          meta: ["用户管理", "房产数据管理"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "房产详情", path: "userdata_houseDetails" },
+          ],
         },
 
         // 用户管理-个人流水
@@ -243,125 +343,185 @@ export default new VueRouter({
           path: "account_flow",
           component: () =>
             import("../views/UserData/userInfo/account_flow.vue"),
-          meta: ["用户管理", "个人流水"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "个人流水", path: "account_flow" },
+          ],
         },
         // 用户管理-个人资产
         {
           path: "user_assets",
           component: () => import("../views/UserData/userInfo/user_assets.vue"),
-          meta: ["用户管理", "道具资产"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "个人资产", path: "user_assets" },
+          ],
         },
         // 用户管理-拍卖行
         {
           path: "auction",
           component: () => import("../views/UserData/userInfo/auction.vue"),
-          meta: ["用户管理", "拍卖行"],
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "拍卖行", path: "auction" },
+          ],
         },
 
         // 商户管理-商户列表
         {
           path: "merchant_list",
           component: () => import("../views/Merchant/store/list.vue"),
-          meta: ["商户管理", "商户列表"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户列表", path: "merchant_list" },
+          ],
         },
 
         // 商户管理-商户列表-商户详情
         {
           path: "merchant_details",
           component: () => import("../views/Merchant/store/details.vue"),
-          meta: ["商户管理", "商户列表", "商户详情"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户列表", path: "merchant_list" },
+            { name: "商户详情", path: "merchant_details" },
+          ],
         },
 
         // 商户管理-商户审核
         {
           path: "merchant_check",
           component: () => import("../views/Merchant/store/check.vue"),
-          meta: ["商户管理", "商户审核"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户审核", path: "merchant_check" },
+          ],
         },
 
         // 商户管理-商户委托
         {
           path: "entrust_list",
           component: () => import("../views/Merchant/entrust/list.vue"),
-          meta: ["商户管理", "商户委托"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户委托", path: "entrust_list" },
+          ],
         },
         // 商户管理-商户委托-委托详情
         {
           path: "entrust_details",
           component: () => import("../views/Merchant/entrust/details.vue"),
-          meta: ["商户管理", "商户委托", "委托详情"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户委托", path: "entrust_list" },
+            { name: "委托详情", path: "entrust_details" },
+          ],
         },
 
         // 商户管理-经营类别
         {
           path: "merchant_type",
           component: () => import("../views/Merchant/store/type.vue"),
-          meta: ["商户管理", "商户委托"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户委托", path: "merchant_type" },
+          ],
         },
 
         // 商户管理-商户活动列表
         {
           path: "activity_list",
           component: () => import("../views/Merchant/activity/list.vue"),
-          meta: ["商户管理", "商户活动"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "活动列表", path: "activity_list" },
+          ],
         },
         // 商户管理-商户活动创建
         {
           path: "activity_details",
           component: () => import("../views/Merchant/activity/details.vue"),
-          meta: ["商户管理", "商户活动"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "活动详情", path: "activity_details" },
+          ],
         },
         // 商户管理-商户活动类型
         {
           path: "activity_type",
           component: () => import("../views/Merchant/activity/type.vue"),
-          meta: ["商户管理", "活动类型"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "活动类型", path: "activity_type" },
+          ],
         },
         // 商户管理-商户活动规则
         {
           path: "activity_rule",
           component: () => import("../views/Merchant/activity/rule.vue"),
-          meta: ["商户管理", "活动规则"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "活动规则", path: "activity_rule" },
+          ],
         },
 
         // 活动管理-优惠券列表
         {
           path: "coupon_list",
           component: () => import("../views/Merchant/coupon/list.vue"),
-          meta: ["商户管理", "优惠券列表"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "优惠券列表", path: "coupon_list" },
+          ],
         },
         // 活动管理-优惠券创建
         {
           path: "coupon_details",
           component: () => import("../views/Merchant/coupon/details.vue"),
-          meta: ["商户管理", "优惠券列表", "创建优惠券"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "优惠券列表", path: "coupon_list" },
+            { name: "创建优惠券", path: "coupon_details" },
+          ],
         },
         // 活动管理-优惠券类型
         {
           path: "coupon_type",
           component: () => import("../views/Merchant/coupon/type.vue"),
-          meta: ["商户管理", "优惠券类型"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "优惠券类型", path: "coupon_type" },
+          ],
         },
 
         // 商户广告数据管理
         {
           path: "merchant_merAdData",
           component: () => import("../views/Merchant/merchant_merAdData.vue"),
-          meta: ["商户管理", "商户广告数据管理"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商户广告数据管理", path: "merchant_merAdData" },
+          ],
         },
 
         // 商户管理-商户数据库
         {
           path: "merchant_database",
           component: () => import("../views/Merchant/merchant/database.vue"),
-          meta: ["配置管理", "商户数据库"],
+          meta: [
+            { name: "配置管理", path: "" },
+            { name: "商户数据库", path: "merchant_database" },
+          ],
         },
 
         // 订单管理
         {
           path: "merchant_order",
           component: () => import("../views/Merchant/merchant_order.vue"),
-          meta: ["商户管理", "订单管理"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "订单管理", path: "merchant_order" },
+          ],
         },
 
         // 商品券类绑定管理
@@ -369,21 +529,37 @@ export default new VueRouter({
           path: "merchant_productCoupBind",
           component: () =>
             import("../views/Merchant/merchant_productCoupBind.vue"),
-          meta: ["商户管理", "商品券类绑定管理"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商品券类绑定管理", path: "merchant_productCoupBind" },
+          ],
         },
 
         // 商品信息管理
         {
           path: "merchant_productInfo",
           component: () => import("../views/Merchant/merchant_productInfo.vue"),
-          meta: ["商户管理", "商品信息管理"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "商品信息管理", path: "merchant_productInfo" },
+          ],
         },
 
         // 用户信息主表
         {
           path: "merchant_userInfo",
           component: () => import("../views/Merchant/merchant_userInfo.vue"),
-          meta: ["商户管理", "用户信息主表"],
+          meta: [
+            { name: "商户管理", path: "" },
+            { name: "用户信息主表", path: "merchant_userInfo" },
+          ],
+        },
+
+        // 测试页
+        {
+          path: "test",
+          component: () => import("../views/test.vue"),
+          meta: [{ name: "测试页", path: "test" }],
         },
       ],
     },

@@ -6,7 +6,10 @@
     <el-form class="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
       <el-form-item label="用户名">
-        <el-input v-model="find_form.data.account" placeholder="请输入用户名"></el-input>
+        <el-input
+          v-model="find_form.data.account"
+          placeholder="请输入用户名"
+        ></el-input>
       </el-form-item>
       <el-form-item label="用户状态">
         <el-select v-model="find_form.data.isEnable" placeholder="请选择状态">
@@ -15,7 +18,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属用户组">
-        <el-select v-model="find_form.data.RoleGroupId" placeholder="请选择用户组">
+        <el-select
+          v-model="find_form.data.RoleGroupId"
+          placeholder="请选择用户组"
+        >
           <el-option label="全部" value></el-option>
           <el-option
             v-for="item in []"
@@ -27,12 +33,20 @@
       </el-form-item>
 
       <el-form-item label="身份证号">
-        <el-input v-model="find_form.data._like_idCard" placeholder="请输入身份证号"></el-input>
+        <el-input
+          v-model="find_form.data._like_idCard"
+          placeholder="请输入身份证号"
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="findData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="success" style="margin-left:50px" @click="showDetails('0')">添加用户</el-button>
+        <el-button
+          type="success"
+          style="margin-left: 50px"
+          @click="showDetails('0')"
+          >添加用户</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -42,30 +56,68 @@
       <el-table-column prop="name" label="昵称" width="150"></el-table-column>
       <el-table-column prop="imgUrl" label="头像" width="150">
         <template slot-scope="scope">
-          <el-avatar :size="80" :src="scope.row.imgUrl" shape="square"></el-avatar>
+          <el-avatar
+            :size="80"
+            :src="scope.row.imgUrl"
+            shape="square"
+          ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="account" label="用户名" width="150"></el-table-column>
+      <el-table-column
+        prop="account"
+        label="用户名"
+        width="150"
+      ></el-table-column>
       <el-table-column prop="isEnable" label="用户状态" width="100">
-        <template slot-scope="scope">{{ scope.row.isEnable == "1" ? "禁用" : "启用" }}</template>
+        <template slot-scope="scope">{{
+          scope.row.isEnable ? "启用" : "禁用"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="groupName" label="所属用户组" width="150"></el-table-column>
-      <el-table-column prop="email" label="安全邮箱" width="220"></el-table-column>
+      <el-table-column
+        prop="groupName"
+        label="所属用户组"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="email"
+        label="安全邮箱"
+        width="220"
+      ></el-table-column>
       <el-table-column prop="isAdministrator" label="用户级别" width="120">
-        <template slot-scope="scope">{{ scope.row.isAdministrator == "1" ? "超级管理员" : "普通用户" }}</template>
+        <template slot-scope="scope">{{
+          scope.row.isAdministrator == "1" ? "超级管理员" : "普通用户"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="trueName" label="真实姓名" width="120"></el-table-column>
-      <el-table-column prop="idCard" label="身份证号" width="250"></el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" width="250"></el-table-column>
+      <el-table-column
+        prop="trueName"
+        label="真实姓名"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="idCard"
+        label="身份证号"
+        width="250"
+      ></el-table-column>
+      <el-table-column
+        prop="updateTime"
+        label="修改时间"
+        width="250"
+      ></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button @click="showDetails('1',scope.row)" type="primary" size="small">编辑</el-button>
+          <el-button
+            @click="showDetails('1', scope.row)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
           <el-button
             v-if="!scope.row.isAdministrator"
             @click="delRow(scope.row)"
             type="danger"
             size="small"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>

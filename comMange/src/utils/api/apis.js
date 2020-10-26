@@ -244,7 +244,7 @@ export const uploadFiles = (
   parameter3 // 参数3
 ) => {
   var formData = createFormData(fileList);
-
+  console.log(formData);
   switch (type) {
     case 1:
       var path = `file/upload/self/v${version}`;

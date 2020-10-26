@@ -26,7 +26,7 @@
         <span>{{ data_info.createTime }}</span>
       </el-form-item>
       <el-form-item label="审核状态">
-        <span>{{ data_info.checkStatus }}</span>
+        <span>{{ data_info.checkStatus ? "通过" : "不通过" }}</span>
       </el-form-item>
       <el-form-item label="审核人员">
         <span>{{ data_info.checker }}</span>
@@ -74,14 +74,12 @@
 </template>
 
 <script>
-import { getDataList } from "@/utils/api/apis";
-import { createGet, createFormData, spliceUrl } from "@/utils/common";
+import { getDataDetail } from "@/utils/api/apis";
+import { createGet, createFormData, spliceImg } from "@/utils/common";
 export default {
   mounted() {
-    var form = createGet();
-    console.log(1);
-    // 请求公告列表
-    getDataList("global", "merchant", 1, form, this, "data_info", "info");
+    // 请求店铺基本信息
+    getDataDetail("global", "merchant", 1, {}, this, "data_info", "info");
   },
 
   data() {
@@ -111,7 +109,7 @@ export default {
       if (this.file_list.length) {
         upLoadFiles("用户头像", creatFormData(this.file_list)).then((res) => {
           this.data_info.headIco = res.list[0].resId;
-          var headImg = spliceUrl(res.list, "resId")[0].resId;
+          var headImg = spliceImg(res.list, "resId")[0].resId;
           sessionStorage.setItem("headImg", headImg);
           updateDataList(
             this.$vision.merchant,
@@ -128,7 +126,7 @@ export default {
           this.data_info,
           this,
           null,
-          getDetailsInfo(
+          getDataDetail(
             this.$vision.merchant,
             "Userinfo",
             this.get_form,

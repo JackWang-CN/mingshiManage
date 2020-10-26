@@ -187,7 +187,6 @@ export default {
     // 提交修改
     sendSubmit() {
       var form = { ...this.data_info };
-      console.log(form);
       switch (this.operate) {
         case 0:
           addDataList(this.model, this.control, 1, form, this, "props_list");

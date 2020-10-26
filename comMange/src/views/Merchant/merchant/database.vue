@@ -244,11 +244,5 @@ export default {
 
 <style lang='scss'>
 #merchant_database {
-  .details_form {
-    .el-input,
-    .el-textarea {
-      width: 500px;
-    }
-  }
 }
 </style>

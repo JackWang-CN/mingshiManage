@@ -8,17 +8,29 @@
       </div>
       <!-- 登录框 -->
       <div class="center">
-        <el-form class="loginForm" :model="loginForm" :rules="loginRules" ref="loginForm">
+        <el-form
+          class="loginForm"
+          :model="loginForm"
+          :rules="loginRules"
+          ref="loginForm"
+        >
           <h2>登录</h2>
           <!-- 用户名 -->
           <el-form-item prop="username">
-            <el-input placeholder="请输入您的邮箱/电话/登录名" v-model="loginForm.username">
+            <el-input
+              placeholder="请输入您的邮箱/电话/登录名"
+              v-model="loginForm.username"
+            >
               <i slot="prefix" class="el-input__icon iconfont icon-user1"></i>
             </el-input>
           </el-form-item>
           <!-- 密码 -->
           <el-form-item prop="password">
-            <el-input placeholder="请输入您的密码" v-model="loginForm.password" show-password>
+            <el-input
+              placeholder="请输入您的密码"
+              v-model="loginForm.password"
+              show-password
+            >
               <i slot="prefix" class="el-input__icon iconfont icon-lock"></i>
             </el-input>
           </el-form-item>
@@ -31,7 +43,9 @@
             <a href>忘记密码？</a>
           </div>
           <!-- 登录按钮 -->
-          <el-button class="btn_login" @click="submitLogin('loginForm')">立即登录</el-button>
+          <el-button class="btn_login" @click="submitLogin('loginForm')"
+            >立即登录</el-button
+          >
         </el-form>
       </div>
     </div>

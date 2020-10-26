@@ -64,12 +64,12 @@
 
 <script>
 import {
-  getDetailsInfo,
-  upLoadFiles,
+  getDataDetail,
+  uploadFiles,
   addDataList,
-  updateDataList,
-} from "@/utils/api/api";
-import { createFormData, spliceUrl } from "@/utils/common";
+  updateDetails,
+} from "@/utils/api/apis";
+import { createFormData, spliceImg } from "@/utils/common";
 export default {
   created() {
     // 获取reqId
@@ -77,7 +77,7 @@ export default {
     if (id) {
       this.type = "update";
       var get_form = { reqId: id };
-      getDetailsInfo(
+      getDataDetail(
         this.$vision.merchant,
         "Meraddata",
         get_form,
@@ -121,8 +121,8 @@ export default {
         case "add":
           // 1) 上传图片并获取url
           if (this.file_list.length) {
-            upLoadFiles("广告", creatFormData(this.file_list)).then((res) => {
-              this.data_info.adUrl = spliceUrl(res.list, "resId")[0].resId;
+            uploadFiles("广告", creatFormData(this.file_list)).then((res) => {
+              this.data_info.adUrl = spliceImg(res.list, "resId")[0].resId;
               // 2) 添加广告
               addDataList(
                 this.$vision.merchant,
@@ -139,9 +139,9 @@ export default {
         case "update":
           // 1) 判断是否修改资源
           if (this.file_list.length) {
-            upLoadFiles("广告", creatFormData(this.file_list)).then((res) => {
-              this.data_info.adUrl = spliceUrl(res.list, "resId")[0].resId;
-              updateDataList(
+            uploadFiles("广告", creatFormData(this.file_list)).then((res) => {
+              this.data_info.adUrl = spliceImg(res.list, "resId")[0].resId;
+              updateDetails(
                 this.$vision.merchant,
                 "Meraddata",
                 this.data_info,
@@ -150,7 +150,7 @@ export default {
               );
             });
           } else {
-            updateDataList(
+            updateDetails(
               this.$vision.merchant,
               "Meraddata",
               this.data_info,

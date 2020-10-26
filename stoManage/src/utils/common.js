@@ -4,10 +4,11 @@ const fileUrl =
   "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
 
 // 拼接文件URL
-export const spliceUrl = (arr, imgKey) => {
+export const spliceImg = (arr, imgKey, flag) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
-      item.imgUrl = fileUrl + item[imgKey];
+      var url = flag ? arUrl : fileUrl;
+      item.imgUrl = url + item[imgKey];
     }
   });
   return arr;
@@ -55,7 +56,7 @@ export const createGet = (currPage, pageSize, order) => {
   //   obj.orderByFileds = "creationtime desc";
   // }
 
-  // obj.totalDataNum = 0;
+  obj.totalDataNum = 0;
   obj.data = {};
 
   return obj;
@@ -95,8 +96,8 @@ export const switchDateList = (
 };
 
 // 判断结果，进行提示
-export const hintMessage = (_this, code, message = "操作成功！") => {
-  switch (code) {
+export const hintMessage = (_this, res, message = "操作成功！") => {
+  switch (res.code) {
     case "000000":
       _this.$message.success(message);
       break;

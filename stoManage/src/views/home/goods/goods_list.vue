@@ -74,38 +74,16 @@
         width="150"
         sortable
       ></el-table-column>
-      <el-table-column prop="imageID" label="商品图片" width="150">
+      <el-table-column label="商品图片" width="150">
         <template slot-scope="scope">
           <el-avatar
             :size="80"
-            :src="
-              'https://api.resources.scmsar.com/file/download/source/v1?Mark=' +
-              scope.row.imageID
-            "
+            :src="scope.row.imgUrl"
             shape="square"
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="describe"
-        label="详情描述"
-        width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="goodsTypeName"
-        label="商品类型"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="dismountTime"
-        label="下架时间"
-        width="200"
-      ></el-table-column>
-      <el-table-column prop="onShelfState" label="是否上架" width="100">
-        <template slot-scope="scope">{{
-          scope.row.onShelfState ? "是" : "否"
-        }}</template>
-      </el-table-column>
+      <el-table-column prop="describe" label="详情描述"></el-table-column>
 
       <el-table-column label="操作" width="160px" fixed="right">
         <template slot-scope="scope">
@@ -116,7 +94,7 @@
             >编辑</el-button
           >
           <el-button
-            @click="delRow(scope.row.goodstID)"
+            @click="delRow(scope.row.goodsNumber)"
             type="danger"
             size="small"
             >删除</el-button
@@ -141,6 +119,7 @@
         <el-form-item label="商品名称">
           <el-input v-model="data_info.name"></el-input>
         </el-form-item>
+
         <el-form-item label="详情描述">
           <el-input
             type="textarea"
@@ -148,32 +127,15 @@
             v-model="data_info.describe"
           ></el-input>
         </el-form-item>
-        <el-form-item label="商品类型">
-          <el-select v-model="data_info.goodsTypeNumber">
-            <el-option
-              v-for="type in type_list"
-              :key="type.typeID"
-              :label="type.namePath"
-              :value="type.typeNumber"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否上架">
-          <el-select v-model="data_info.onShelfState">
-            <el-option label="上架" :value="1"></el-option>
-            <el-option label="下架" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="下架时间">
-          <el-date-picker
-            v-model="data_info.dismountTime"
-            type="datetime"
-            placeholder="选择时间"
-          ></el-date-picker>
-        </el-form-item>
+
         <el-form-item label="商品预览" v-show="operate">
-          <img :src="data_info.imageID" alt height="300" />
+          <el-avatar
+            :size="200"
+            :src="data_info.imgUrl"
+            shape="square"
+          ></el-avatar>
         </el-form-item>
+
         <el-form-item label="商品图片">
           <el-upload
             action="#"
@@ -221,7 +183,7 @@
 </template>
 
 <script>
-import { createGet, hintMessage } from "@/utils/common";
+import { createGet, hintMessage, spliceImg } from "@/utils/common";
 import {
   getData,
   addData,
@@ -240,8 +202,6 @@ export default {
 
     // 请求商品列表
     getDataList(this.model, this.control, 1, form, this, "goods_list");
-    // 请求商品类型列表
-    getDataList(this.model, "goodClass", 1, form, this, "type_list");
   },
   data() {
     return {
@@ -275,6 +235,8 @@ export default {
     // 发送提交
     async sendSubmit() {
       var data_info = { ...this.data_info };
+      console.log(data_info);
+      // return;
       this.show_details = false;
 
       // 判断是否上传图片
@@ -282,6 +244,7 @@ export default {
         var res = await uploadFiles(2, 1, this.file_list, "商户商品图片");
         data_info.imageID = res.resultObject[0].resID;
       }
+
       switch (this.operate) {
         case 0:
           getData(this.model, this.control, 1, data_info, "create").then(
@@ -342,8 +305,10 @@ export default {
     },
 
     // 删除当前
-    delRow(value) {
-      delData(this.model, this.control, 1, { value }).then((res) => {
+    delRow(goodsID) {
+      console.log(goodsID);
+      return;
+      delData(this.model, this.control, 1, { goodsID }).then((res) => {
         if (res) {
           this.$message.success("删除成功！");
           var form = { ...this.find_form };
@@ -429,6 +394,13 @@ export default {
         secondary_type: "",
         create_date: "",
       };
+    },
+  },
+
+  watch: {
+    // 拼接图片url
+    goods_list() {
+      this.goods_list = spliceImg(this.goods_list, "imageID");
     },
   },
 };

@@ -13,7 +13,7 @@
         width="180"
       ></el-table-column>
       <el-table-column
-        prop="typeID"
+        prop="typeName"
         label="活动类型"
         width="120"
       ></el-table-column>

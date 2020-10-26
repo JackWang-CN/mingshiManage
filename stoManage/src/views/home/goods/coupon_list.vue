@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { getDataList, delData } from "@/utils/api/api";
+import { getDataList, delData } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
   mounted() {

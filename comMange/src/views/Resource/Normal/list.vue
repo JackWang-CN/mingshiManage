@@ -81,7 +81,7 @@
         width="100"
       ></el-table-column>
       <el-table-column
-        prop="uploadID"
+        prop="uploadUName"
         label="上传用户"
         width="100"
       ></el-table-column>

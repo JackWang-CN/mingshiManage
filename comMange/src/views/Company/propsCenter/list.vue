@@ -19,10 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
-        <el-select
-          v-model="find_form.data.rpmtype"
-          placeholder="请选择道具类型"
-        >
+        <el-select v-model="find_form.data.typeID" placeholder="请选择道具类型">
           <el-option
             v-for="item in type_list"
             :key="item.typeID"
@@ -57,7 +54,7 @@
         label="道具名称"
         width="120"
       ></el-table-column>
-      <el-table-column prop="typeID" label="道具类型" width="120">
+      <el-table-column prop="typeName" label="道具类型" width="120">
         <!-- <template slot-scope="scope">
           <span v-if="scope.row.typeID==1">户型风格</span>
           <span v-else-if="scope.row.typeID==2">屋内道具</span>

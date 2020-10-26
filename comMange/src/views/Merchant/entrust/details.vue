@@ -7,7 +7,7 @@
       <!-- 当前阶段 -->
       <el-tab-pane label="当前阶段" name="current">
         <!-- 进度条 -->
-        <el-steps :active="activeState" finish-status="success" :space="170">
+        <el-steps :active="activeState" :space="170">
           <el-step
             v-for="item in progress_list"
             :key="item.stateID"

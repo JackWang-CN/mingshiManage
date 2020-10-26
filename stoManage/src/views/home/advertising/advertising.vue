@@ -3,13 +3,18 @@
   <div id="advertising" class="shadow_container">
     <div class="pageTitle">
       我的广告
-      <el-button type="success" size="medium" @click="toDetails()">添加</el-button>
+      <el-button type="success" size="medium" @click="toDetails()"
+        >添加</el-button
+      >
     </div>
     <!-- 查询表单 -->
     <el-form ref="find_form" :model="find_form" label-width="100px">
       <!-- 查询条件 -->
       <el-form-item label="广告编号">
-        <el-input v-model="find_form.data.reqId" placeholder="请输入广告编号"></el-input>
+        <el-input
+          v-model="find_form.data.reqId"
+          placeholder="请输入广告编号"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="广告状态">
@@ -32,34 +37,65 @@
       </el-form-item>
       <!-- 按钮组 -->
       <el-form-item>
-        <el-button type="primary" @click="findList" :disabled="btn_status">查询</el-button>
+        <el-button type="primary" @click="findList" :disabled="btn_status"
+          >查询</el-button
+        >
         <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="danger" @click="delList" style="margin-left:50px">批量删除</el-button>
+        <el-button type="danger" @click="delList" style="margin-left: 50px"
+          >批量删除</el-button
+        >
       </el-form-item>
     </el-form>
 
     <!-- 广告列表 -->
-    <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
+    <el-table
+      :data="data_list"
+      tooltip-effect="dark"
+      :border="true"
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="reqId" label="编号" width="200" sortable></el-table-column>
-      <el-table-column prop="desInfo" label="描述" width="250"></el-table-column>
+      <el-table-column
+        prop="reqId"
+        label="编号"
+        width="200"
+        sortable
+      ></el-table-column>
+      <el-table-column
+        prop="desInfo"
+        label="描述"
+        width="250"
+      ></el-table-column>
       <el-table-column prop="reqStatus" label="状态" width="100">
         <template slot-scope="scope">
-          {{
-          scope.row.reqStatus ? "禁用" : "启用"
-          }}
+          {{ scope.row.reqStatus ? "禁用" : "启用" }}
         </template>
       </el-table-column>
-      <el-table-column prop="creationTime" label="创建时间" width="200"></el-table-column>
+      <el-table-column
+        prop="creationTime"
+        label="创建时间"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="adUrl" label="资源地址" width="130">
         <template slot-scope="scope">
-          <el-avatar :size="100" :src="scope.row.adUrl" shape="square"></el-avatar>
+          <el-avatar
+            :size="100"
+            :src="scope.row.adUrl"
+            shape="square"
+          ></el-avatar>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="toDetails(scope.row.reqId)" type="primary" size="small">编辑</el-button>
-          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="toDetails(scope.row.reqId)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
+          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +110,7 @@
 </template>
 
 <script>
-import { getDataList, delData, updateDataList } from "@/utils/api/api";
+import { getDataList, delData, updateDataList } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 import pagination from "@/components/Pagination";
 

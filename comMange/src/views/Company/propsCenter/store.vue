@@ -52,7 +52,7 @@
         >-->
       </el-table-column>
       <el-table-column prop="price" label="单价" width="120"></el-table-column>
-      <el-table-column prop="typeID" label="道具类型" width="120">
+      <el-table-column prop="typeName" label="道具类型" width="120">
         <!-- <template slot-scope="scope">
           <span v-if="scope.row.typeID==1">户型风格</span>
           <span v-else-if="scope.row.typeID==2">屋内道具</span>
