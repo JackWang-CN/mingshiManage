@@ -36,7 +36,9 @@
           </template>
           <el-menu-item index="props_list">道具列表</el-menu-item>
           <el-menu-item index="props_type">道具类型</el-menu-item>
-          <el-menu-item index="house_style">房屋风格</el-menu-item>
+          <el-menu-item index="props_fragmentList">道具碎片</el-menu-item>
+          <el-menu-item index="props_synthesizeList">合成方案</el-menu-item>
+          <!-- <el-menu-item index="house_style">房屋风格</el-menu-item> -->
         </el-submenu>
 
         <!-- 拍卖行 -->
@@ -87,14 +89,10 @@
           <el-menu-item index="merchant_check">商户审核</el-menu-item>
           <el-menu-item index="entrust_list">商户委托</el-menu-item>
           <el-menu-item index="merchant_type">经营类别</el-menu-item>
-
-          <el-menu-item index="merchant_merAdData">商户广告</el-menu-item>
-
+          <!-- <el-menu-item index="merchant_advert">商户广告</el-menu-item> -->
+          <el-menu-item index="merchant_drawing">提现管理</el-menu-item>
           <el-menu-item index="merchant_database">商户数据库</el-menu-item>
           <!-- <el-menu-item index="merchant_order">订单管理</el-menu-item> -->
-          <!-- <el-menu-item index="merchant_productCoupBind">商品券类绑定管理</el-menu-item> -->
-          <!-- <el-menu-item index="merchant_productInfo">商品信息管理</el-menu-item> -->
-          <!-- <el-menu-item index="merchant_userInfo">用户信息主表</el-menu-item> -->
         </el-submenu>
 
         <!-- 用户管理 -->
@@ -104,11 +102,7 @@
             <span>用户管理</span>
           </template>
           <el-menu-item index="customer_list">用户列表</el-menu-item>
-          <el-menu-item index="user_group">群组管理</el-menu-item>
-          <!-- <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
-          <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
-          <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
-          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>-->
+          <!-- <el-menu-item index="user_group">群组管理</el-menu-item> -->
         </el-submenu>
 
         <!-- 公告管理 -->
@@ -132,6 +126,50 @@
           <el-menu-item index="role_list">角色管理</el-menu-item>
           <el-menu-item index="user_list">账号管理</el-menu-item>
         </el-submenu>
+
+        <!-- AR游戏配置 -->
+        <el-submenu index="arGame">
+          <template slot="title">
+            <i class="el-icon-coordinate"></i>
+            <span>AR游戏配置</span>
+          </template>
+          <el-menu-item index="gameObj_type">游戏对象类型</el-menu-item>
+          <el-menu-item index="gameObj_list">游戏对象列表</el-menu-item>
+          <el-menu-item index="prizePool_list">奖池列表</el-menu-item>
+          <el-menu-item index="contentPool_list">内容池列表</el-menu-item>
+          <el-menu-item index="gameEnity_list">实体列表</el-menu-item>
+          <el-menu-item index="event_list">事件列表</el-menu-item>
+          <el-menu-item index="weapon_list">武器配置</el-menu-item>
+          <el-menu-item index="config_activity">活动配置</el-menu-item>
+          <el-menu-item index="config_scope">城市范围配置</el-menu-item>
+        </el-submenu>
+
+        <!-- <el-menu-item-group>
+            <template slot="title">奖品配置</template>
+            <el-menu-item index="prize_list">奖品列表</el-menu-item>
+            <el-menu-item index="prize_type">奖品类型</el-menu-item>
+          </el-menu-item-group>
+
+          <el-menu-item-group>
+            <template slot="title">内容配置</template>
+            <el-menu-item index="content_list">内容列表</el-menu-item>
+          </el-menu-item-group>
+
+          <el-menu-item-group>
+            <template slot="title">游戏对象</template>
+          </el-menu-item-group>
+
+          <el-menu-item-group>
+            <template slot="title">事件元素</template>
+            <el-menu-item index="eventHistory_list">历史事件</el-menu-item>
+            <el-menu-item index="eventType_list">事件类型</el-menu-item>
+          </el-menu-item-group>
+
+          <el-menu-item-group>
+            <template slot="title">其他配置</template>
+
+            <el-menu-item index="config_server">服务器配置</el-menu-item>
+          </el-menu-item-group>-->
 
         <el-menu-item index="test">
           <i class="el-icon-setting"></i>
@@ -253,8 +291,10 @@
 </template>
 
 <script>
+import tree from "@/assets/json/tree.json";
 export default {
   created() {
+    // console.log(tree);
     var token = sessionStorage.getItem("token");
     if (!token) {
       this.$router.replace("/login");

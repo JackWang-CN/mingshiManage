@@ -108,6 +108,13 @@ export default new VueRouter({
           meta: ["我的收益"],
         },
 
+        // 提现管理
+        {
+          path: "earning_details",
+          component: () => import("../views/home/earnings/details.vue"),
+          meta: ["我的收益", "提现管理"],
+        },
+
         // 客户管理-消息中心
         {
           path: "message_center",

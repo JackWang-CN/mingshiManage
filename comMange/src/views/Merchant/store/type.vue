@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { getDataList } from "@/utils/api/apis";
+import { getDataList, addData } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {

@@ -7,7 +7,7 @@
     </div>
 
     <!-- 列表 -->
-    <el-table :data="data_list" border>
+    <el-table :data="data_list" border @cell-click="cellClick">
       <el-table-column
         prop="database"
         label="数据库名称"
@@ -19,7 +19,7 @@
         width="180"
       ></el-table-column>
       <el-table-column
-        prop="dbPassword"
+        prop="pwd"
         label="数据库密码"
         width="180"
       ></el-table-column>
@@ -47,7 +47,12 @@
       width="30%"
       @closed="clear"
     >
-      <el-form label-width="100px" class="details_form">
+      <el-form
+        label-width="100px"
+        class="details_form"
+        :rules="rules"
+        :model="data_info"
+      >
         <el-form-item label="绑定商户">
           <el-button type="success" size="small" @click="showStore"
             >选择商户</el-button
@@ -62,21 +67,21 @@
             <el-option
               v-for="server in server_list"
               :key="server.serverConfigID"
-              :label="server.serverConfigID"
+              :label="server.server"
               :value="server.serverConfigID"
             ></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="数据库名称">
+        <el-form-item label="数据库名称" prop="database">
           <el-input v-model="data_info.database"></el-input>
         </el-form-item>
 
-        <el-form-item label="数据库账号">
+        <el-form-item label="数据库账号" prop="dbUserId">
           <el-input v-model="data_info.dbUserId"></el-input>
         </el-form-item>
 
-        <el-form-item label="数据库密码">
+        <el-form-item label="数据库密码" prop="dbPassword">
           <el-input v-model="data_info.dbPassword" show-password></el-input>
         </el-form-item>
 
@@ -152,6 +157,19 @@ export default {
       show_store: false,
       model: "merchant",
       control: "merDBRelation",
+
+      rules: {
+        database: [
+          { required: true, message: "数据库名称不能为空", trigger: "blur" },
+          { min: 2, message: "必须大于或等于2个字符", trigger: "blur" },
+        ],
+        dbUserId: [
+          { required: true, message: "数据库账号不能为空", trigger: "blur" },
+        ],
+        dbPassword: [
+          { required: true, message: "数据库密码不能为空", trigger: "blur" },
+        ],
+      },
     };
   },
 
@@ -193,6 +211,9 @@ export default {
       );
     },
 
+    // 点击单元格触发
+    cellClick(row) {},
+
     // 选择商户
     selectStore(row) {
       this.show_store = false;
@@ -208,6 +229,17 @@ export default {
 
     // 发送提交
     async sendSubmit() {
+      var reg = /^[A-Za-z]{1,1}[A-Za-z]*\d*_*$/;
+      if (!this.data_info.database) {
+        this.$message.error("数据库名称不能为空");
+        return;
+      }
+
+      if (!reg.test(this.data_info.database)) {
+        this.$message.error("数据库名称必须以字母开头");
+        return;
+      }
+
       var form = { ...this.data_info };
       this.show_details = false;
 
@@ -237,6 +269,15 @@ export default {
       }
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
+    },
+  },
+
+  watch: {
+    data_list() {
+      var list = this.data_list;
+      list.forEach((item) => {
+        item.pwd = "*********************";
+      });
     },
   },
 };

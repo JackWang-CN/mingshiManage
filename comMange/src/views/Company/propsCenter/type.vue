@@ -4,7 +4,7 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane>
+      <!-- <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane> -->
       <el-tab-pane label="屋内道具" name="prop"></el-tab-pane>
       <el-tab-pane label="宠物道具" name="propPet"></el-tab-pane>
     </el-tabs>
@@ -16,6 +16,7 @@
         placeholder="分类名称"
         prefix-icon="el-icon-search"
       ></el-input>
+      <el-button type="primary">查询</el-button>
       <el-button type="success" @click="showDetails(0)">新增分类</el-button>
     </div>
 
@@ -40,7 +41,7 @@
           <el-button
             type="warning"
             size="small"
-            @click="showDetails(1, scope.row)"
+            @click="showDetails(1, scope.row.typeID)"
             >修改</el-button
           >
           <el-button
@@ -52,6 +53,13 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
 
     <!-- 弹出框 -->
     <el-dialog
@@ -97,6 +105,7 @@
                 v-for="item in prop_special.media"
                 :key="item.majoKey"
                 :label="item.majoKey"
+                @change="selectChange('media', item.majoKey)"
                 >{{ item.value }}</el-checkbox
               >
             </el-checkbox-group>
@@ -109,6 +118,7 @@
                 v-for="item in prop_special.put"
                 :key="item.majoKey"
                 :label="item.majoKey"
+                @change="selectChange('put', item.majoKey)"
                 >{{ item.value }}</el-checkbox
               >
             </el-checkbox-group>
@@ -121,6 +131,7 @@
                 v-for="item in AI_special"
                 :key="item.majoKey"
                 :label="item.majoKey"
+                @change="selectChange('ai', item.majoKey)"
                 >{{ item.value }}</el-checkbox
               >
             </el-checkbox-group>
@@ -144,18 +155,23 @@
 </template>
 
 <script>
+import Pagination from "@/components/Pagination";
 import {
   getData,
   getDataList,
+  getDetails,
   addData,
   delData,
   updateData,
 } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
+  components: {
+    Pagination,
+  },
   mounted() {
     this.find_form = createGet();
-    this.activeName = "propHouse";
+    this.activeName = "prop";
   },
 
   data() {
@@ -203,11 +219,10 @@ export default {
     },
 
     // 点击添加数据，打开弹出框
-    showDetails(type, row) {
-      this.show_details = !this.show_details;
-      if (this.show_details) {
-        this.operate = type;
-      }
+    showDetails(type, typeID) {
+      this.show_details = true;
+      this.operate = type;
+
       var form = createGet(1, 99);
       switch (this.activeName) {
         case "prop":
@@ -235,7 +250,56 @@ export default {
       }
 
       if (type) {
-        this.data_info = { ...row, ...this.data_info };
+        getDetails(this.model, this.control, 1, { typeID }).then((res) => {
+          console.log(res);
+          this.data_info = res.resultObject;
+        });
+      }
+    },
+
+    // 特性反选
+    selectChange(type, key) {
+      if (key.includes("00")) {
+        switch (type) {
+          case "media":
+            this.data_info.mediaSpecial = [key];
+            break;
+          case "put":
+            console.log(key);
+            this.data_info.putSpecial = [key];
+            break;
+          case "ai":
+            this.data_info.aiSpecial = [key];
+            break;
+        }
+      } else {
+        var list = [];
+        switch (type) {
+          case "media":
+            this.data_info.mediaSpecial.forEach((item) => {
+              if (!item.includes("00")) {
+                list.push(item);
+              }
+            });
+            this.data_info.mediaSpecial = list;
+            break;
+          case "put":
+            this.data_info.putSpecial.forEach((item) => {
+              if (!item.includes("00")) {
+                list.push(item);
+              }
+            });
+            this.data_info.putSpecial = list;
+            break;
+          case "ai":
+            this.data_info.aiSpecial.forEach((item) => {
+              if (!item.includes("00")) {
+                list.push(item);
+              }
+            });
+            this.data_info.aiSpecial = list;
+            break;
+        }
       }
     },
 
@@ -308,6 +372,11 @@ export default {
       form.data = { parentID: row.typeID };
       getData(this.model, this.control, 1, form).then((res) => {
         var list = this.toTableTree(res.resultObject.data);
+
+        for (var i = 0; i < list.length; i++) {
+          list[i].parentID = row.typeID;
+        }
+        console.log(list);
         resolve(list);
         console.log(list, this.type_list);
       });
@@ -357,6 +426,20 @@ export default {
       });
       return newArr;
     },
+
+    // 分页属性改变
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, this.find_form, this);
+    },
   },
 
   watch: {
@@ -365,6 +448,7 @@ export default {
       // 请求当前道具分支的类型列表
       this.model = this.activeName;
       this.control = this.activeName + "Type";
+      this.find_form = createGet();
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
     },

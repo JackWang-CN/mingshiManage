@@ -146,12 +146,12 @@
     >
       <el-form label-width="80px">
         <el-form-item label="任务分配" v-show="this.operate == 0">
-          <el-radio-group v-model="data_info.managerID" @change="selectManger">
+          <el-radio-group v-model="data_info.userID" @change="selectManger">
             <el-radio
               v-for="item in manager_list"
-              :key="item.managerID"
-              :label="item.managerID"
-              >{{ item.managerName }}</el-radio
+              :key="item.userID"
+              :label="item.userID"
+              >{{ item.name }}</el-radio
             >
           </el-radio-group>
         </el-form-item>
@@ -211,16 +211,7 @@ export default {
       select_list: [],
       data_list: [],
       data_info: {},
-      manager_list: [
-        {
-          managerName: "德玛西亚",
-          managerID: "20082814315634805620491050059783724634",
-        },
-        {
-          managerName: "痛仰",
-          managerID: "20080616234772245440491010032207854874",
-        },
-      ],
+      manager_list: [],
       activeName: "",
 
       operate: 0, // 0-接收 1-拒绝
@@ -251,10 +242,19 @@ export default {
           },
         });
       } else {
+        // 请求业务员
+        getDataList(
+          "comUser",
+          "comUserInfo",
+          1,
+          createGet(),
+          this,
+          "manager_list"
+        );
+
         this.show_details = true;
         this.operate = type;
         this.data_info.entrustID = entrustID;
-        console.log(this.data_info);
       }
     },
 
@@ -302,8 +302,8 @@ export default {
           this.find_form.currPage = page;
           break;
       }
+
       var form = { ...this.find_form };
-      delete form.totalDataNum;
       getDataList(
         this.model,
         this.control,
@@ -311,13 +311,14 @@ export default {
         form,
         this,
         null,
-        "activityEntrustList"
+        this.activeName
       );
     },
   },
 
   watch: {
     activeName() {
+      this.find_form = createGet();
       var form = { ...this.find_form };
       getDataList(
         this.model,

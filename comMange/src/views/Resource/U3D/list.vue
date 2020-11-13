@@ -73,6 +73,7 @@
             :size="80"
             :src="fileUrl + 'ar2d/v1?Mark=' + scope.row.mainImageID"
             shape="square"
+            fit="contain"
           ></el-avatar>
         </template>
       </el-table-column>
@@ -157,6 +158,7 @@ export default {
 
   mounted() {
     // 首次加载
+    this.find_form = createGet(1, 10, "tableID desc");
     var form = { ...this.find_form };
     getFileList("u3dInfoList", 1, form, this);
   },
@@ -165,12 +167,7 @@ export default {
     return {
       // 查找条件
       type: "ar",
-      find_form: {
-        currPage: 1,
-        pageSize: 10,
-        totalDataNum: 0,
-        data: {},
-      },
+      find_form: { data: {} },
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
       isShowDetails: false, // 是否显示详情
@@ -183,6 +180,7 @@ export default {
   methods: {
     // 查询
     findData() {
+      this.find_form.currPage = 1;
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);

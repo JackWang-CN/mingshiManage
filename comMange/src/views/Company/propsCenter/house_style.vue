@@ -66,6 +66,13 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页插件 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
+
     <!-- 弹出框 -->
     <el-dialog
       title="风格详情"
@@ -222,7 +229,7 @@ export default {
       if (this.select_model.resID) {
         this.data_info.resID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
-        // this.data_info.facadeImageID = this.select_model.mainImageID;
+        this.data_info.mainImageID = this.select_model.mainImageID;
         // 请求子图列表
         var res = await getFile("u3dChildrenInfo", 1, {
           resID: this.data_info.resID,
@@ -258,6 +265,8 @@ export default {
     // 发送提交
     async sendSubmit() {
       var data = { ...this.data_info };
+      console.log(data);
+      // return;
       this.show_details = false;
       switch (this.operate) {
         case 0:
@@ -287,7 +296,18 @@ export default {
           this.find_form.currPage = page;
           break;
       }
-      getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
+      if (this.show_model) {
+        getFileList(
+          "u3dResourceNameList",
+          1,
+          this.find_form,
+          this,
+          "model_list"
+        );
+      } else {
+        var form = { ...this.find_form };
+        getDataList(this.model, this.control, 1, form, this, "data_list");
+      }
     },
   },
 

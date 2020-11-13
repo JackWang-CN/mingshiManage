@@ -16,7 +16,7 @@
     </el-form>
 
     <el-table :data="data_list" style="width: 100%" border>
-      <el-table-column prop="date" label="编号" width="180"></el-table-column>
+      <el-table-column prop="infoID" label="编号" width="180"></el-table-column>
       <el-table-column prop="title" label="标题" width="180"></el-table-column>
       <el-table-column
         prop="content"
@@ -32,17 +32,25 @@
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="类型" width="120"></el-table-column>
-      <el-table-column
-        prop="audience"
-        label="受众类型"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="isPublish"
-        label="是否公布"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="type" label="类型" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.type == 0">平台公告</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="audience" label="受众类型" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.audience == 0">全体用户</span>
+          <span v-else-if="scope.row.audience == 1">普通用户</span>
+          <span v-else-if="scope.row.audience == 2">商户</span>
+        </template></el-table-column
+      >
+      <el-table-column prop="isPublish" label="发布状态" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isPublish == 0">待发布</span>
+          <span v-else-if="scope.row.isPublish == 1">已发布</span>
+          <span v-else-if="scope.row.isPublish == 2">已撤销</span>
+        </template></el-table-column
+      >
       <el-table-column
         prop="updateTime"
         label="更新时间"
@@ -56,10 +64,25 @@
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
-            type="primary"
+            v-if="scope.row.isPublish == 0"
+            type="warning"
             @click="toDetails(1, scope.row.infoID)"
             size="small"
-            >详情</el-button
+            >修改</el-button
+          >
+          <el-button
+            v-if="scope.row.isPublish == 0"
+            type="success"
+            @click="publishMsg(scope.row.infoID)"
+            size="small"
+            >发布</el-button
+          >
+          <el-button
+            v-if="scope.row.isPublish == 1"
+            type="danger"
+            @click="repealMsg(scope.row.infoID)"
+            size="small"
+            >撤销</el-button
           >
         </template>
       </el-table-column>

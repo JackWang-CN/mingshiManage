@@ -1,0 +1,195 @@
+<template>
+  <div id="contentPool_list" class="shadow_container">
+    <div class="pageTitle">
+      内容池列表
+      <el-button type="success" @click="showDetails(0)">新增内容池</el-button>
+    </div>
+
+    <!-- 查询表单 -->
+    <el-form label-width="100px">
+      <el-form-item label="内容池名称">
+        <el-input v-model="find_form.data.storeName"></el-input>
+        <el-button type="primary" style="margin-left: 20px" @click="findData"
+          >查询</el-button
+        >
+      </el-form-item>
+    </el-form>
+
+    <el-table :data="data_list" style="width: 100%" border>
+      <el-table-column
+        prop="storeName"
+        label="内容池名称"
+        width="180"
+      ></el-table-column>
+
+      <el-table-column label="操作" width="250">
+        <template slot-scope="scope">
+          <el-button
+            type="warning"
+            @click="showDetails(1, scope.row)"
+            size="small"
+            >修改</el-button
+          >
+          <el-button
+            type="success"
+            @click="toDetails(scope.row.contentStoreID)"
+            size="small"
+            >添加内容</el-button
+          >
+          <el-button
+            type="danger"
+            @click="delRow(scope.row.contentStoreID)"
+            size="small"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 弹出框 -->
+    <el-dialog
+      title="内容池详情"
+      :visible.sync="show_details"
+      width="25%"
+      @closed="clear"
+    >
+      <el-form label-width="100px" class="details_form">
+        <el-form-item label="内容池名称">
+          <el-input v-model="data_info.storeName"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="saveChange">{{
+            operate ? "保存" : "添加"
+          }}</el-button>
+          <el-button type="info" @click="show_details = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!-- 分页 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
+  </div>
+</template>
+
+<script>
+import Pagination from "@/components/Pagination";
+import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
+import { getDataList, addData, updateData, delData } from "@/utils/api/apis";
+export default {
+  components: {
+    Pagination,
+  },
+  mounted() {
+    this.find_form = createGet();
+    var form = { ...this.find_form };
+    getDataList(this.model, this.control, 1, form, this, "data_list");
+  },
+
+  data() {
+    return {
+      find_form: { data: {} },
+      data_list: [],
+      data_info: {},
+      operate: 0,
+
+      show_details: false,
+      model: "ARGame",
+      control: "contentStore",
+    };
+  },
+
+  methods: {
+    // 跳转到详情页
+    toDetails(id) {
+      this.$router.push({
+        path: "contentPool_details",
+        query: { id },
+      });
+    },
+
+    // 展示详情
+    showDetails(type, row) {
+      this.operate = type;
+      this.show_details = true;
+      this.data_info = { ...row };
+    },
+
+    // 查询列表
+    findData() {
+      var form = filteObj({ ...this.find_form });
+      getDataList(this.model, this.control, 1, form, this, "data_list");
+    },
+
+    // 删除当前行
+    delRow(contentStoreID) {
+      console.log("删除", contentStoreID);
+      delData(this.model, this.control, 1, { contentStoreID }).then((res) => {
+        hintMessage(this, res);
+        this.findData();
+      });
+    },
+
+    // 保存修改
+    saveChange() {
+      this.show_details = false;
+      switch (this.operate) {
+        case 0:
+          addData(this.model, this.control, 1, this.data_info).then((res) => {
+            hintMessage(this, res);
+            this.findData();
+          });
+          break;
+        case 1:
+          updateData(this.model, this.control, 1, this.data_info).then(
+            (res) => {
+              hintMessage(this, res);
+              this.findData();
+            }
+          );
+          break;
+      }
+    },
+
+    // 清空
+    clear() {
+      this.data_info = {};
+    },
+
+    // 分页属性改变
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, form, this, "data_list");
+    },
+  },
+
+  watch: {
+    // 拼接图片url
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "infoID");
+    },
+  },
+};
+</script>
+
+<style lang='scss'>
+#contentPool_list {
+  form {
+    .el-input {
+      width: 300px;
+    }
+  }
+}
+</style>

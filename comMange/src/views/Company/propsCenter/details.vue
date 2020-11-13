@@ -9,8 +9,12 @@
       </el-form-item>
 
       <el-form-item label="绑定模型">
-        <el-button type="success" @click="showModel">选择模型</el-button>
-        <span>{{ data_info.resName }}</span>
+        <el-button type="success" size="small" @click="showModel"
+          >选择模型</el-button
+        >
+        <el-tag style="margin-left: 5px" v-if="data_info.resName">{{
+          data_info.resName
+        }}</el-tag>
       </el-form-item>
 
       <el-form-item label="道具状态">
@@ -29,22 +33,6 @@
             :value="type.typeID"
           ></el-option>
         </el-select>
-      </el-form-item>
-
-      <el-form-item label="上架时间">
-        <el-date-picker
-          v-model="data_info.listingTime"
-          type="date"
-          placeholder="选择日期"
-        ></el-date-picker>
-      </el-form-item>
-
-      <el-form-item label="下架时间">
-        <el-date-picker
-          v-model="data_info.dismountTime"
-          type="date"
-          placeholder="选择日期"
-        ></el-date-picker>
       </el-form-item>
 
       <el-form-item label="道具说明">
@@ -67,6 +55,15 @@
             >{{ item.name }}</el-checkbox
           >
         </el-checkbox-group>
+      </el-form-item>
+
+      <el-form-item label="过期时间">
+        <el-date-picker
+          v-model="data_info.pastDate"
+          type="datetime"
+          placeholder="选择日期时间"
+        >
+        </el-date-picker>
       </el-form-item>
 
       <el-form-item label="创建时间" v-if="operate">{{
@@ -110,7 +107,7 @@
       <el-button type="primary" size="small" @click="confirmMode"
         >确认</el-button
       >
-      <el-button size="small">取消</el-button>
+      <el-button size="small" @click="show_mode = false">取消</el-button>
     </el-dialog>
   </div>
 </template>
@@ -119,7 +116,7 @@
 import Pagination from "@/components/Pagination";
 import {
   getDataDetails,
-  updateDataDetails,
+  updateDetails,
   getFileList,
   uploadFiles,
   getDataList,
@@ -186,7 +183,11 @@ export default {
   methods: {
     // 提交修改
     sendSubmit() {
-      var form = { ...this.data_info };
+      // 计算过期时间戳
+      var date = this.data_info.pastDate,
+        form = { ...this.data_info };
+      form.validityTimestamp = new Date(date).getTime();
+
       switch (this.operate) {
         case 0:
           addDataList(this.model, this.control, 1, form, this, "props_list");

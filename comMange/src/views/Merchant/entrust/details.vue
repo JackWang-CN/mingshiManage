@@ -21,6 +21,7 @@
             <el-upload
               class="upload-demo"
               :auto-upload="false"
+              :on-change="fileChange"
               action="#"
               multiple
               :limit="3"
@@ -76,13 +77,13 @@
             label="客户经理"
             width="100"
           ></el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column label="操作" width="120">
             <template slot-scope="scope">
               <el-button
-                @click="showDetails(scope.row)"
+                @click="showDetails(scope.row.entrustProgressID)"
                 type="primary"
                 size="small"
-                >详情</el-button
+                >查看附件</el-button
               >
             </template>
           </el-table-column>
@@ -93,14 +94,20 @@
     <!-- 弹出框-历史阶段详情 -->
     <el-dialog title="阶段详情" width="30%" :visible.sync="show_details">
       <el-form label-width="80px">
-        <el-form-item label="附件资源">
+        <el-form-item label="附件资源" v-if="attachment_list.length">
           <div class="file_list">
-            <a href="#">商户营业执照</a>
-            <a href="#">身份证正面照</a>
-            <a href="#">身份证反面照</a>
-            <a href="#">手持证件照</a>
+            <a
+              v-for="item in attachment_list"
+              :key="item.resID"
+              :href="
+                'https://api.resources.scmsar.com/file/download/source/v1?Mark=' +
+                item.resID
+              "
+              >{{ item.affixID }}</a
+            >
           </div>
         </el-form-item>
+        <el-form-item v-else>暂无数据</el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -112,6 +119,7 @@ import {
   getData,
   updateData,
   updateDetails,
+  uploadFiles,
 } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
@@ -134,6 +142,7 @@ export default {
     return {
       roll_list: [
         "待受理",
+
         "受理",
         "需求确认",
         "签订合同",
@@ -143,7 +152,9 @@ export default {
       ],
       data_list: [],
       data_info: {},
+      file_list: [], // 文件列表
       progress_list: [], // 商家委托列表
+      attachment_list: [], //当前阶段的附件列表
       breakOff: {}, // 中断的阶段数据模型
       entrustID: "",
       activeName: "",
@@ -210,15 +221,41 @@ export default {
 
   methods: {
     // 展示详情
-    showDetails() {
+    showDetails(value) {
       this.show_details = true;
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        { value },
+        this,
+        "attachment_list",
+        "progress/affixList"
+      );
+    },
+
+    // 文件状态改变
+    fileChange(file, list) {
+      this.file_list = [...list];
     },
 
     // 更新进度 0-当前 1-下一个阶段
-    updateProgress(type) {
+    async updateProgress(type) {
       var index = this.activeState;
       this.data_info.entrustID = this.entrustID;
       this.data_info.stateID = this.progress_list[index].stateID;
+
+      // 是否上传文件
+      if (this.file_list.length > 0) {
+        var res = await uploadFiles(2, 1, this.file_list);
+        if (res.resultObject instanceof Array) {
+          var newArr = [];
+          res.resultObject.forEach((item) => {
+            newArr.push(item.resID);
+          });
+          this.data_info.affixList = [...newArr];
+        }
+      }
 
       // 判断是保存当前进度，还是进入下一阶段
       if (type) {

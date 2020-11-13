@@ -1,16 +1,25 @@
 /* 公共方法 */
 
-const fileUrl =
-  "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
-
-const arUrl = "https://api.resources.scmsar.com/file/download/ar2d/v1?Mark=";
+const fileUrl = window.baseUrl.normal_file;
+const arUrl = window.baseUrl.ar_2d;
 
 // 拼接图片URL
-export const spliceImg = (arr, imgKey, flag) => {
+export const spliceImg = (arr, imgKey, isAr = false) => {
   arr.forEach((item) => {
     if (item[imgKey]) {
-      var url = flag ? arUrl : fileUrl;
+      var url = isAr ? arUrl : fileUrl;
       item.imgUrl = url + item[imgKey];
+    }
+  });
+  return arr;
+};
+
+// 转译时间戳为日期
+export const translateTime = (arr, timeKey) => {
+  // debugger;
+  arr.forEach((item) => {
+    if (item[timeKey] !== "-1") {
+      item.pastDate = new Date(item[timeKey] - 0).toJSON();
     }
   });
   return arr;
@@ -52,7 +61,7 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  // obj.orderByFileds = order || "creationtime desc";
+  obj.orderByFileds = order || "createTime desc";
   obj.totalDataNum = 0;
   obj.data = {};
 
@@ -69,18 +78,32 @@ export const createFormData = (file) => {
       formData.append("files" + index, item);
     }
   });
+
   return formData;
 };
 
 // 过滤Json
 export const filteObj = (obj) => {
-  var newObj = {};
-  for (const key in obj) {
-    if (obj[key] !== null && obj[key] !== "") {
-      newObj[key] = obj[key];
+  // 判断data中有无属性
+  if (Object.keys(obj.data).length == 0) {
+    delete obj.data;
+    return obj;
+  }
+
+  // 有具体属性则进行过滤
+  var newObj = {},
+    data = obj.data;
+  for (const key in data) {
+    if (data[key] !== null && data[key] !== "") {
+      newObj[key] = data[key];
     }
   }
-  return newObj;
+  if (Object.keys(newObj).length > 0) {
+    obj.data = newObj;
+  } else {
+    delete obj.data;
+  }
+  return obj;
 };
 
 // 转换日期选择器的数组

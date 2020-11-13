@@ -15,7 +15,8 @@ body,
 .shadow_container {
   background-color: #fff;
   padding: 20px 20px 50px 20px;
-  box-shadow: 0 0 10px #747373;
+  box-shadow: 0 0 10px -2px #919191;
+  border-radius: 10px;
 }
 
 /* 主标题 */
@@ -35,26 +36,50 @@ body,
   margin-left: 20px;
 }
 
-// 组件表格内容单元格样式
-.el-table {
-  .cell {
-    max-height: 80px;
-    span {
-      &.danger {
-        color: #f56c6c;
-      }
-      &.success {
-        color: #67c23a;
-      }
-      &.warning {
-        color: #e6a23c;
-      }
-      &.primary {
-        color: #409eff;
-      }
+// 按钮链接
+.btn_link {
+  margin-left: 10px;
+}
+
+// 模型列表
+.model_list {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    padding: 10px;
+    text-align: center;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      color: #409eff;
+    }
+
+    // 模型名称
+    .model_name {
+      margin-top: 5px;
     }
   }
 }
-.btn_link {
-  margin-left: 10px;
+
+// 选中的模型
+.select_model {
+  .title {
+    margin: 10px 0;
+  }
+
+  .ico {
+    display: inline-block;
+    cursor: pointer;
+    .model_name {
+      text-align: center;
+      margin: 5px 10px 10px 0;
+    }
+  }
+}
+
+// 弹出框底部按钮
+.dialog_btns {
+  text-indent: 12%;
 }

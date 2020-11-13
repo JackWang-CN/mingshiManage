@@ -11,6 +11,7 @@
           action="#"
           :on-change="arChange"
           :auto-upload="false"
+          :file-list="file_ar"
         >
           <el-button size="small" type="primary">添加模型</el-button>
         </el-upload>
@@ -74,13 +75,12 @@
 </template>
 
 <script>
-import { uploadFiles, getFileList } from "@/utils/api/apis";
+import { uploadFiles, getFileList, getFile } from "@/utils/api/apis";
 import { createFormData, createGet } from "@/utils/common";
 export default {
   mounted() {
     // 请求ar资源类型列表
-    this.find_form = createGet(1, 999);
-    getFileList("u3dTypeList", 1, this.find_form, this, "type_list");
+    getFileList("u3dTypeList", 1, createGet(1, 999), this, "type_list");
   },
 
   data() {
@@ -102,6 +102,16 @@ export default {
     // 发送请求
     async sendSubmit() {
       var { ShowResourceName, Remarks, TypeID } = this.data_info;
+
+      // 验证文件名称是否重复
+      var res = await getFile("hasU3DResNameV1", 1, {
+        resourceName: ShowResourceName,
+      });
+      if (res.code == "000000") {
+        this.$message.error("模型名称重复");
+        return;
+      }
+
       var flag = true;
 
       // 1.上传AR资源
@@ -150,7 +160,19 @@ export default {
 
     // ar文件状态改变
     arChange(file, list) {
-      this.file_ar = [...list];
+      var { name } = file;
+      var index = name.indexOf(".");
+      var suffix = name.substring(index + 1);
+      if (suffix != "ab") {
+        this.$message.warning("请上传有效的ab资源包");
+        this.file_ar = [];
+        return;
+      }
+      var name = name.substring(0, index);
+      this.data_info.ShowResourceName = name;
+      var obj = { ...this.data_info };
+      this.data_info = { ...obj };
+      this.file_ar = [file];
     },
     // 主缩略图状态改变
     mainChange(file, list) {

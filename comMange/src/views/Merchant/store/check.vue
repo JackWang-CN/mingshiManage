@@ -12,11 +12,15 @@
             label="商户名称"
             width="180"
           ></el-table-column>
-          <el-table-column
-            prop="headImage"
-            label="商户头像"
-            width="150"
-          ></el-table-column>
+          <el-table-column prop="headImage" label="商户头像" width="150">
+            <template slot-scope="scope">
+              <el-avatar
+                :size="80"
+                :src="scope.row.imgUrl"
+                shape="square"
+              ></el-avatar>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="manageTypeName"
             label="经营类别"
@@ -77,11 +81,13 @@
             label="审核意见"
             width="200"
           ></el-table-column>
-          <el-table-column
-            prop="checkStatus"
-            label="审核结果"
-            width="150"
-          ></el-table-column>
+          <el-table-column prop="checkStatus" label="审核结果" width="150">
+            <template slot-scope="scope">
+              <span v-if="scope.row.checkStatus == 0">未通过</span>
+              <span v-else-if="scope.row.checkStatus == 1">已通过</span>
+              <span v-else-if="scope.row.checkStatus == 2">申请中</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="checkerName"
             label="审核人员"
@@ -118,14 +124,18 @@
       title="提示"
       :visible.sync="show_details"
       width="30%"
-      closed="clear"
+      @closed="clear"
     >
       <el-form label-width="100px">
         <el-form-item label="商户名称">
-          <span>{{ data_info.name }}</span>
+          <span>{{ data_info.merchantName }}</span>
         </el-form-item>
         <el-form-item label="商户头像">
-          <span>{{ data_info.headImage }}</span>
+          <el-avatar
+            :size="80"
+            :src="data_info.imgUrl"
+            shape="square"
+          ></el-avatar>
         </el-form-item>
         <el-form-item label="经营类别">
           <span>{{ data_info.manageTypeName }}</span>
@@ -137,18 +147,36 @@
           <span>{{ data_info.inteThrCode }}</span>
         </el-form-item>
         <el-form-item label="身份证正面">
-          <span>{{ data_info.iDdFacePhoto }}</span>
+          <img
+            :src="file_url + data_info.iDdFacePhoto"
+            alt="身份证正面"
+            class="info_img"
+          />
         </el-form-item>
         <el-form-item label="身份证反面">
-          <span>{{ data_info.idBackPhoto }}</span>
+          <img
+            :src="file_url + data_info.idBackPhoto"
+            alt="身份证正面"
+            class="info_img"
+          />
         </el-form-item>
         <el-form-item label="身份证持证">
-          <span>{{ data_info.inteThrCode }}</span>
+          <img
+            :src="file_url + data_info.idLicense"
+            alt="身份证持证"
+            class="info_img"
+          />
         </el-form-item>
         <el-form-item label="商户地址">
           <span>{{ data_info.address }}</span>
         </el-form-item>
         <el-form-item label="审核意见">
+          <el-select v-model="check_form.checkeStatus">
+            <el-option label="通过" :value="1"></el-option>
+            <el-option label="拒绝" :value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核说明">
           <el-input
             type="textarea"
             v-model="check_form.checkeRemark"
@@ -156,8 +184,8 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="sendSubmit(1)">通过</el-button>
-          <el-button type="danger" @click="sendSubmit(0)">拒绝</el-button>
+          <el-button type="primary" @click="sendSubmit">提交</el-button>
+          <el-button type="info" @click="show_details = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -167,7 +195,7 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { getDataList, updateData } from "@/utils/api/apis";
-import { createGet, hintMessage } from "@/utils/common";
+import { createGet, hintMessage, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -175,6 +203,7 @@ export default {
 
   mounted() {
     this.activeName = "check/applyingList";
+    this.file_url = window.baseUrl.normal_file;
   },
 
   data() {
@@ -185,6 +214,7 @@ export default {
       record_list: [],
       data_info: {},
 
+      file_url: "",
       activeName: "",
       show_details: false,
       model: "merchant",
@@ -235,28 +265,25 @@ export default {
     },
 
     // 发送提交
-    sendSubmit(checkStatus) {
+    sendSubmit() {
+      var form = { ...this.check_form };
       this.show_details = false;
-      this.check_form.checkStatus = checkStatus;
-      updateData(
-        this.model,
-        this.control,
-        1,
-        this.check_form,
-        "check/check"
-      ).then((res) => {
-        hintMessage(this, res);
-        var form = { ...this.find_form };
-        getDataList(
-          this.model,
-          this.control,
-          1,
-          form,
-          this,
-          "data_list",
-          this.activeName
-        );
-      });
+
+      updateData(this.model, this.control, 1, form, "check/check").then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(
+            this.model,
+            this.control,
+            1,
+            form,
+            this,
+            "data_list",
+            this.activeName
+          );
+        }
+      );
     },
   },
 
@@ -277,9 +304,19 @@ export default {
         this.activeName
       );
     },
+
+    // 图片拼接
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "headImage");
+    },
   },
 };
 </script>
 
-<style>
+<style lang='scss'>
+.info_img {
+  width: 60%;
+  height: calc(60%);
+  border-radius: 10px;
+}
 </style>

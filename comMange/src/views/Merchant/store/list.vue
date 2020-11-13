@@ -14,6 +14,12 @@
         width="180"
       ></el-table-column>
 
+      <el-table-column
+        prop="shopName"
+        label="商铺名称"
+        width="180"
+      ></el-table-column>
+
       <el-table-column prop="headImage" label="商户头像" width="150">
         <template slot-scope="scope">
           <el-avatar
@@ -101,7 +107,7 @@
 
           <el-button
             type="success"
-            v-if="!scope.row.checkStatus"
+            v-if="scope.row.checkStatus == 0"
             @click="submitCheck(scope.row.merchantID)"
             size="small"
             >申请审核</el-button

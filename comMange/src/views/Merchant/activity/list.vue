@@ -194,7 +194,15 @@ export default {
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
       form.data = spliceKey(form.data);
-      getDataList(this.model, this.control, 1, form, this);
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        form,
+        this,
+        "data_list",
+        this.operate
+      );
     },
 
     // 展示详情
@@ -267,7 +275,7 @@ export default {
   watch: {
     // 监听tab切换
     activeName() {
-      this.find_form.currPage = 1;
+      this.find_form = createGet();
       this.find_form.data.isHistory = this.activeName;
       getDataList(
         this.model,

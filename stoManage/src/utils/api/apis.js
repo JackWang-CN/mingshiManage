@@ -16,11 +16,11 @@ export const getData = (
   method
 ) => {
   var url = `${model}/${control}/${operate}/v${version}`;
-  switch (method) {
-    case "get":
-      return axios.get(url, info);
-    default:
-      return axios.post(url, info);
+
+  if (method == "get") {
+    return axios.get(url, info);
+  } else {
+    return axios.post(url, info);
   }
 };
 
@@ -95,7 +95,11 @@ export const getDataList = (
       key = "data_list";
     }
 
-    if (operate == "flowList" || control == "goods") {
+    if (
+      operate == "flowList" ||
+      control == "goods" ||
+      operate == "merMonthTakePageLog"
+    ) {
       _this[key] = res.resultObject.data;
       return;
     }

@@ -76,7 +76,6 @@
           <span v-if="scope.row.propTypeID == 1">房产道具</span>
           <span v-else-if="scope.row.propTypeID == 2">屋内道具</span>
           <span v-else-if="scope.row.propTypeID == 3">宠物道具</span>
-          <el-avatar :size="50" :src="scope.row.rpmico"></el-avatar>
         </template>
       </el-table-column>
       <el-table-column
@@ -89,14 +88,18 @@
         label="单价"
         width="120"
       ></el-table-column>
+      <el-table-column
+        prop="totalPrice"
+        label="交易总价"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="propIco" label="道具缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar
-            shape="square"
             :size="80"
-            :src="scope.row.resId"
+            shape="square"
+            :src="scope.row.propIco"
           ></el-avatar>
-          {{ scope.row.propIco }}
         </template>
       </el-table-column>
       <el-table-column
@@ -111,10 +114,7 @@
       ></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <el-button
-            @click="showDetails(scope.row.logID)"
-            type="primary"
-            size="small"
+          <el-button @click="showDetails(scope.row)" type="primary" size="small"
             >详情</el-button
           >
         </template>
@@ -137,7 +137,7 @@
         <el-form-item label="道具缩略图">
           <el-avatar
             :size="80"
-            :src="data_info.propIco"
+            :src="data_info.imgUrl"
             shape="square"
           ></el-avatar>
         </el-form-item>
@@ -153,7 +153,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceKey, filteObj } from "@/utils/common";
+import { createGet, spliceKey, filteObj, spliceImg } from "@/utils/common";
 import { getDataList, getDataDetails } from "@/utils/api/apis";
 export default {
   components: {
@@ -192,10 +192,9 @@ export default {
     },
 
     // 查看详情
-    showDetails(id) {
+    showDetails(row) {
       this.isShowDetails = true;
-      var logID = id;
-      getDataDetails(this.model, this.control, 1, { logID }, this);
+      this.data_info = { ...row };
     },
 
     // 重置
@@ -247,6 +246,12 @@ export default {
       }
       var control = model + "Type";
       getDataList(model, control, 1, form, this, "type_list");
+    },
+
+    // 拼接图片url
+    data_list() {
+      this.data_list = spliceImg(this.data_list, "propIco");
+      console.log(this.data_list);
     },
   },
 };

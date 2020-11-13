@@ -201,6 +201,7 @@ export default {
             span.el-input__prefix {
               left: 10px;
               margin-right: 10px;
+              top: 3px;
             }
 
             // 输入框

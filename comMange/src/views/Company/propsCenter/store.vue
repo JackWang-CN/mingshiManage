@@ -5,7 +5,7 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane>
+      <!-- <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane> -->
       <el-tab-pane label="屋内道具" name="prop"></el-tab-pane>
       <el-tab-pane label="宠物道具" name="propPet"></el-tab-pane>
     </el-tabs>
@@ -129,7 +129,7 @@ export default {
     Pagination,
   },
   mounted() {
-    this.activeName = "propHouse";
+    this.activeName = "prop";
     this.find_form = createGet();
   },
 

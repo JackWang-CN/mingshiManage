@@ -7,8 +7,9 @@
     <div class="top">
       <h2>总金币：{{ gold_total }}</h2>
       <div class="btns">
-        <el-button size="medium" type="primary">充值</el-button>
-        <el-button size="medium">提现</el-button>
+        <el-button type="success" size="medium" @click="toDetails"
+          >提现</el-button
+        >
       </div>
       <div class="income">
         <span>当日收入：{{ income_day.incomeAmount }}</span>
@@ -154,6 +155,11 @@ export default {
     addMark(row) {
       console.log(row);
       this.showMark = true;
+    },
+
+    // 到详情页
+    toDetails() {
+      this.$router.push("earning_details");
     },
   },
 };

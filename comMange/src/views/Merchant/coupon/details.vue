@@ -277,13 +277,13 @@ export default {
       }
 
       console.log(this.data_info);
-      // var operate = this.operate ? "edit" : "createActivityCoupon";
-      // updateData("activity", "activityManage", 1, this.data_info, operate).then(
-      //   (res) => {
-      //     hintMessage(this, res);
-      //     this.$router.push("coupon_list");
-      //   }
-      // );
+      var operate = this.operate ? "edit" : "createActivityCoupon";
+      updateData("activity", "activityManage", 1, this.data_info, operate).then(
+        (res) => {
+          hintMessage(this, res);
+          this.$router.push("coupon_list");
+        }
+      );
     },
 
     // 文件状态改变

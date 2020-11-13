@@ -90,7 +90,10 @@ export const getDataList = (
       operate == "getDelegationList" ||
       operate == "getActivityList" ||
       operate == "getClacRuleList" ||
-      operate == "allPropsType"
+      operate == "allPropsType" ||
+      operate == "progress/affixList" ||
+      operate == "getTypeNameList"
+      // operate == "withdrawalRequestList"
     ) {
       _this[key] = res.resultObject;
       return;
@@ -124,11 +127,9 @@ export const getDataDetails = (
   operate = "details"
 ) => {
   getDetails(model, control, version, info, operate).then((res) => {
-    console.log(res);
     switch (res.code) {
       case "000000":
         _this[key] = res.resultObject;
-        console.log(_this[key]);
         break;
     }
   });
@@ -244,7 +245,7 @@ export const uploadFiles = (
   parameter3 // 参数3
 ) => {
   var formData = createFormData(fileList);
-  console.log(formData);
+
   switch (type) {
     case 1:
       var path = `file/upload/self/v${version}`;

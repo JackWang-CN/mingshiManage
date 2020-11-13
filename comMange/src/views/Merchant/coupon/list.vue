@@ -6,7 +6,7 @@
       <el-button type="success" @click="toDetails()">创建优惠券</el-button>
     </div>
     <!-- 查询条件 -->
-    <el-form ref="find_form" :model="find_form" label-width="80px">
+    <el-form class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="券类型" label-width="100px">
         <el-select v-model="find_form.data.isBind" placeholder="请选择券类型">
           <el-option
@@ -15,13 +15,6 @@
             :label="type.name"
             :value="type.typeID"
           ></el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="状态" label-width="100px">
-        <el-select v-model="find_form.data.isEnable" placeholder="请选择状态">
-          <el-option label="禁用" :value="0"></el-option>
-          <el-option label="启用" :value="1"></el-option>
         </el-select>
       </el-form-item>
 
@@ -55,6 +48,11 @@
             :src="scope.row.imgUrl"
             shape="square"
           ></el-avatar>
+        </template>
+      </el-table-column>
+      <el-table-column prop="totalCount" label="发放数量" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.totalCount == -1 ? "无限" : scope.row.totalCount }}
         </template>
       </el-table-column>
       <el-table-column
@@ -99,18 +97,26 @@
       ></el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             @click="toDetails(scope.row.couponID)"
             type="primary"
             size="small"
             >编辑</el-button
-          >
+          > -->
           <el-button
+            v-if="scope.row.totalCount != -1"
+            @click="showDetails(scope.row)"
+            type="primary"
+            size="small"
+            >追加</el-button
+          >
+
+          <!-- <el-button
             @click="delRow(scope.row.couponID)"
             type="danger"
             size="small"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -121,13 +127,34 @@
       @sizeChange="pageChange('size', $event)"
       @currChange="pageChange('curr', $event)"
     ></Pagination>
+
+    <!-- 弹出框 -->
+    <el-dialog
+      title="追加优惠券"
+      :visible.sync="show_details"
+      width="20%"
+      @closed="clear"
+    >
+      <el-form :model="data_info" label-width="80px">
+        <el-form-item label="追加数量">
+          <el-input-number
+            v-model="data_info.count"
+            :step="10"
+          ></el-input-number>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="sendSubmit">提交</el-button>
+          <el-button type="info" @click="show_details = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination";
 import { createGet, spliceImg, hintMessage } from "@/utils/common";
-import { getDataList, delData } from "@/utils/api/apis";
+import { getDataList, updateData, delData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -155,8 +182,13 @@ export default {
         data: {},
       },
       select_list: [], //已选表单
+      data_info: {
+        count: 10,
+      },
       data_list: [],
       type_list: [],
+
+      show_details: false,
 
       model: "coupon",
       control: "coupon",
@@ -169,6 +201,28 @@ export default {
       this.$router.push({
         path: "coupon_details",
         query: { id },
+      });
+    },
+
+    // 打开追加数量弹窗
+    showDetails(row) {
+      this.show_details = true;
+      var { totalCount, couponID } = row;
+      this.data_info.couponID = couponID;
+      this.data_info.totalCount = totalCount;
+    },
+
+    // 发送提交请求
+    sendSubmit() {
+      var data = { ...this.data_info };
+      this.show_details = false;
+
+      var { count, totalCount } = data;
+      data.totalCount = count + totalCount;
+
+      updateData(this.model, this.control, 1, data).then((res) => {
+        hintMessage(this, res);
+        getDataList(this.model, this.control, 1, this.find_form, this);
       });
     },
 
@@ -193,6 +247,13 @@ export default {
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, this.find_form, this);
     },
+
+    // 清除弹出框内容
+    clear() {
+      this.data_info = {
+        count: 10,
+      };
+    },
   },
 
   watch: {
@@ -206,7 +267,7 @@ export default {
 
 <style lang="scss">
 #coupon_list {
-  form {
+  .find_form {
     .el-form-item {
       display: inline-block;
     }

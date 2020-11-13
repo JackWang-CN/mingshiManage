@@ -17,24 +17,24 @@
           <el-option label="禁用" value="1"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属用户组">
+      <el-form-item label="所属角色组">
         <el-select
-          v-model="find_form.data.RoleGroupId"
-          placeholder="请选择用户组"
+          v-model="find_form.data.roleGroupID"
+          placeholder="请选择角色组"
         >
           <el-option label="全部" value></el-option>
           <el-option
-            v-for="item in []"
-            :key="item.roleId"
-            :label="item.roleGrName"
-            :value="item.roleId"
+            v-for="role in role_list"
+            :key="role.roleID"
+            :label="role.name"
+            :value="role.roleID"
           ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="身份证号">
         <el-input
-          v-model="find_form.data._like_idCard"
+          v-model="find_form.data.idCard"
           placeholder="请输入身份证号"
         ></el-input>
       </el-form-item>
@@ -74,8 +74,8 @@
         }}</template>
       </el-table-column>
       <el-table-column
-        prop="groupName"
-        label="所属用户组"
+        prop="roleGroupID"
+        label="所属角色组"
         width="150"
       ></el-table-column>
       <el-table-column
@@ -140,9 +140,12 @@
         </el-form-item>
         <el-form-item label="角色组">
           <el-select v-model="data_info.roleGroupID">
-            <el-option label="角色组1" :value="0"></el-option>
-            <el-option label="角色组2" :value="1"></el-option>
-            <el-option label="角色组3" :value="2"></el-option>
+            <el-option
+              v-for="role in role_list"
+              :key="role.roleID"
+              :label="role.name"
+              :value="role.roleID"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
@@ -169,9 +172,13 @@ export default {
     Pagination,
   },
   mounted() {
+    // 请求账号列表
     this.find_form = createGet();
     var form = { ...this.find_form };
     getDataList(this.model, this.control, 1, form, this, "data_list");
+
+    // 请求角色组列表
+    getDataList(this.model, "comUserRole", 1, form, this, "role_list");
   },
 
   data() {
@@ -179,7 +186,7 @@ export default {
       find_form: {
         data: {},
       },
-      select_list: [],
+      role_list: [],
       data_list: [],
       data_info: {},
 

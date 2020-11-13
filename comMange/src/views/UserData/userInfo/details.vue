@@ -73,35 +73,31 @@
           >
         </li>
         <li>
-          <el-button type="primary" size="small" @click="showList('cusWinning')"
+          <el-button
+            type="primary"
+            size="small"
+            @click="toDetails('account_prize')"
             >获奖记录</el-button
+          >
+          <el-button size="small" @click="showList('cusCampaign')"
+            >活动参与</el-button
+          ><el-button type="danger" size="small" @click="showList('cusCoupon')"
+            >优惠券</el-button
           >
         </li>
 
-        <el-button type="danger" size="small" @click="showList('cusCoupon')"
-          >优惠券</el-button
-        >
         <li>
           <el-button
             type="success"
             size="small"
             @click="toDetails('user_assets')"
-            >个人道具</el-button
+            >用户道具</el-button
           >
-        </li>
-        <li>
           <el-button type="info" size="small" @click="showList('cusHouse')"
-            >个人房产</el-button
+            >用户房产</el-button
           >
-        </li>
-        <li>
           <el-button type="warning" size="small" @click="showList('cusPropPet')"
-            >个人宠物</el-button
-          >
-        </li>
-        <li>
-          <el-button size="small" @click="showList('cusCampaign')"
-            >活动参与</el-button
+            >用户宠物</el-button
           >
         </li>
       </ul>
@@ -109,37 +105,6 @@
 
     <!-- 弹出框 -->
     <el-dialog :title="title" :visible.sync="show_details" width="30%">
-      <!-- 获奖记录表 -->
-      <el-table v-show="dialog_type == 0" :data="data_list" style="width: 100%">
-        <el-table-column
-          prop="title"
-          label="标题"
-          width="100"
-        ></el-table-column>
-        <el-table-column prop="type" label="类型" width="100"></el-table-column>
-        <el-table-column
-          prop="describe"
-          label="说明"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="获奖时间"
-          width="180"
-        ></el-table-column>
-        <el-table-column prop="signInDay" label="签到天数"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click="showDetails(scope.row)"
-              size="small"
-              >详情</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-
       <!-- 优惠券列表 -->
       <el-table v-show="dialog_type == 1" :data="data_list" style="width: 100%">
         <el-table-column
@@ -147,7 +112,6 @@
           label="优惠券ID"
           width="180"
         ></el-table-column>
-        <el-table-column prop="type" label="类型" width="100"></el-table-column>
         <el-table-column
           prop="describe"
           label="说明"
@@ -158,17 +122,6 @@
           label="获奖时间"
           width="180"
         ></el-table-column>
-        <el-table-column prop="signInDay" label="签到天数"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click="showDetails(scope.row)"
-              size="small"
-              >详情</el-button
-            >
-          </template>
-        </el-table-column>
       </el-table>
 
       <!-- 宠物列表 -->
@@ -178,26 +131,19 @@
           label="宠物ID"
           width="180"
         ></el-table-column>
-        <el-table-column prop="type" label="类型" width="100"></el-table-column>
         <el-table-column
           prop="number"
           label="数量"
           width="120"
         ></el-table-column>
-        <el-table-column
-          prop="useState"
-          label="绑定状态"
-          width="120"
-        ></el-table-column>
-        <el-table-column prop="isFrozen" label="是否冻结"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column prop="useState" label="绑定状态" width="120">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              @click="showDetails(scope.row)"
-              size="small"
-              >详情</el-button
-            >
+            {{ scope.row.useState ? "否" : "是" }}
+          </template></el-table-column
+        >
+        <el-table-column prop="isFrozen" label="是否冻结">
+          <template slot-scope="scope">
+            {{ scope.row.isFrozen ? "否" : "是" }}
           </template>
         </el-table-column>
       </el-table>
@@ -333,6 +279,7 @@ export default {
         path,
         query: {
           id: this.customerID,
+          name: this.data_info.nickname,
         },
       });
     },

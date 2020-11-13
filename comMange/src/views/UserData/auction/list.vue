@@ -5,7 +5,7 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="房产道具" name="houseList"></el-tab-pane>
+      <!-- <el-tab-pane label="房产道具" name="houseList"></el-tab-pane> -->
       <el-tab-pane label="屋内道具" name="propList"></el-tab-pane>
       <el-tab-pane label="优惠券" name="couponList"></el-tab-pane>
     </el-tabs>
@@ -168,7 +168,7 @@ export default {
     // 首次加载
     this.find_form = createGet();
 
-    this.activeName = "houseList";
+    this.activeName = "propList";
     var form = { ...this.find_form };
   },
 

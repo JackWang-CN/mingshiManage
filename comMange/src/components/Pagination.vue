@@ -5,7 +5,8 @@
       background
       layout="prev, pager,sizes, next"
       :total="find.totalDataNum"
-      :page-sizes="[5,10,20,50]"
+      :page-size="find.pageSize || 10"
+      :page-sizes="[5, 10, 20, 50]"
       :current-page="find.currPage"
       @size-change="sizeChange"
       @current-change="currChange"

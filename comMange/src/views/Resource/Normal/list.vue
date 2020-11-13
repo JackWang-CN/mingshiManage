@@ -16,7 +16,7 @@
       <el-form-item label="文件后缀">
         <el-input
           v-model="find_form.data.resExtName"
-          placeholder="如：jpg"
+          placeholder="如：.jpg"
         ></el-input>
       </el-form-item>
       <el-form-item label="是否禁用" v-if="activeName == 'user'">
@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item label="上传用户">
         <el-input
-          v-model="find_form.data.uploadId"
+          v-model="find_form.data.uploadUName"
           placeholder="上传用户名"
         ></el-input>
       </el-form-item>
@@ -119,7 +119,7 @@
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl + 'file/download/source/v1?Mark=' + scope.row.resID"
+            :href="fileUrl + scope.row.resID"
             >下载文件</el-link
           >
         </template>
@@ -153,6 +153,8 @@ export default {
     this.find_form = createGet();
     // 首次加载
     this.activeName = "company";
+
+    this.fileUrl = window.baseUrl.normal_file;
   },
 
   data() {
@@ -177,13 +179,11 @@ export default {
     // 查询
     findData() {
       var form = { ...this.find_form };
+      form.currPage = 1;
       form.data = { ...this.find_form.data };
       form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
-      if (form.data.resExtName) {
-        form.data.resExtName = "." + form.data.resExtName;
-      }
-      delete form.totalDataNum;
+      // form.data = spliceKey(form.data);
+
       getFileList(undefined, 1, form, this);
     },
 
@@ -229,6 +229,7 @@ export default {
           break;
       }
       var form = { ...this.find_form };
+
       delete form.totalDataNum;
       getFileList(undefined, 1, form, this);
     },

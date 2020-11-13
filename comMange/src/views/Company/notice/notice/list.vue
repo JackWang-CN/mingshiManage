@@ -17,7 +17,11 @@
     </el-form>
 
     <el-table :data="data_list" style="width: 100%" border>
-      <el-table-column prop="date" label="编号" width="180"></el-table-column>
+      <el-table-column
+        prop="noticeID"
+        label="编号"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="title" label="标题" width="180"></el-table-column>
       <el-table-column
         prop="content"
@@ -33,17 +37,25 @@
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="类型" width="120"></el-table-column>
-      <el-table-column
-        prop="audience"
-        label="受众类型"
-        width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="isPublish"
-        label="是否公布"
-        width="120"
-      ></el-table-column>
+      <el-table-column prop="type" label="类型" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.type == 0">平台公告</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="audience" label="受众类型" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.audience == 0">全体用户</span>
+          <span v-else-if="scope.row.audience == 1">普通用户</span>
+          <span v-else-if="scope.row.audience == 2">商户</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="isPublish" label="公告状态" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isPublish == 0">待发布</span>
+          <span v-else-if="scope.row.isPublish == 1">已发布</span>
+          <span v-else-if="scope.row.isPublish == 2">已撤销</span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="updateTime"
         label="更新时间"
@@ -57,10 +69,25 @@
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
-            type="primary"
+            v-if="scope.row.isPublish == 0"
+            type="warning"
             @click="toDetails(1, scope.row.noticeID)"
             size="small"
-            >详情</el-button
+            >修改</el-button
+          >
+          <el-button
+            v-if="scope.row.isPublish == 0"
+            type="success"
+            @click="publishMsg(scope.row.noticeID)"
+            size="small"
+            >发布</el-button
+          >
+          <el-button
+            v-if="scope.row.isPublish == 1"
+            type="danger"
+            @click="repealMsg(scope.row.noticeID)"
+            size="small"
+            >撤销</el-button
           >
         </template>
       </el-table-column>
@@ -77,8 +104,8 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, filteObj, spliceImg } from "@/utils/common";
-import { getDataList } from "@/utils/api/apis";
+import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
+import { getDataList, updateData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -105,6 +132,36 @@ export default {
       this.$router.push({
         path: "notice_details",
         query: { id },
+      });
+    },
+
+    // 发布公告
+    publishMsg(noticeID) {
+      updateData(this.model, this.control, 1, { noticeID }, "sendNotice").then(
+        (res) => {
+          hintMessage(this, res);
+
+          // 重新加载列表
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this, "data_list");
+        }
+      );
+    },
+
+    // 撤销公告
+    repealMsg(noticeID) {
+      updateData(
+        this.model,
+        this.control,
+        1,
+        { noticeID },
+        "repealNotice"
+      ).then((res) => {
+        hintMessage(this, res);
+
+        // 重新加载列表
+        var form = { ...this.find_form };
+        getDataList(this.model, this.control, 1, form, this, "data_list");
       });
     },
 

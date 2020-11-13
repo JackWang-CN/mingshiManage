@@ -14,12 +14,6 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="是否公布">
-        <el-select v-model="data_info.isPublish">
-          <el-option label="是" :value="1"></el-option>
-          <el-option label="否" :value="0"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="公告内容">
         <el-input
           type="textarea"

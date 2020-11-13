@@ -49,7 +49,7 @@
       width="30%"
       @closed="clear"
     >
-      <el-form label-width="100px" class="details_form">
+      <el-form label-width="80px" class="details_form">
         <el-form-item label="类型名称">
           <el-input v-model="data_info.name"></el-input>
         </el-form-item>
@@ -62,16 +62,27 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <!-- 分页 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
   </div>
 </template>
 
 <script>
+import Pagination from "@/components/Pagination";
 import { getDataList, addData, updateData, delData } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
+  components: {
+    Pagination,
+  },
   mounted() {
     this.find_form = createGet();
-    getDataList(this.model, this.control, 1, this.find_form, this, "data_list");
+    getDataList(this.model, this.control, 1, this.find_form, this);
   },
 
   data() {
@@ -125,6 +136,20 @@ export default {
       hintMessage(this, res);
       var form = { ...this.find_form };
       getDataList(this.model, this.control, 1, form, this);
+    },
+
+    // 分页属性改变
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, this.find_form, this);
     },
 
     // 取消

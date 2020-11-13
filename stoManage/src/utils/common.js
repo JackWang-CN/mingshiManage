@@ -50,11 +50,11 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  // if (order) {
-  //   obj.orderByFileds = order + " desc";
-  // } else {
-  //   obj.orderByFileds = "creationtime desc";
-  // }
+  if (order) {
+    obj.orderByFileds = order + " desc";
+  } else {
+    obj.orderByFileds = "creationtime desc";
+  }
 
   obj.totalDataNum = 0;
   obj.data = {};

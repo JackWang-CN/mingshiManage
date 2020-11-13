@@ -4,21 +4,87 @@
     <div class="pageTitle">商户详情</div>
 
     <el-form label-width="120px">
-      <el-form-item label="商户名称">
-        <el-input v-model="data_info.merchantName"></el-input>
+      <div>
+        <el-form-item label="商户头像">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :on-change="headChange"
+            :auto-upload="false"
+            :show-file-list="false"
+          >
+            <img v-if="headImg" :src="headImg" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="身份证正面照">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :on-change="idFaceChange"
+            :auto-upload="false"
+            :show-file-list="false"
+          >
+            <img v-if="idFaceImg" :src="idFaceImg" class="idcard" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="身份证反面照">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :on-change="idBackChange"
+            :auto-upload="false"
+            :show-file-list="false"
+          >
+            <img v-if="idBackImg" :src="idBackImg" class="idcard" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="身份证持证照">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :on-change="idHoldChange"
+            :auto-upload="false"
+            :show-file-list="false"
+          >
+            <img v-if="idHoldImg" :src="idHoldImg" class="idcard" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="营业执照">
+          <el-upload
+            class="avatar-uploader"
+            action="#"
+            :on-change="businessChange"
+            :auto-upload="false"
+            :show-file-list="false"
+          >
+            <img v-if="businessImg" :src="businessImg" class="idcard" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+      </div>
+      <el-form-item label="商铺名称">
+        <el-input
+          v-model="data_info.shopName"
+          placeholder="如：世纪城店"
+        ></el-input>
       </el-form-item>
 
-      <el-form-item label="商户头像">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="headChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img v-if="headImg" :src="headImg" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="商家名称">
+        <el-input
+          v-model="data_info.merchantName"
+          placeholder="如：城门口老火锅"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item label="法人名称">
+        <el-input v-model="data_info.legalPersonName"></el-input>
       </el-form-item>
 
       <el-form-item label="经营类型">
@@ -51,56 +117,44 @@
         <el-input v-model="data_info.inteThrCode"></el-input>
       </el-form-item>
 
-      <el-form-item label="身份证正面照">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="idFaceChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img v-if="idFaceImg" :src="idFaceImg" class="idcard" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="银行卡账号">
+        <el-input v-model="data_info.accNo"></el-input>
       </el-form-item>
 
-      <el-form-item label="身份证反面照">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="idBackChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img v-if="idBackImg" :src="idBackImg" class="idcard" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="银行卡户名">
+        <el-input v-model="data_info.accUser"></el-input>
       </el-form-item>
 
-      <el-form-item label="身份证持证照">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="idHoldChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img v-if="idHoldImg" :src="idHoldImg" class="idcard" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="开卡银行">
+        <el-input v-model="data_info.accTargetName"></el-input>
       </el-form-item>
 
-      <el-form-item label="营业执照">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="businessChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img v-if="businessImg" :src="businessImg" class="idcard" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+      <el-form-item label="开卡支行">
+        <el-input v-model="data_info.accAreaName"></el-input>
+      </el-form-item>
+
+      <el-form-item label="开门时间">
+        <el-time-picker v-model="data_info.startOpenTime"></el-time-picker>
+      </el-form-item>
+
+      <el-form-item label="打烊时间">
+        <el-time-picker v-model="data_info.endOpenTime"></el-time-picker>
+      </el-form-item>
+
+      <el-form-item label="经度">
+        <el-input v-model="data_info.longitude"></el-input>
+      </el-form-item>
+
+      <el-form-item label="纬度">
+        <el-input v-model="data_info.latitude"></el-input>
+      </el-form-item>
+
+      <el-form-item label="商户描述">
+        <el-input
+          type="textarea"
+          :rows="3"
+          v-model="data_info.describe"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="业务经理ID">
@@ -145,8 +199,7 @@ export default {
         (res) => {
           this.data_info = res.resultObject.result;
 
-          var imgUrl =
-            "https://api.resources.scmsar.com/file/download/source/v1?Mark=";
+          var imgUrl = window.baseUrl.normal_file;
           this.headImg = imgUrl + this.data_info.headImage;
           this.idFaceImg = imgUrl + this.data_info.iDdFacePhoto;
           this.idBackImg = imgUrl + this.data_info.idBackPhoto;
@@ -305,8 +358,9 @@ export default {
 #store_details {
   form {
     .el-form-item {
-      width: 500px;
-      .el-input {
+      display: inline-block;
+      .el-input,
+      .el-textarea {
         width: 300px;
       }
 

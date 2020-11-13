@@ -5,7 +5,7 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane>
+      <!-- <el-tab-pane label="房产道具" name="propHouse"></el-tab-pane> -->
       <el-tab-pane label="屋内道具" name="prop"></el-tab-pane>
       <el-tab-pane label="宠物道具" name="propPet"></el-tab-pane>
     </el-tabs>
@@ -93,12 +93,10 @@
         label="上架时间"
         width="170"
       ></el-table-column>
-      <el-table-column prop="validityTimestamp" label="有效期限" width="170">
+      <el-table-column prop="expireTime" label="有效期限" width="170">
         <template slot-scope="scope">
           <span v-if="scope.row.validityTimestamp == -1">永久有效</span>
-          <span v-else-if="scope.row.validityTimestamp !== -1">{{
-            scope.row.validityTimestamp
-          }}</span>
+          <span v-else>{{ scope.row.pastDate }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="280">
@@ -138,6 +136,7 @@ import {
   filteObj,
   hintMessage,
   spliceImg,
+  translateTime,
 } from "@/utils/common";
 import { getDataList, addData, delData } from "@/utils/api/apis";
 export default {
@@ -145,7 +144,7 @@ export default {
     Pagination,
   },
   mounted() {
-    this.activeName = "propHouse";
+    this.activeName = "prop";
     this.find_form = createGet();
   },
 
@@ -249,7 +248,7 @@ export default {
 
     // 拼接图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "facadeImageID");
+      spliceImg(this.data_list, "facadeImageID");
     },
   },
 };
