@@ -48,6 +48,7 @@ export default new VueRouter({
         // 道具管理-道具列表
         {
           path: "props_list",
+          name: "道具列表",
           component: () => import("../views/Company/propsCenter/list.vue"),
           meta: [
             { name: "道具管理", path: "" },
@@ -169,7 +170,7 @@ export default new VueRouter({
         {
           path: "role_list",
           component: () =>
-            import("../views/Company/configManage/account/role/list.vue"),
+            import("../views/Company/config/account/role/list.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "角色权限", path: "role_list" },
@@ -179,7 +180,7 @@ export default new VueRouter({
         {
           path: "role_details",
           component: () =>
-            import("../views/Company/configManage/account/role/details.vue"),
+            import("../views/Company/config/account/role/details.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "角色管理", path: "role_list" },
@@ -190,7 +191,7 @@ export default new VueRouter({
         {
           path: "user_list",
           component: () =>
-            import("../views/Company/configManage/account/user/list.vue"),
+            import("../views/Company/config/account/user/list.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "账号管理", path: "user_list" },
@@ -199,8 +200,7 @@ export default new VueRouter({
         // 配置管理-充值配置
         {
           path: "recharge_list",
-          component: () =>
-            import("../views/Company/configManage/recharge/index.vue"),
+          component: () => import("../views/Company/config/recharge/index.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "充值配置", path: "recharge_list" },
@@ -210,7 +210,7 @@ export default new VueRouter({
         {
           path: "recharge_details",
           component: () =>
-            import("../views/Company/configManage/recharge/details.vue"),
+            import("../views/Company/config/recharge/details.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "充值配置", path: "recharge_list" },
@@ -220,8 +220,7 @@ export default new VueRouter({
         // 配置管理-版本控制
         {
           path: "version_list",
-          component: () =>
-            import("../views/Company/configManage/version/list.vue"),
+          component: () => import("../views/Company/config/version/list.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "版本控制", path: "version_list" },
@@ -231,12 +230,19 @@ export default new VueRouter({
         {
           path: "version_details",
           component: () =>
-            import("../views/Company/configManage/version/details.vue"),
+            import("../views/Company/config/version/details.vue"),
           meta: [
             { name: "配置管理", path: "" },
             { name: "版本控制", path: "version_list" },
             { name: "版本详情", path: "version_details" },
           ],
+        },
+        // 配置管理-个人中心
+        {
+          path: "personal_center",
+          component: () =>
+            import("../views/Company/config/account/user/personal.vue"),
+          meta: [{ name: "个人中心", path: "personal_center" }],
         },
 
         // 公告管理-公告记录
@@ -330,27 +336,6 @@ export default new VueRouter({
           ],
         },
 
-        // 用户管理-地产数据管理
-        {
-          path: "userdata_spaceData",
-          component: () => import("../views/UserData/userdata_spaceData.vue"),
-          meta: [
-            { name: "用户管理", path: "" },
-            { name: "空间数据管理", path: "userdata_spaceData" },
-          ],
-        },
-
-        // 用户管理-地产数据管理
-        {
-          path: "userdata_spaEstLicense",
-          component: () =>
-            import("../views/UserData/userdata_spaEstLicense.vue"),
-          meta: [
-            { name: "用户管理", path: "" },
-            { name: "地产数据管理", path: "userdata_spaEstLicense" },
-          ],
-        },
-
         // 用户管理-房产列表
         // {
         //   path: "userdata_houseList",
@@ -399,6 +384,15 @@ export default new VueRouter({
             { name: "个人资产", path: "user_assets" },
           ],
         },
+        // 用户管理-用户反馈
+        {
+          path: "feedback_list",
+          component: () => import("../views/UserData/feedback/list.vue"),
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "用户反馈", path: "feedback_list" },
+          ],
+        },
 
         // 商户管理-商户列表
         {
@@ -434,6 +428,7 @@ export default new VueRouter({
         // 商户管理-商户委托
         {
           path: "entrust_list",
+          name: "商户委托",
           component: () => import("../views/Merchant/entrust/list.vue"),
           meta: [
             { name: "商户管理", path: "" },
@@ -464,6 +459,7 @@ export default new VueRouter({
         // 商户管理-商户活动列表
         {
           path: "activity_list",
+          name: "活动列表",
           component: () => import("../views/Merchant/activity/list.vue"),
           meta: [
             { name: "商户管理", path: "" },
@@ -476,7 +472,8 @@ export default new VueRouter({
           component: () => import("../views/Merchant/activity/details.vue"),
           meta: [
             { name: "商户管理", path: "" },
-            { name: "活动详情", path: "activity_details" },
+            { name: "活动列表", path: "activity_list" },
+            { name: "编辑活动", path: "activity_details" },
           ],
         },
         // 商户管理-商户活动类型
@@ -586,35 +583,6 @@ export default new VueRouter({
           ],
         },
 
-        // AR游戏配置-奖品列表
-        {
-          path: "prize_list",
-          component: () => import("../views/ArGame/prize/list.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "奖品列表", path: "prize_list" },
-          ],
-        },
-        // AR游戏配置-奖品类型
-        {
-          path: "prize_type",
-          component: () => import("../views/ArGame/prize/type.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "奖品列表", path: "prize_list" },
-          ],
-        },
-        // AR游戏配置-奖品详情
-        {
-          path: "prize_details",
-          component: () => import("../views/ArGame/prize/details.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "奖品列表", path: "prize_list" },
-            { name: "奖品详情", path: "prize_details" },
-          ],
-        },
-
         // AR游戏配置-奖池列表
         {
           path: "prizePool_list",
@@ -632,25 +600,6 @@ export default new VueRouter({
             { name: "AR游戏配置", path: "" },
             { name: "奖池列表", path: "prizePool_list" },
             { name: "奖池详情", path: "prizePool_details" },
-          ],
-        },
-
-        // AR游戏配置-内容列表
-        {
-          path: "content_list",
-          component: () => import("../views/ArGame/content/list.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "内容列表", path: "content_list" },
-          ],
-        },
-        // AR游戏配置-内容详情
-        {
-          path: "content_details",
-          component: () => import("../views/ArGame/content/details.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "内容详情", path: "content_details" },
           ],
         },
 
@@ -677,6 +626,7 @@ export default new VueRouter({
         // AR游戏配置-游戏对象列表
         {
           path: "gameObj_list",
+          name: "游戏对象列表",
           component: () => import("../views/ArGame/gameObj/list.vue"),
           meta: [
             { name: "AR游戏配置", path: "" },
@@ -717,6 +667,7 @@ export default new VueRouter({
         // AR游戏配置-实体对象列表
         {
           path: "gameEnity_list",
+          name: "实体对象列表",
           component: () => import("../views/ArGame/gameEnity/list.vue"),
           meta: [
             { name: "AR游戏配置", path: "" },
@@ -739,6 +690,7 @@ export default new VueRouter({
         // AR游戏配置-事件元素
         {
           path: "event_list",
+          name: "事件元素",
           component: () => import("../views/ArGame/event/list.vue"),
           meta: [
             { name: "AR游戏配置", path: "" },
@@ -763,16 +715,6 @@ export default new VueRouter({
           meta: [
             { name: "AR游戏配置", path: "" },
             { name: "事件类型", path: "eventType_list" },
-          ],
-        },
-        // AR游戏配置-事件类型-类型详情
-        {
-          path: "eventType_details",
-          component: () => import("../views/ArGame/eventType/details.vue"),
-          meta: [
-            { name: "AR游戏配置", path: "" },
-            { name: "事件类型", path: "eventType_list" },
-            { name: "类型详情", path: "eventType_details" },
           ],
         },
 
@@ -813,6 +755,26 @@ export default new VueRouter({
           meta: [
             { name: "AR游戏配置", path: "" },
             { name: "服务器配置", path: "config_server" },
+          ],
+        },
+
+        // AR游戏配置-游戏公告列表
+        {
+          path: "gameNotice_list",
+          component: () => import("../views/ArGame/notice/list.vue"),
+          meta: [
+            { name: "AR游戏配置", path: "" },
+            { name: "游戏公告列表", path: "gameNotice_list" },
+          ],
+        },
+        // AR游戏配置-游戏公告详情
+        {
+          path: "gameNotice_details",
+          component: () => import("../views/ArGame/notice/details.vue"),
+          meta: [
+            { name: "AR游戏配置", path: "" },
+            { name: "游戏公告列表", path: "gameNotice_list" },
+            { name: "游戏公告详情", path: "gameNotice_details" },
           ],
         },
 

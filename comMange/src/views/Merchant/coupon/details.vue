@@ -42,15 +42,14 @@
       <!-- 券图片 -->
       <el-form-item label="券图片">
         <el-upload
-          class="upload-demo"
-          ref="upload"
+          class="img-upload"
           action="#"
           :auto-upload="false"
           :on-change="fileChange"
+          :show-file-list="false"
         >
-          <el-button slot="trigger" size="small" type="primary"
-            >选取文件</el-button
-          >
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
 
@@ -124,7 +123,10 @@
         <el-button size="small" type="primary" @click="showModel"
           >选择模型</el-button
         >
-        <span>模型名称：{{ data_info.resID }}</span>
+        <div class="mode_img" v-show="data_info.resID">
+          <el-avatar :size="80" :src="modeImg" shape="square"></el-avatar>
+          <el-tag>{{ data_info.resName }}</el-tag>
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -136,13 +138,19 @@
     <!-- 弹出框-模型列表 -->
     <el-dialog title="选择模型" :visible.sync="show_model">
       <!-- 模型 -->
-      <ul id="model_list">
+      <ul class="model_list">
         <li
           v-for="(model, index) in model_list"
           :key="index"
           @click="selectModel(model)"
         >
-          {{ model.showResourceName }}
+          <el-avatar
+            :size="70"
+            :src="model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ model.showResourceName }}</div>
         </li>
       </ul>
       <!-- 分页插件 -->
@@ -151,12 +159,18 @@
         @sizeChange="pageChange('size', $event)"
         @currChange="pageChange('curr', $event)"
       ></Pagination>
-      <!-- 标签 -->
-      <div class="select_model">
-        <span>已选择</span>
-        <el-tag closable v-if="select_model.resID" @close="unSelect">{{
-          select_model.resID
-        }}</el-tag>
+      <!-- 选中模型 -->
+      <div class="select_model" v-show="Object.keys(select_model).length">
+        <div class="title">已选择</div>
+        <div class="ico" @click="unSelect" title="点击删除">
+          <el-avatar
+            :size="70"
+            :src="select_model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ select_model.showResourceName }}</div>
+        </div>
       </div>
       <!-- 操作 -->
       <el-button type="primary" size="small" @click="confirmModel"
@@ -169,7 +183,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, hintMessage } from "@/utils/common";
+import { createGet, hintMessage, spliceImg } from "@/utils/common";
 import {
   getDataList,
   getDataDetails,
@@ -184,6 +198,8 @@ export default {
   },
   mounted() {
     var form = createGet(1, 999);
+    delete form.data;
+    delete form.orderByFileds;
     // 请求活动列表
     getDataList(
       this.model,
@@ -234,6 +250,8 @@ export default {
       show_model: false, // 3D模型列表
       operate: 0,
       showLimitQuota: false, // 门槛金额显隐
+      imageUrl: "",
+      modeImg: "",
 
       model: "coupon",
       control: "coupon",
@@ -253,7 +271,6 @@ export default {
 
     // 点击选中模型
     selectModel(mode) {
-      console.log(mode);
       this.select_model = { ...mode };
     },
 
@@ -264,6 +281,8 @@ export default {
 
     // 提交
     async sendSubmit() {
+      this.data_info.ruleName = this.data_info.name;
+
       // 判断是否绑定模型
       if (!this.data_info.resID) {
         this.$message.error("请选择绑定的模型");
@@ -276,7 +295,6 @@ export default {
         this.data_info.imageID = fileRes.resultObject[0].resID;
       }
 
-      console.log(this.data_info);
       var operate = this.operate ? "edit" : "createActivityCoupon";
       updateData("activity", "activityManage", 1, this.data_info, operate).then(
         (res) => {
@@ -288,15 +306,16 @@ export default {
 
     // 文件状态改变
     fileChange(file, list) {
-      this.file_list = [...list];
+      this.file_list = [file];
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
 
     // 确认选择
     confirmModel() {
       if (this.select_model.resID) {
         this.data_info.resID = this.select_model.resID;
-        // this.data_info.resName = this.select_model.showResourceName;
-        // this.data_info.facadeImageID = this.select_model.mainImageID;
+        this.data_info.resName = this.select_model.showResourceName;
+        this.modeImg = this.select_model.imgUrl;
       } else {
         this.data_info.resID = "";
       }
@@ -310,7 +329,6 @@ export default {
           this.showLimitQuota = !!this.data_info.effectYype;
           break;
         case "couponType":
-          console.log(1);
           // 抵扣券
           if (
             this.data_info.couponTypeID == "20100913374479831440037790705422"
@@ -343,6 +361,12 @@ export default {
       getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
     },
   },
+
+  watch: {
+    model_list() {
+      spliceImg(this.model_list, "mainImageID", true);
+    },
+  },
 };
 </script>
 
@@ -361,26 +385,55 @@ export default {
   }
 
   // 模型列表
-  #model_list {
-    margin-bottom: 20px;
-    li {
-      padding: 10px;
-      margin: 5px;
-      display: inline-block;
-      background-color: rgb(230, 230, 230);
-      border-radius: 5px;
-      cursor: pointer;
-      &:hover {
-        color: #409eff;
-      }
-    }
-  }
+  // #model_list {
+  //   margin-bottom: 20px;
+  //   li {
+  //     padding: 10px;
+  //     margin: 5px;
+  //     display: inline-block;
+  //     background-color: rgb(230, 230, 230);
+  //     border-radius: 5px;
+  //     cursor: pointer;
+  //     &:hover {
+  //       color: #409eff;
+  //     }
+  //   }
+  // }
 
-  .select_model {
-    margin: 20px 0;
-    span {
-      margin-right: 10px;
-      line-height: 32px;
+  // .select_model {
+  //   margin: 20px 0;
+  //   span {
+  //     margin-right: 10px;
+  //     line-height: 32px;
+  //   }
+  // }
+
+  // 图片上传
+  .img-upload {
+    .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      &:hover {
+        border-color: #409eff;
+      }
+
+      .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+        text-align: center;
+      }
+
+      img {
+        width: 150px;
+        height: 150px;
+        display: block;
+      }
     }
   }
 }

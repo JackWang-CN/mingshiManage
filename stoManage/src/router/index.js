@@ -25,36 +25,30 @@ export default new VueRouter({
           meta: ["首页"],
         },
 
-        // 商家活动-我需要援助
+        // 我的活动-我需要援助
         {
           path: "publish",
           component: () => import("../views/home/activity/publish.vue"),
-          meta: ["商家活动", "我需要援助"],
+          meta: ["我的活动", "我需要援助"],
         },
-        // 商家活动-进行中活动
+        // 我的活动-进行中活动
         {
           path: "underway",
           component: () => import("../views/home/activity/underway.vue"),
-          meta: ["商家活动", "进行中活动"],
+          meta: ["我的活动", "进行中活动"],
         },
-        // 商家活动-历史活动
+        // 我的活动-历史活动
         {
           path: "history",
           component: () => import("../views/home/activity/history.vue"),
-          meta: ["商家活动", "历史活动"],
+          meta: ["我的活动", "历史活动"],
         },
 
-        // 广告管理-我的广告
+        // 我的活动-进行中推广
         {
           path: "advertising",
           component: () => import("../views/home/advertising/advertising.vue"),
-          meta: ["广告管理", "我的广告"],
-        },
-        // 广告管理-修改&新增广告
-        {
-          path: "adv_details",
-          component: () => import("../views/home/advertising/adv_details.vue"),
-          meta: ["广告管理", "修改"],
+          meta: ["我的活动", "进行中推广"],
         },
 
         // 商品管理-商品分类
@@ -92,7 +86,7 @@ export default new VueRouter({
         {
           path: "order_list",
           component: () => import("../views/home/order/order_list.vue"),
-          meta: ["订单管理", "订单列表"],
+          meta: ["订单管理", "订单管理"],
         },
         // 订单管理-订单详情
         {

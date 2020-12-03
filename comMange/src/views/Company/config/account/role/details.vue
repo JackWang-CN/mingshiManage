@@ -69,7 +69,14 @@ import { addDataList, getDetails, updateDetails } from "@/utils/api/apis";
 import tree from "@/assets/json/tree.json";
 export default {
   async created() {
-    this.author_list = [...tree];
+    // 请求节点树
+    getDetails(this.model, "comAuthInfoConfig", 1, {}, "allNode").then(
+      (res) => {
+        console.log(res);
+        this.author_list = res.resultObject;
+      }
+    );
+
     var roleID = this.$route.query.id;
     if (roleID) {
       this.operate = 1;
@@ -116,8 +123,6 @@ export default {
         list = this.default_list;
       }
       this.data_info.roleAuthNodeIDList = list;
-      console.log(this.data_info.roleAuthNodeIDList);
-      return;
       switch (this.operate) {
         // 新增操作
         case 0:

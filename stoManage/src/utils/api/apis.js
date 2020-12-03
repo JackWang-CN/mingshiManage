@@ -79,31 +79,33 @@ export const getDataList = (
   operate = "list"
 ) => {
   getData(model, control, version, info, operate).then((res) => {
-    if (res.resultObject instanceof Object) {
+    if (_this.find_form) {
       _this.find_form.totalDataNum = res.resultObject.totalDataNum;
     }
-
     switch (res.code) {
       case "C00501":
         _this.$message.info(res.resultMessage);
         res = { resultObject: { data: [] } };
         break;
       case "000000":
+        if (!key) {
+          key = "data_list";
+        }
+
+        if (
+          operate == "flowList" ||
+          control == "goods" ||
+          operate == "merMonthTakePageLog"
+        ) {
+          _this[key] = res.resultObject.data;
+          return;
+        }
+        _this[key] = res.resultObject;
+        break;
+      default:
+        _this[key] = [];
         break;
     }
-    if (!key) {
-      key = "data_list";
-    }
-
-    if (
-      operate == "flowList" ||
-      control == "goods" ||
-      operate == "merMonthTakePageLog"
-    ) {
-      _this[key] = res.resultObject.data;
-      return;
-    }
-    _this[key] = res.resultObject;
   });
 };
 

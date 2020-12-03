@@ -134,11 +134,17 @@
       </el-form-item>
 
       <el-form-item label="开门时间">
-        <el-time-picker v-model="data_info.startOpenTime"></el-time-picker>
+        <el-time-picker
+          v-model="startTime"
+          @change="timeChange(0, $event)"
+        ></el-time-picker>
       </el-form-item>
 
       <el-form-item label="打烊时间">
-        <el-time-picker v-model="data_info.endOpenTime"></el-time-picker>
+        <el-time-picker
+          v-model="closeTime"
+          @change="timeChange(1, $event)"
+        ></el-time-picker>
       </el-form-item>
 
       <el-form-item label="经度">
@@ -157,9 +163,16 @@
         ></el-input>
       </el-form-item>
 
-      <el-form-item label="业务经理ID">
-        <el-input v-model="data_info.officeManagerID"></el-input>
-      </el-form-item>
+      <!-- <el-form-item label="业务经理">
+        <el-select v-model="data_info.officeManagerID">
+          <el-option
+            v-for="manager in manager_list"
+            :key="manager.userID"
+            :value="manager.userID"
+            :label="manager.name"
+          ></el-option>
+        </el-select>
+      </el-form-item> -->
 
       <el-form-item>
         <el-button type="primary" @click="sendSubmit">提交</el-button>
@@ -186,11 +199,20 @@ export default {
       this.control,
       1,
       createGet(1, 999),
-
       this,
       "type_list",
       "managerType/list"
     );
+
+    // 请求客户经理列表
+    // getDataList(
+    //   "comUser",
+    //   "comUserInfo",
+    //   1,
+    //   createGet(1, 999),
+    //   this,
+    //   "manager_list"
+    // );
 
     var merchantID = this.$route.query.id;
     if (merchantID) {
@@ -198,13 +220,17 @@ export default {
       getDetails(this.model, this.control, 1, { value: merchantID }).then(
         (res) => {
           this.data_info = res.resultObject.result;
-
           var imgUrl = window.baseUrl.normal_file;
           this.headImg = imgUrl + this.data_info.headImage;
           this.idFaceImg = imgUrl + this.data_info.iDdFacePhoto;
           this.idBackImg = imgUrl + this.data_info.idBackPhoto;
           this.idHoldImg = imgUrl + this.data_info.idLicense;
           this.businessImg = imgUrl + this.data_info.thrAttaPhoto;
+
+          this.startTime = new Date(
+            "2020-01-01 " + this.data_info.startOpenTime
+          );
+          this.closeTime = new Date("2020-01-01 " + this.data_info.endOpenTime);
         }
       );
     }
@@ -221,12 +247,15 @@ export default {
       idBackImg: "", // 身份证反面预览
       idHoldImg: "", // 身份证持证预览
       businessImg: "", // 营业执照预览
+      startTime: "",
+      closeTime: "",
 
       head_file: [],
       idFace_file: [],
       idBack_file: [],
       idHold_file: [],
       business_file: [],
+      manager_list: [],
       model: "merchant",
       control: "merchantInfo",
     };
@@ -341,7 +370,28 @@ export default {
       this.business_file = [file];
     },
 
+    // 开门时间改变
+    timeChange(type, v) {
+      if (!v) {
+        return;
+      }
+      var hours = v.getHours(),
+        minutes = v.getMinutes(),
+        seconds = v.getSeconds(),
+        timeStr = `${hours}:${minutes}:${seconds}`;
+      console.log(timeStr);
+
+      if (type == 0) {
+        this.data_info.startOpenTime = timeStr;
+      } else {
+        this.data_info.endOpenTime = timeStr;
+      }
+
+      console.log(this.data_info);
+    },
+
     // 文件移出
+
     removeFile(e) {
       console.log(e);
     },

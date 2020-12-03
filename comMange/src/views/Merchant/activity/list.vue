@@ -21,19 +21,23 @@
     >
       <el-form-item label="活动名称" label-width="100px">
         <el-input
-          v-model="find_form.data.aname"
+          v-model="find_form.data.name"
           placeholder="请输入活动名称"
+          clearable
         ></el-input>
       </el-form-item>
       <el-form-item label="活动类型" label-width="100px">
         <el-select
-          v-model="find_form.data.rpmtype"
+          v-model="find_form.data.activityTypeID"
           placeholder="请选择活动类型"
         >
           <el-option label="全部" value></el-option>
-          <el-option label="优惠券" value="1"></el-option>
-          <el-option label="道具" value="2"></el-option>
-          <el-option label="虚拟房产" value="3"></el-option>
+          <el-option
+            v-for="type in type_list"
+            :key="type.typeID"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -67,7 +71,7 @@
       <el-table-column
         prop="activityTypeName"
         label="活动类型"
-        width="100"
+        width="120"
       ></el-table-column>
       <el-table-column prop="isEnable" label="状态" width="120">
         <template slot-scope="scope">
@@ -169,7 +173,19 @@ export default {
     this.find_form = createGet();
     var form = { ...this.find_form };
 
-    this.activeName = "0";
+    // 请求活动类型列表
+    getDataList(
+      this.model,
+      this.model + "Type",
+      1,
+      createGet(1, 999),
+      this,
+      "type_list",
+      "activityTypeList"
+    );
+
+    var { tab } = this.$route.params;
+    this.activeName = tab || "0";
   },
 
   data() {
@@ -178,6 +194,7 @@ export default {
       find_form: { data: {} },
       data_list: [], // 数据列表
       data_info: {}, // 详情数据对象
+      type_list: [],
 
       activeName: "",
       show_details: false,
@@ -190,15 +207,11 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
       getDataList(
         this.model,
         this.control,
         1,
-        form,
+        this.find_form,
         this,
         "data_list",
         this.operate
@@ -218,7 +231,7 @@ export default {
     toDetails(id) {
       this.$router.push({
         path: "activity_details",
-        query: { id },
+        query: { id, type: this.activeName },
       });
     },
 

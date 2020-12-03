@@ -158,7 +158,6 @@ export default {
 
     // 接收消息
     webMessage(res) {
-      console.log("接收新消息", res.data);
       var mesInfo = JSON.parse(res.data);
       // 1.判断用户是否已在会话列表中
       switch (mesInfo.Type) {
@@ -167,7 +166,6 @@ export default {
           this.data_list.some((item, index) => {
             if (item.receiveID == mesInfo.OutUserId) {
               // 已在-调整顺序
-              console.log("已在-调整顺序");
               flag = false;
             }
             return item.receiveID == mesInfo.OutUserId;
@@ -178,7 +176,6 @@ export default {
       if (mesInfo.OutUserId && mesInfo.OutUserId == this.data_info.receiveID) {
         this.find_form = createGet(1, 20);
         this.find_form.data = { receiveID: this.data_info.receiveID };
-        console.log("重新请求聊天记录");
         getDataList(
           this.model,
           this.control,
@@ -208,16 +205,10 @@ export default {
         Msg,
         DateTime,
       };
-      console.log(obj);
 
       this.data_info.draft = "";
       var msgStr = JSON.stringify(obj);
       window.websocket.send(msgStr);
-    },
-
-    // 测试
-    printA(v) {
-      console.log("测试成功", v);
     },
   },
 

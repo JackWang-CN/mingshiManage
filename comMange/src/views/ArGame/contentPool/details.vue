@@ -20,6 +20,16 @@
       </el-table-column>
 
       <el-table-column prop="text" label="内容文本" width="300">
+        <template slot-scope="scope">
+          <span v-if="scope.row.type == 0">{{ scope.row.text }}</span>
+          <span v-else-if="scope.row.type == 1">
+            <el-avatar
+              :size="80"
+              :src="ar_2d + scope.row.resourceID"
+              shape="square"
+            ></el-avatar>
+          </span>
+        </template>
       </el-table-column>
 
       <el-table-column prop="enable" label="启用状态" width="180">
@@ -46,6 +56,17 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <Pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></Pagination>
+
+    <el-button style="margin: 20px 0 0 10px" type="info" @click="cancel"
+      >返回</el-button
+    >
 
     <!-- 弹出框 -->
     <el-dialog
@@ -82,6 +103,7 @@
             class="upload-demo"
             action="#"
             :on-change="fileChange"
+            :file-list="file_list"
           >
             <el-button type="success" size="small">点击上传</el-button>
           </el-upload>
@@ -110,12 +132,14 @@ import {
   uploadFiles,
   delData,
 } from "@/utils/api/apis";
-import { createGet, hintMessage } from "@/utils/common";
+import { createGet, hintMessage, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
   },
   mounted() {
+    this.ar_2d = window.baseUrl.ar_2d;
+
     // 请求内容列表
     this.contentStoreID = this.$route.query.id;
     this.data_info.contentStoreID = this.contentStoreID;
@@ -133,6 +157,7 @@ export default {
       file_list: [],
       contentStoreID: "",
 
+      ar_2d: "",
       operate: 0, // 0-新增 1-修改
       model: "ARGame",
       control: "ARContentInfo",
@@ -245,6 +270,7 @@ export default {
     // 清空
     clear() {
       this.data_info = { type: 0 };
+      this.file_list = [];
     },
 
     // 分页属性改变
@@ -257,7 +283,14 @@ export default {
           this.find_form.currPage = page;
           break;
       }
-      getFileList("u3dResourceNameList", 1, this.find_form, this, "prize_list");
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        this.find_form,
+        this,
+        "data_list"
+      );
     },
 
     // 取消回到列表页
@@ -265,6 +298,8 @@ export default {
       this.$router.push("contentPool_list");
     },
   },
+
+  watch: {},
 };
 </script>
 

@@ -28,15 +28,7 @@
         label="内容"
         width="250"
       ></el-table-column>
-      <el-table-column label="图标" width="120">
-        <template slot-scope="scope">
-          <el-avatar
-            :size="70"
-            :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
-        </template>
-      </el-table-column>
+
       <el-table-column prop="type" label="类型" width="120">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 0">平台公告</span>
@@ -44,9 +36,9 @@
       </el-table-column>
       <el-table-column prop="audience" label="受众类型" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.audience == 0">全体用户</span>
-          <span v-else-if="scope.row.audience == 1">普通用户</span>
-          <span v-else-if="scope.row.audience == 2">商户</span>
+          <span v-if="scope.row.audience == 0">所有用户</span>
+          <span v-else-if="scope.row.audience == 1">APP用户</span>
+          <span v-else-if="scope.row.audience == 2">全部商户</span>
         </template>
       </el-table-column>
       <el-table-column prop="isPublish" label="公告状态" width="120">

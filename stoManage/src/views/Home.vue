@@ -124,8 +124,13 @@
   </el-container>
 </template>
 
+
 <script>
+const { IM_url } = window.baseUrl;
+import "@/utils/im/wang.js";
+const fileUrl = window.baseUrl.normal_file;
 import { getDetail } from "@/utils/api/apis";
+import { toBinary } from "@/utils/common";
 export default {
   created() {
     var Authorization = sessionStorage.getItem("token");
@@ -139,23 +144,54 @@ export default {
       });
     }
 
-    var imObj = {
-      Authorization,
-      Type: "6",
-      MerchantsId,
-    };
+    // 1.创建IM登录包体
+    var HeadLength = 20; //消息头长度
+    var ClientVersion = 1; //客户端版本号
+    var MsgID = 3; //消息码ID
+    var Seq = Math.ceil(Math.random() * 10000); //消息序列
 
-    // 监听websocket状态
+    // 2.实例消息体，并赋值
+    var loginInfo = new proto.Wang.UserLogin();
+    loginInfo.setToken(Authorization);
+    loginInfo.setUsertype(1);
+    var time = Math.ceil(new Date().getTime() / 1000);
+    loginInfo.setTime(time);
+
+    // var heartInfo = new proto.Wang.TimeStamp();
+    // heartInfo.setTime(time);
+
+    // 3.将消息体转为二进制
+    var loginInfo2 = loginInfo.serializeBinary();
+    // var heartInfo2 = heartInfo.serializeBinary();
+    var loginLength = loginInfo2.length;
+    // var heartLength = heartInfo2.length;
+
+    // 4.将包体转为二进制
+    var HeadLength2 = toBinary(HeadLength);
+    var ClientVersion2 = toBinary(ClientVersion);
+    var MsgID2 = toBinary(MsgID);
+    var Seq2 = toBinary(Seq);
+    var loginLength2 = toBinary(loginLength);
+    // var heartLength2 = toBinary(heartLength);
+
+    // 5.拼接获得IM报文
+    var loginMsg = `${HeadLength2},${ClientVersion2},${MsgID2},${Seq2},${loginLength2},${loginInfo2}`;
+    // var heartMsg = `${HeadLength2},${ClientVersion2},${MsgID2},${Seq2},${heartLength2},${heartInfo2}`;
+
+    // 6.发送IM报文
     window.websocket.addEventListener("open", function () {
-      imObj = JSON.stringify(imObj);
-      window.websocket.onsend(imObj);
+      // 发送登录报文
+      window.websocket.onsend(loginMsg);
+
+      // 发送心跳包
+      // window.websocket.onsend(heartMsg);
     });
 
     if (!Authorization) {
       this.$router.replace("/login");
       this.$message.error("账号已注销，请重新登录！");
     }
-    this.circleUrl = sessionStorage.getItem("headImg"); //获取头像
+    this.circleUrl = fileUrl + sessionStorage.getItem("headImg"); //获取头像
     this.userName = sessionStorage.getItem("userName"); //获取用户名
   },
 
@@ -184,18 +220,19 @@ export default {
           children: [
             { name: "我需要援助", url: "publish", isActive: false },
             { name: "进行中活动", url: "underway", isActive: false },
+            { name: "进行中推广", url: "advertising", isActive: false },
             { name: "历史活动", url: "history", isActive: false },
           ],
         },
-        {
-          name: "商品管理",
-          haveChildren: true,
-          showChildren: false,
-          children: [
-            { name: "商品分类", url: "goods_type", isActive: false },
-            { name: "商品列表", url: "goods_list", isActive: false },
-          ],
-        },
+        // {
+        //   name: "商品管理",
+        //   haveChildren: true,
+        //   showChildren: false,
+        //   children: [
+        //     { name: "商品分类", url: "goods_type", isActive: false },
+        //     { name: "商品列表", url: "goods_list", isActive: false },
+        //   ],
+        // },
         {
           name: "订单管理",
           haveChildren: false,
@@ -257,7 +294,6 @@ export default {
     showChildren(index, e) {
       this.nav_list[index].showChildren = !this.nav_list[index].showChildren;
       var flag = this.nav_list[index].showChildren;
-      console.dir(e.target.children[0]);
       if (flag) {
         e.target.children[0].className = "triangle open";
       } else {
@@ -302,7 +338,7 @@ export default {
 
     // 初始化websocket
     initWebsocket() {
-      window.websocket = new WebSocket("ws://121.196.189.118:7774");
+      window.websocket = new WebSocket(IM_url);
       window.websocket.onmessage = this.webMessage;
       window.websocket.onopen = this.webConnect;
       window.websocket.onsend = this.webSend;
@@ -312,11 +348,14 @@ export default {
 
     // 接收消息
     webMessage(res) {
-      console.log("接收消息", res.data);
+      console.log("接收消息");
+      console.log(res);
     },
 
     // 建立连接
-    webConnect() {},
+    webConnect() {
+      console.log("建立连接");
+    },
 
     // 发送消息
     webSend(data) {
@@ -324,7 +363,9 @@ export default {
     },
 
     // 连接建立失败
-    webError() {},
+    webError() {
+      console.log("连接建立失败");
+    },
 
     // 连接关闭
     webClose() {

@@ -143,7 +143,7 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      getDataList(this.model, this.control, 1, form, this, "data_list");
+      getFileList("u3dTypeList", 1, this.find_form, this, "data_list");
     },
 
     // 发送提交

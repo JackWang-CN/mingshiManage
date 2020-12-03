@@ -7,15 +7,15 @@
         ref="loginForm"
         class="demo-ruleForm"
       >
-        <el-form-item prop="account">
+        <el-form-item prop="loginName">
           <el-input
-            v-model="loginForm.account"
+            v-model="loginForm.loginName"
             placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="passWord">
+        <el-form-item prop="loginPwd">
           <el-input
-            v-model="loginForm.passWord"
+            v-model="loginForm.loginPwd"
             placeholder="请输入密码"
             show-password
           ></el-input>
@@ -37,8 +37,8 @@ export default {
   data() {
     return {
       loginForm: {
-        account: "",
-        passWord: "",
+        loginName: "",
+        loginPwd: "",
       },
       rules: {
         account: [
@@ -69,10 +69,6 @@ export default {
           var data = { ...this.loginForm };
           sendLogin(data)
             .then((res) => {
-              if (res == "412") {
-                this.$message.error("账号或密码有误，请重试！");
-                return;
-              }
               // 保存返回的token
               var token = res.accessToken,
                 username = res.user.loginName,

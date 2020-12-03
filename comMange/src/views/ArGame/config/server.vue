@@ -120,7 +120,6 @@ export default {
 
     // 删除当前行
     async delRow(typeID) {
-      console.log(typeID);
       var res = await delData(
         this.model,
         this.control,

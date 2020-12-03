@@ -3,7 +3,7 @@
   <div id="version" class="shadow_container">
     <div class="pageTitle">
       版本控制
-      <el-button type="primary" @click="toDetails(0)">发布新版本</el-button>
+      <el-button type="success" @click="toDetails(0)">发布新版本</el-button>
     </div>
 
     <!-- 商户列表 -->
@@ -69,12 +69,12 @@
           {{ scope.row.isForce == "1" ? "是" : "否" }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <el-button
             v-if="scope.row.isRelase == 0"
             @click="toDetails(1, scope.row.versionID)"
-            type="warning"
+            type="primary"
             size="small"
             >编辑</el-button
           >

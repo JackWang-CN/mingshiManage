@@ -83,3 +83,14 @@ body,
 .dialog_btns {
   text-indent: 12%;
 }
+
+// 模型缩略图+模型名称
+.mode_img {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .el-tag {
+    margin-top: 10px;
+  }
+}

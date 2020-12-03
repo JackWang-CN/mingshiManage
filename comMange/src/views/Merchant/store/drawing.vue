@@ -70,14 +70,14 @@
                 type="primary"
                 size="small"
                 v-show="activeName == 'apply'"
-                @click="disposeApply(0, scope.row)"
+                @click="consentApply(scope.row)"
                 >通过</el-button
               >
               <el-button
                 type="danger"
                 size="small"
                 v-show="activeName == 'apply'"
-                @click="disposeApply(1, scope.row)"
+                @click="showDetails(scope.row)"
                 >拒绝</el-button
               >
             </template>
@@ -173,6 +173,25 @@
       @sizeChange="pageChange('size', $event)"
       @currChange="pageChange('curr', $event)"
     ></Pagination>
+
+    <!-- 弹出框 -->
+    <el-dialog
+      title="拒绝理由"
+      :visible.sync="show_details"
+      width="30%"
+      @closed="clear"
+    >
+      <el-input
+        v-model="data_info.checkRemarks"
+        type="textarea"
+        :rows="3"
+      ></el-input>
+
+      <div style="margin-top: 20px">
+        <el-button type="primary" @click="disposeApply">提交</el-button>
+        <el-button type="info" @click="show_details = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -188,7 +207,9 @@ export default {
   data() {
     return {
       activeName: "",
+      show_details: false,
       find_form: {},
+      data_info: {},
       data_list: [],
       history_list: [],
 
@@ -205,9 +226,57 @@ export default {
   },
 
   methods: {
-    // 同意/拒绝申请
-    disposeApply(type, row) {
-      console.log(type, row);
+    // 同意申请
+    consentApply(row) {
+      var { logID, takeGold } = row;
+      this.data_info = {
+        logId: logID,
+        confirm: 1,
+        checkRemarks: "通过",
+        actualMoney: takeGold / 1000,
+      };
+
+      this.disposeApply();
+    },
+
+    // 处理申请
+    disposeApply() {
+      this.show_details = false;
+
+      updateData(
+        this.model,
+        this.control,
+        1,
+        this.data_info,
+        "confirmMerWithdrawal"
+      ).then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          form,
+          this,
+          "data_list",
+          "withdrawalRequestList"
+        );
+      });
+    },
+
+    // 打开详情框
+    showDetails(row) {
+      this.show_details = true;
+      console.log(row);
+      var { logID } = row;
+      this.data_info.logId = logID;
+      this.data_info.confirm = 2;
+      this.data_info.actualMoney = 0;
+    },
+
+    // 清空
+    clear() {
+      this.data_info = {};
     },
 
     // 分页属性改变

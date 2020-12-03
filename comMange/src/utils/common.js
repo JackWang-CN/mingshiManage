@@ -42,7 +42,7 @@ export const spliceKey = (obj) => {
     }
     if (flag) {
       newObj[key] = obj[key];
-    } else if (key == "creationTime") {
+    } else if (key == "createTime") {
       obj[key].forEach((item, index) => {
         var date = new Date(item);
         obj[key][index] = date.toJSON();
@@ -61,7 +61,9 @@ export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
   obj.pageSize = pageSize || 10;
-  obj.orderByFileds = order || "createTime desc";
+  if (order) {
+    obj.orderByFileds = order;
+  }
   obj.totalDataNum = 0;
   obj.data = {};
 
@@ -125,8 +127,8 @@ export const hintMessage = (_this, res, message = "操作成功！") => {
     case "000000":
       _this.$message.success(message);
       break;
-    case "C00501":
-      _this.$message.info(res.resultMessage);
+    default:
+      _this.$message.error(res.resultMessage);
       break;
   }
 };

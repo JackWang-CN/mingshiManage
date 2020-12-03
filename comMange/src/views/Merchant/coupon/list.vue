@@ -7,8 +7,16 @@
     </div>
     <!-- 查询条件 -->
     <el-form class="find_form" :model="find_form" label-width="80px">
-      <el-form-item label="券类型" label-width="100px">
-        <el-select v-model="find_form.data.isBind" placeholder="请选择券类型">
+      <el-form-item label="券名称">
+        <el-input v-model="find_form.data.name"></el-input>
+      </el-form-item>
+
+      <el-form-item label="券类型">
+        <el-select
+          v-model="find_form.data.couponTypeID"
+          placeholder="请选择券类型"
+        >
+          <el-option label="全部" :value="null"></el-option>
           <el-option
             v-for="type in type_list"
             :key="type.typeID"
@@ -18,7 +26,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="创建时间" label-width="100px">
+      <el-form-item label="创建时间">
         <el-date-picker
           v-model="find_form.data.creationTime"
           type="daterange"
@@ -29,11 +37,14 @@
           end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="findData">查询</el-button>
+      </el-form-item>
     </el-form>
 
     <!-- 优惠券列表 -->
     <el-table :data="data_list" border style="width: 100%">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
         prop="name"
         label="优惠券名称"
@@ -80,9 +91,9 @@
         label="过期时间"
         width="180"
       ></el-table-column>
-      <el-table-column prop="status" label="状态" width="120">
+      <el-table-column prop="isEnable" label="状态" width="120">
         <template slot-scope="scope">{{
-          scope.row.status == "0" ? "未领取" : "已领取"
+          scope.row.isEnable ? "启用" : "禁用"
         }}</template>
       </el-table-column>
       <el-table-column
@@ -196,6 +207,11 @@ export default {
   },
 
   methods: {
+    // 查询
+    findData() {
+      getDataList(this.model, this.control, 1, this.find_form, this);
+    },
+
     // 跳转到详情页
     toDetails(id) {
       this.$router.push({

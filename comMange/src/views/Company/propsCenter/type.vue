@@ -12,11 +12,11 @@
     <!-- 查询组件 -->
     <div class="search">
       <el-input
-        v-model="find_form.info"
+        v-model="find_form.data.name"
         placeholder="分类名称"
         prefix-icon="el-icon-search"
       ></el-input>
-      <el-button type="primary">查询</el-button>
+      <el-button type="primary" @click="findData">查询</el-button>
       <el-button type="success" @click="showDetails(0)">新增分类</el-button>
     </div>
 
@@ -74,6 +74,7 @@
           <!-- 下拉框一 -->
           <el-form-item label="所属父类" v-if="!operate">
             <el-cascader
+              clearable
               @change="typeChange"
               :show-all-levels="false"
               :options="select_list"
@@ -176,7 +177,7 @@ export default {
 
   data() {
     return {
-      find_form: {},
+      find_form: { data: {} },
       data_list: [],
       type_list: [],
       select_list: [],
@@ -210,11 +211,18 @@ export default {
   },
 
   methods: {
+    // 查询
+    findData() {
+      getDataList(this.model, this.control, 1, this.find_form, this);
+    },
+
     // 新增类型选择下拉框改变时
     typeChange(res) {
       var length = res.length;
       if (length) {
         this.data_info.parentID = res[length - 1];
+      } else {
+        this.data_info.parentID = null;
       }
     },
 
@@ -251,7 +259,6 @@ export default {
 
       if (type) {
         getDetails(this.model, this.control, 1, { typeID }).then((res) => {
-          console.log(res);
           this.data_info = res.resultObject;
         });
       }
@@ -265,7 +272,6 @@ export default {
             this.data_info.mediaSpecial = [key];
             break;
           case "put":
-            console.log(key);
             this.data_info.putSpecial = [key];
             break;
           case "ai":
@@ -376,9 +382,7 @@ export default {
         for (var i = 0; i < list.length; i++) {
           list[i].parentID = row.typeID;
         }
-        console.log(list);
         resolve(list);
-        console.log(list, this.type_list);
       });
     },
 

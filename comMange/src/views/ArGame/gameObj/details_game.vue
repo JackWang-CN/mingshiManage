@@ -23,9 +23,16 @@
         <el-button type="success" size="small" @click="showModel"
           >选择模型</el-button
         >
-        <el-tag style="margin-left: 5px" v-if="data_info.resName">{{
-          data_info.resName
-        }}</el-tag>
+
+        <div class="mode_img" v-show="data_info.modeImg">
+          <el-avatar
+            :size="80"
+            :src="data_info.modeImg"
+            shape="square"
+            v-if="data_info.resName"
+          ></el-avatar>
+          <el-tag>{{ data_info.resName }}</el-tag>
+        </div>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="sendSubmit">提交</el-button>
@@ -58,7 +65,6 @@
         @currChange="pageChange('curr', $event)"
       ></Pagination>
       <!-- 选中模型 -->
-
       <div class="select_model" v-show="Object.keys(select_model).length">
         <div class="title">已选择</div>
         <div class="ico" @click="unSelect" title="点击删除">
@@ -81,15 +87,16 @@
 </template>
 
 <script>
+const fileUrl = window.baseUrl.ar_2d;
 import Pagination from "@/components/Pagination";
 import {
   getDataList,
-  getDataDetails,
+  getDetails,
   addDataList,
   updateDetails,
   getFileList,
 } from "@/utils/api/apis";
-import { createGet, filteObj } from "@/utils/common";
+import { createGet, filteObj, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -112,7 +119,12 @@ export default {
     if (id) {
       this.operate = "1";
       var form = { objectInfoID: id };
-      getDataDetails(this.model, this.control, 1, form, this, "data_info");
+      getDetails(this.model, this.control, 1, form).then((res) => {
+        this.data_info = res.resultObject;
+        this.data_info.modeImg = fileUrl + this.data_info.mainImageID;
+        this.data_info.resName = this.data_info.showResourceName;
+        console.log(this.data_info);
+      });
     }
   },
 
@@ -134,8 +146,6 @@ export default {
   methods: {
     // 点击提交按钮
     sendSubmit() {
-      console.log(this.data_info);
-
       switch (this.operate) {
         // 新增
         case "0":
@@ -184,6 +194,7 @@ export default {
       if (this.select_model.resID) {
         this.data_info.resourceID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
+        this.data_info.modeImg = this.select_model.imgUrl;
       }
       this.show_mode = false;
     },
@@ -204,6 +215,12 @@ export default {
     // 取消回到列表页
     cancel() {
       this.$router.push("gameObj_list");
+    },
+  },
+
+  watch: {
+    model_list() {
+      spliceImg(this.model_list, "mainImageID", true);
     },
   },
 };

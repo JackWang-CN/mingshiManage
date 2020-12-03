@@ -3,7 +3,7 @@
 import axios from "axios";
 
 // 设置基础地址
-axios.defaults.baseURL = "https://api.official.scmsar.com/";
+axios.defaults.baseURL = "https://api.official.scmsar.com";
 
 /*
  *  1.ClientPlatform     ---- web ios android
@@ -13,7 +13,8 @@ axios.defaults.baseURL = "https://api.official.scmsar.com/";
  */
 
 /* 登录 */
-export const sendLogin = (info) => axios.post("/o1/Userinfo/pwdLogin", info);
+export const sendLogin = (info) =>
+  axios.post("/signIn/userInfo/pwdLogin/v1", info);
 
 /* 其他操作 */
 
@@ -22,16 +23,16 @@ export const getList = (type, info) => {
   var url = "";
   switch (type) {
     case "case":
-      url = "/o1/Case/list";
+      url = "/config/case/list/v1";
       break;
     case "media":
-      url = "/o1/Media/list";
+      url = "/config/media/list/v1";
       break;
     case "recruit":
-      url = "/o1/Recruit/list";
+      url = "/config/recruit/list/v1";
       break;
     case "userinfo":
-      url = "/o1/Userinfo/list";
+      url = "/offUser/userInfo/list/v1";
       break;
   }
   return axios.post(url, info);
@@ -42,16 +43,16 @@ export const getDetails = (type, info) => {
   var url = "";
   switch (type) {
     case "case":
-      url = "/o1/Case/details";
+      url = "/config/Case/details";
       break;
     case "media":
-      url = "/o1/Media/details";
+      url = "/config/Media/details";
       break;
     case "recruit":
-      url = "/o1/Recruit/details";
+      url = "/config/Recruit/details";
       break;
     case "userinfo":
-      url = "/o1/Userinfo/details";
+      url = "/offUser/Userinfo/details";
       break;
   }
   return axios.post(url, info);

@@ -1,7 +1,7 @@
 <template>
   <!-- 用户详情 -->
   <div id="userInfo_details" class="shadow_container">
-    <div class="pageTitle">用户详情</div>
+    <div class="pageTitle">用户详情 {{ data_info.nickname }}</div>
     <div class="wrap">
       <!-- 表单 -->
       <el-form label-width="100px">
@@ -22,7 +22,7 @@
         </el-form-item>
 
         <el-form-item label="状态">
-          <span>{{ data_info.isEnable ? "正常" : "封禁" }}</span>
+          <span>{{ data_info.isEnable ? "启用" : "禁用" }}</span>
         </el-form-item>
 
         <el-form-item label="用户邮箱">
@@ -54,7 +54,6 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="sendSubmit">保存</el-button>
           <el-button type="info" @click="toDetails('customer_list')"
             >返回</el-button
           >

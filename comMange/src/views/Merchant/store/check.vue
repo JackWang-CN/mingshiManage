@@ -98,16 +98,6 @@
             label="审核时间"
             width="200"
           ></el-table-column>
-          <el-table-column label="操作" width="180">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                @click="showDetails(scope.row)"
-                size="small"
-                >详情</el-button
-              >
-            </template>
-          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -121,7 +111,7 @@
 
     <!-- 弹出框 -->
     <el-dialog
-      title="提示"
+      title="审核信息"
       :visible.sync="show_details"
       width="30%"
       @closed="clear"
@@ -171,9 +161,9 @@
           <span>{{ data_info.address }}</span>
         </el-form-item>
         <el-form-item label="审核意见">
-          <el-select v-model="check_form.checkeStatus">
+          <el-select v-model="check_form.checkStatus">
             <el-option label="通过" :value="1"></el-option>
-            <el-option label="拒绝" :value="2"></el-option>
+            <el-option label="拒绝" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="审核说明">

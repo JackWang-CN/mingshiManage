@@ -5,7 +5,7 @@
       <!-- 查询表单 -->
       <el-form label-width="80px">
         <el-form-item label="对象名称">
-          <el-input v-model="find_form.data.weaponName"></el-input>
+          <el-input v-model="find_form.data.name" clearable></el-input>
           <el-button type="primary" style="margin-left: 20px" @click="findData"
             >查询</el-button
           >
@@ -164,7 +164,8 @@ export default {
     Pagination,
   },
   mounted() {
-    this.activeName = "gameObj";
+    var { tab } = this.$route.params;
+    this.activeName = tab || "gameObj";
   },
 
   data() {
@@ -181,7 +182,6 @@ export default {
   methods: {
     // 跳转到详情页
     toDetails(id) {
-      console.log(id);
       var path = this.control + "_details";
       this.$router.push({
         path,
@@ -197,7 +197,6 @@ export default {
 
     // 删除当前行
     delRow(id) {
-      console.log("删除", id);
       switch (this.control) {
         case "gameObj":
           var form = { objectInfoID: id };
@@ -231,7 +230,8 @@ export default {
   watch: {
     // 拼接图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "infoID");
+      spliceImg(this.data_list, "mainImageID", true);
+      console.log(this.data_list);
     },
 
     // 切换tab

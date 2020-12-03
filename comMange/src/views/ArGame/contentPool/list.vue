@@ -8,7 +8,7 @@
     <!-- 查询表单 -->
     <el-form label-width="100px">
       <el-form-item label="内容池名称">
-        <el-input v-model="find_form.data.storeName"></el-input>
+        <el-input v-model="find_form.data.storeName" clearable></el-input>
         <el-button type="primary" style="margin-left: 20px" @click="findData"
           >查询</el-button
         >
@@ -127,7 +127,6 @@ export default {
 
     // 删除当前行
     delRow(contentStoreID) {
-      console.log("删除", contentStoreID);
       delData(this.model, this.control, 1, { contentStoreID }).then((res) => {
         hintMessage(this, res);
         this.findData();

@@ -8,7 +8,6 @@
       style="width: 100%"
       @selection-change="select"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
         prop="accountFlowID"
         label="用户ID"
@@ -65,13 +64,6 @@
         label="创建时间"
         width="200"
       ></el-table-column>
-      <el-table-column fixed="right" label="操作">
-        <template slot-scope="scope">
-          <el-button type="warning" size="small" @click="mark(scope.row)"
-            >备注</el-button
-          >
-        </template>
-      </el-table-column>
     </el-table>
 
     <!-- 分页插件 -->

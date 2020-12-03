@@ -19,14 +19,14 @@
 
       <el-form-item label="模型主图">
         <el-upload
-          class="upload-demo"
+          class="avatar-uploader"
           action="#"
-          :auto-upload="false"
-          :on-remove="removeFile"
+          :show-file-list="false"
           :on-change="mainChange"
-          list-type="picture"
+          :auto-upload="false"
         >
-          <el-button size="small" type="primary">添加主图</el-button>
+          <img v-if="main_img" :src="main_img" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
 
@@ -88,8 +88,9 @@ export default {
       data_info: {},
       type_list: [],
       file_ar: [], // ar文件对象
-      img_main: [], // 主缩略图文件对象
-      img_children: [], // 子多图文件对象
+      main_list: [], // 主缩略图文件对象
+      main_img: "",
+      children_list: [], // 子多图文件对象
     };
   },
 
@@ -132,12 +133,18 @@ export default {
 
       var { resID } = arRes.resultObject[0];
       // 2.上传主图、子图
-      if (this.img_main.length > 0) {
-        var mainRes = await uploadFiles(4, 1, this.img_main, true, resID);
+      if (this.main_list.length > 0) {
+        var mainRes = await uploadFiles(4, 1, this.main_list, true, resID);
         if (mainRes.code !== "000000") flag = false;
       }
-      if (this.img_children.length > 0) {
-        var childRes = await uploadFiles(4, 1, this.img_children, false, resID);
+      if (this.children_list.length > 0) {
+        var childRes = await uploadFiles(
+          4,
+          1,
+          this.children_list,
+          false,
+          resID
+        );
         if (childRes.code !== "000000") flag = false;
       }
 
@@ -161,6 +168,7 @@ export default {
     // ar文件状态改变
     arChange(file, list) {
       var { name } = file;
+      console.log(file);
       var index = name.indexOf(".");
       var suffix = name.substring(index + 1);
       if (suffix != "ab") {
@@ -176,11 +184,12 @@ export default {
     },
     // 主缩略图状态改变
     mainChange(file, list) {
-      this.img_main = [...list];
+      this.main_img = URL.createObjectURL(file.raw);
+      this.main_list = [file];
     },
     // 子图文件状态改变
     childrenChange(file, list) {
-      this.img_children = [...list];
+      this.children_list = [...list];
     },
   },
 };
@@ -194,6 +203,31 @@ export default {
       .el-input,
       .el-textarea {
         width: 300px;
+      }
+
+      // 头像上传
+      .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        &:hover {
+          border-color: #409eff;
+        }
+        .avatar-uploader-icon {
+          font-size: 28px;
+          color: #8c939d;
+          width: 150px;
+          height: 150px;
+          line-height: 150px;
+          text-align: center;
+        }
+        .avatar {
+          width: 150px;
+          height: 150px;
+          display: block;
+        }
       }
     }
   }

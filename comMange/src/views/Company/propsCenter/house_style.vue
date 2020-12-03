@@ -216,7 +216,6 @@ export default {
     // 点击选中模型
     selectModel(mode) {
       this.select_model = { ...mode };
-      console.log(mode);
     },
 
     // 点击模型标签的X，取消选中模型
@@ -240,8 +239,6 @@ export default {
           new_list.push({ describe, imgSort: index, imgID: resID });
         });
         this.data_info.childImgList = new_list;
-
-        console.log(this.data_info);
       } else {
         this.data_info.resID = "";
       }
@@ -250,7 +247,6 @@ export default {
 
     // 删除当前行
     async delRow(propID) {
-      console.log(propID);
       var res = await delData(this.model, this.control, 1, { propID });
       hintMessage(this, res);
       var form = { ...this.find_form };
@@ -265,7 +261,6 @@ export default {
     // 发送提交
     async sendSubmit() {
       var data = { ...this.data_info };
-      console.log(data);
       // return;
       this.show_details = false;
       switch (this.operate) {
@@ -315,7 +310,6 @@ export default {
     // 拼接图片url
     data_list() {
       this.data_list = spliceImg(this.data_list, "mainImageID", true);
-      console.log(this.data_list);
     },
   },
 };

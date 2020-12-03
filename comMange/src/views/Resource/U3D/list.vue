@@ -12,25 +12,33 @@
     <el-form :model="find_form" class="find_form" label-width="100px">
       <!-- 查询条件 -->
       <el-form-item label="模型名称">
-        <el-input v-model="find_form.data.showResourceName"></el-input>
+        <el-input
+          v-model="find_form.data.showResourceName"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="是否禁用">
-        <el-select v-model="find_form.data.isDelete" placeholder="启用状态">
+        <el-select
+          v-model="find_form.data.isDelete"
+          placeholder="启用状态"
+          clearable
+        >
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="上传用户">
         <el-input
-          v-model="find_form.data.uploadID"
+          v-model="find_form.data.uploadUName"
           placeholder="上传用户名"
+          clearable
         ></el-input>
       </el-form-item>
 
       <!-- 日期查询 -->
       <el-form-item label="上传时间" label-width="100px">
         <el-date-picker
-          v-model="find_form.data.creationTime"
+          v-model="find_form.data.createTime"
           type="daterange"
           align="right"
           unlink-panels
@@ -44,13 +52,11 @@
       <el-form-item>
         <el-button type="primary" @click="findData">查询</el-button>
         <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="danger" style="margin-left: 50px">批量删除</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
         prop="showResourceName"
         label="模型名称"
@@ -71,7 +77,7 @@
           <el-avatar
             v-if="scope.row.mainImageID"
             :size="80"
-            :src="fileUrl + 'ar2d/v1?Mark=' + scope.row.mainImageID"
+            :src="scope.row.imgUrl"
             shape="square"
             fit="contain"
           ></el-avatar>
@@ -180,16 +186,7 @@ export default {
   methods: {
     // 查询
     findData() {
-      this.find_form.currPage = 1;
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      // form.data = spliceKey(form.data);
-      if (form.data.resExtName) {
-        form.data.resExtName = "." + form.data.resExtName;
-      }
-      delete form.totalDataNum;
-      getFileList("u3dInfoList", 1, form, this);
+      getFileList("u3dInfoList", 1, this.find_form, this);
     },
 
     // 禁用文件
@@ -243,6 +240,23 @@ export default {
       var form = { ...this.find_form };
       delete form.totalDataNum;
       getFileList("u3dInfoList", 1, form, this);
+    },
+  },
+
+  watch: {
+    data_list() {
+      spliceImg(this.data_list, "mainImageID", true);
+      this.data_list.forEach((item) => {
+        var newImg = new Image();
+        newImg.src = item.imgUrl;
+        newImg.onerror = () => {
+          newImg.src =
+            "https://img.lanrentuku.com/img/allimg/1212/5-121204193R0-50.gif";
+        };
+        newImg.onload = () => {
+          item.imgUrl = newImg.src;
+        };
+      });
     },
   },
 };

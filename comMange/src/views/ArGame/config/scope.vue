@@ -64,6 +64,10 @@
           <el-input v-model="data_info.cityName"></el-input>
         </el-form-item>
 
+        <el-form-item label="城市编号">
+          <el-input v-model="data_info.cityCode"></el-input>
+        </el-form-item>
+
         <el-form-item label="左上经度">
           <el-input v-model="data_info.luLongitude"></el-input>
         </el-form-item>
@@ -109,7 +113,6 @@ export default {
   },
   mounted() {
     var map = new AMap.Map("container");
-    console.log(map);
 
     this.find_form = createGet();
     getDataList(this.model, this.control, 1, this.find_form, this, "data_list");
@@ -140,7 +143,6 @@ export default {
 
     // 删除当前行
     async delRow(cityCode) {
-      console.log(cityCode);
       var res = await delData(this.model, this.control, 1, { cityCode });
       hintMessage(this, res);
       var form = { ...this.find_form };

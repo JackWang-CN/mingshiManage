@@ -55,6 +55,7 @@
 <script>
 import Verify from "@/components/verify.vue";
 import { getData } from "@/utils/api/apis";
+import { store } from "@/utils/store";
 import { spliceImg } from "@/utils/common";
 export default {
   mounted() {},
@@ -121,12 +122,17 @@ export default {
             ).then((res) => {
               var res = res.resultObject;
               if (res) {
+                console.log(res);
                 var token = res.accessToken;
                 var headImg = res.user.headIco;
                 var userName = res.user.name;
+                var userID = res.user.userID;
+                var nodeList = JSON.stringify(res.roleAuthList);
                 sessionStorage.setItem("token", token);
                 sessionStorage.setItem("userName", userName);
                 sessionStorage.setItem("headImg", headImg);
+                sessionStorage.setItem("id", userID);
+                sessionStorage.setItem("nodeList", nodeList);
                 this.$message.success("登录成功");
                 this.$router.replace("home");
               } else {

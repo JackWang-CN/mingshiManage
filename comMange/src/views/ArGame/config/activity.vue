@@ -9,21 +9,21 @@
     <!-- 列表 -->
     <el-table :data="data_list" border>
       <el-table-column
-        prop="name"
-        label="类型名称"
-        width="180"
+        prop="cityName"
+        label="城市"
+        width="200"
       ></el-table-column>
 
       <el-table-column
-        prop="createTime"
-        label="创建时间"
-        width="180"
+        prop="activityName"
+        label="活动名称"
+        width="200"
       ></el-table-column>
 
       <el-table-column
-        prop="updateTime"
-        label="修改时间"
-        width="180"
+        prop="serverName"
+        label="服务器名称"
+        width="200"
       ></el-table-column>
 
       <el-table-column label="操作" width="180">
@@ -34,10 +34,7 @@
             @click="showDetails(1, scope.row)"
             >编辑</el-button
           >
-          <el-button
-            size="small"
-            type="danger"
-            @click="delRow(scope.row.typeID)"
+          <el-button size="small" type="danger" @click="delRow(scope.row.id)"
             >删除</el-button
           >
         </template>
@@ -51,16 +48,32 @@
       width="30%"
       @closed="clear"
     >
-      <el-form label-width="80px" class="details_form">
-        <el-form-item label="类型名称">
-          <el-input v-model="data_info.typeName"></el-input>
+      <el-form label-width="100px" class="details_form">
+        <el-form-item label="选择活动">
+          <el-select v-model="data_info.eventID">
+            <el-option
+              v-for="server in event_list"
+              :key="server.activityID"
+              :label="server.activityName"
+              :value="server.activityID"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="服务器">
+          <el-select v-model="data_info.serverName">
+            <el-option
+              v-for="server in server_list"
+              :key="server.serverID"
+              :label="server.serverName"
+              :value="server.serverName"
+            ></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item>
-          <el-button size="small" type="primary" @click="sendSubmit"
-            >提交</el-button
-          >
-          <el-button size="small" type="info" @click="cancel">取消</el-button>
+          <el-button type="primary" @click="sendSubmit">提交</el-button>
+          <el-button type="info" @click="cancel">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -84,15 +97,7 @@ export default {
   },
   mounted() {
     this.find_form = createGet();
-    getDataList(
-      this.model,
-      this.control,
-      1,
-      this.find_form,
-      this,
-      "data_list",
-      "activityTypeList"
-    );
+    getDataList(this.model, this.control, 1, this.find_form, this, "data_list");
   },
 
   data() {
@@ -100,17 +105,45 @@ export default {
       find_form: {},
       data_list: [],
       data_info: {},
+      event_list: [],
+      server_list: [],
 
       operate: 0,
       show_details: false,
-      model: "activity",
-      control: "activityType",
+      model: "ARGame",
+      control: "EventServerConfig",
     };
   },
 
   methods: {
     // 展示详情
     showDetails(type, row) {
+      // 请求活动事件列表
+      if (this.event_list.length == 0) {
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "event_list",
+          "getARActivity"
+        );
+      }
+
+      // 请求服务器列表
+      if (this.server_list.length == 0) {
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "server_list",
+          "getServerName"
+        );
+      }
+
       this.operate = type;
       this.show_details = true;
       if (type) {
@@ -119,26 +152,11 @@ export default {
     },
 
     // 删除当前行
-    async delRow(typeID) {
-      console.log(typeID);
-      var res = await delData(
-        this.model,
-        this.control,
-        1,
-        { typeID },
-        "activityTypeDel"
-      );
+    async delRow(id) {
+      var res = await delData(this.model, this.control, 1, { id });
       hintMessage(this, res);
       var form = { ...this.find_form };
-      getDataList(
-        this.model,
-        this.control,
-        1,
-        form,
-        this,
-        "data_list",
-        "activityTypeList"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 分页属性改变
@@ -166,35 +184,15 @@ export default {
       this.show_details = false;
       switch (this.operate) {
         case 0:
-          var res = await addData(
-            this.model,
-            this.control,
-            1,
-            data,
-            "activityTypeCreate"
-          );
+          var res = await addData(this.model, this.control, 1, data);
           break;
         case 1:
-          var res = await updateData(
-            this.model,
-            this.control,
-            1,
-            data,
-            "activityTypeEdit"
-          );
+          var res = await updateData(this.model, this.control, 1, data);
           break;
       }
       hintMessage(this, res);
       var form = { ...this.find_form };
-      getDataList(
-        this.model,
-        this.control,
-        1,
-        form,
-        this,
-        "data_list",
-        "activityTypeList"
-      );
+      getDataList(this.model, this.control, 1, form, this);
     },
 
     // 取消

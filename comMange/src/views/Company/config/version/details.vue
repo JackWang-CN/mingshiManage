@@ -74,8 +74,9 @@
 </template>
 
 <script>
+var fileUrl = window.baseUrl.normal_file;
 import {
-  getDataDetails,
+  getDetails,
   addDataList,
   updateDetails,
   uploadFiles,
@@ -86,7 +87,10 @@ export default {
     if (id) {
       this.operate = 1;
       this.data_info.versionID = id;
-      getDataDetails(this.model, this.control, 1, { versionID: id }, this);
+      getDetails(this.model, this.control, 1, { versionID: id }).then((res) => {
+        this.data_info = res.resultObject;
+        this.appImg = fileUrl + res.resultObject.appLogo;
+      });
     }
   },
 

@@ -8,9 +8,10 @@
 
       <el-form-item label="武器类型">
         <el-select v-model="data_info.weaponType">
-          <el-option label="小型炮" :value="1"></el-option>
-          <el-option label="中型炮" :value="2"></el-option>
-          <el-option label="重型炮" :value="3"></el-option>
+          <el-option label="免费" :value="0"></el-option>
+          <el-option label="轻型" :value="1"></el-option>
+          <el-option label="中型" :value="2"></el-option>
+          <el-option label="重型" :value="3"></el-option>
         </el-select>
       </el-form-item>
 

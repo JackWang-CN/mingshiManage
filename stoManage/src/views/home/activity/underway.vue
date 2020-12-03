@@ -1,5 +1,5 @@
 <template>
-  <div id="entrust" class="shadow_container">
+  <div id="entrust" class="card_container">
     <!-- 进行中活动 -->
     <div class="pageTitle">进行中活动</div>
 
@@ -7,7 +7,10 @@
 
     <div class="search">
       <div class="filter">
-        <el-input v-model="find_form.data.reqId" placeholder="活动主题、券名称"></el-input>
+        <el-input
+          v-model="find_form.data.reqId"
+          placeholder="活动主题、券名称"
+        ></el-input>
         <el-button type="primary">最近</el-button>
         <el-button>快过期</el-button>
       </div>
@@ -15,32 +18,71 @@
     </div>
 
     <!-- 委托列表 -->
-    <el-table :data="data_list" tooltip-effect="dark" :border="true" @selection-change="select">
+    <el-table
+      :data="data_list"
+      tooltip-effect="dark"
+      :border="true"
+      @selection-change="select"
+    >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="activityTheme" label="活动主题" width="200" sortable></el-table-column>
-      <el-table-column prop="couponName" label="券名称" width="150"></el-table-column>
-      <el-table-column prop="validDay" label="持续天数" width="150"></el-table-column>
+      <el-table-column
+        prop="activityTheme"
+        label="活动主题"
+        width="200"
+        sortable
+      ></el-table-column>
+      <el-table-column
+        prop="couponName"
+        label="券名称"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="validDay"
+        label="持续天数"
+        width="150"
+      ></el-table-column>
       <el-table-column prop="total" label="总数" width="100"></el-table-column>
       <el-table-column prop="receiveAmount" label="领取率" width="100">
-        <template slot-scope="scope">{{scope.row.receiveAmount/scope.row.total}}%</template>
+        <template slot-scope="scope"
+          >{{ scope.row.receiveAmount / scope.row.total }}%</template
+        >
       </el-table-column>
       <el-table-column label="使用率" width="100">
-        <template slot-scope="scope">{{scope.row.useAmount/scope.row.total}}%</template>
+        <template slot-scope="scope"
+          >{{ scope.row.useAmount / scope.row.total }}%</template
+        >
       </el-table-column>
-      <el-table-column prop="describe" label="券详情" width="300"></el-table-column>
+      <el-table-column
+        prop="describe"
+        label="券详情"
+        width="300"
+      ></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small">终止</el-button>
+          <el-button @click="delRow(scope.row.reqId)" type="danger" size="small"
+            >终止</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页插件 -->
+    <pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></pagination>
   </div>
 </template>
 
 <script>
+import pagination from "@/components/Pagination";
 import { getData, getDataList, delData } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
+  components: {
+    pagination,
+  },
   mounted() {
     this.find_form = createGet();
     var form = { ...this.find_form };
@@ -133,6 +175,20 @@ export default {
     // 获取选中项
     select(list) {
       this.select_list = list;
+    },
+
+    // 分页改变时触发
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, form, this);
     },
   },
 

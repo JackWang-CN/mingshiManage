@@ -10,7 +10,7 @@
     <!-- 查询表单 -->
     <el-form label-width="80px">
       <el-form-item label="实体名称">
-        <el-input v-model="find_form.data.entityName"></el-input>
+        <el-input v-model="find_form.data.entityName" clearable></el-input>
         <el-button type="primary" style="margin-left: 20px" @click="findData"
           >查询</el-button
         >
@@ -119,9 +119,10 @@
           <el-button type="success" size="small" @click="showGameObj"
             >选择对象</el-button
           >
-          <el-tag style="margin-left: 5px" v-if="data_info.objName">{{
-            data_info.objName
-          }}</el-tag>
+          <div class="mode_img" v-if="data_info.objectInfoID">
+            <el-avatar :size="80" :src="obj_img" shape="square"></el-avatar>
+            <el-tag>{{ data_info.objectInfoName }}</el-tag>
+          </div>
         </el-form-item>
 
         <el-form-item label="绑定奖池">
@@ -212,6 +213,7 @@
 </template>
 
 <script>
+const { ar_2d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
 import { getDataList, addData, updateData, delData } from "@/utils/api/apis";
@@ -220,6 +222,9 @@ export default {
     Pagination,
   },
   mounted() {
+    var { tab } = this.$route.params;
+    this.activeName = tab || "0";
+
     this.find_form = createGet();
   },
 
@@ -236,6 +241,7 @@ export default {
       select_model: {},
       operate: 0,
       activeName: "",
+      obj_img: "",
       model: "ARGame",
       control: "gameEntity",
       dialogControl: "gameObj",
@@ -307,7 +313,8 @@ export default {
 
       this.show_details = true;
       this.operate = type;
-      this.data_info = { ...row };
+      if (row) this.data_info = { ...row };
+      this.obj_img = ar_2d + this.data_info.mainImageID;
     },
 
     // 查询列表
@@ -327,7 +334,6 @@ export default {
       } else {
         this.dialogControl = "biologyObj";
       }
-      console.log(this.find_form);
       getDataList(
         this.model,
         this.dialogControl,
@@ -345,8 +351,13 @@ export default {
 
     // 确认选择
     confirmMode() {
-      this.data_info.gameEntityID = this.select_model.objectInfoID;
-      this.data_info.objName = this.select_model.name;
+      var id = this.select_model.objectInfoID
+        ? this.select_model.objectInfoID
+        : this.select_model.creatureInfoID;
+      this.data_info.objectInfoID = id;
+      this.data_info.objectInfoName = this.select_model.name;
+      this.obj_img = this.select_model.imgUrl;
+      console.log(this.data_info);
       this.show_gameObj = false;
     },
 
@@ -387,7 +398,11 @@ export default {
   watch: {
     // 拼接图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "infoID");
+      spliceImg(this.data_list, "mainImageID", true);
+    },
+
+    gameObj_list() {
+      spliceImg(this.gameObj_list, "mainImageID", true);
     },
 
     activeName(v) {

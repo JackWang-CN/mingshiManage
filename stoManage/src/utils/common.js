@@ -52,8 +52,6 @@ export const createGet = (currPage, pageSize, order) => {
   obj.pageSize = pageSize || 10;
   if (order) {
     obj.orderByFileds = order + " desc";
-  } else {
-    obj.orderByFileds = "creationtime desc";
   }
 
   obj.totalDataNum = 0;
@@ -101,5 +99,18 @@ export const hintMessage = (_this, res, message = "操作成功！") => {
     case "000000":
       _this.$message.success(message);
       break;
+    default:
+      _this.$message.error(res.resultMessage);
+      break;
   }
+};
+
+// 转换为二进制
+export const toBinary = (num) => {
+  var targets = [];
+  targets[0] = num & 0xff;
+  targets[1] = (num >> 8) & 0xff;
+  targets[2] = (num >> 16) & 0xff;
+  targets[3] = (num >> 24) & 0xff;
+  return targets;
 };

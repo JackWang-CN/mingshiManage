@@ -12,15 +12,35 @@
         <el-button type="success" size="small" @click="showModel"
           >选择模型</el-button
         >
-        <el-tag style="margin-left: 5px" v-if="data_info.resName">{{
-          data_info.resName
-        }}</el-tag>
+
+        <div class="mode_img" v-show="data_info.resID">
+          <el-avatar :size="80" :src="modeImg" shape="square"></el-avatar>
+          <el-tag>{{ data_info.resName }}</el-tag>
+        </div>
       </el-form-item>
 
-      <el-form-item label="道具状态">
-        <el-select v-model="data_info.isEnable">
-          <el-option label="正在售卖" :value="1"></el-option>
-          <el-option label="已下架" :value="0"></el-option>
+      <el-form-item label="选择平台">
+        <el-radio-group v-model="platform" @change="platformChange">
+          <el-radio :label="0">平台</el-radio>
+          <el-radio :label="1">商家</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="能否消费" v-show="platform">
+        <el-radio-group v-model="data_info.isConsume">
+          <el-radio :label="1" name="isConsume">可消费</el-radio>
+          <el-radio :label="0" name="isConsume">不可消费</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="选择商户" v-show="platform">
+        <el-select v-model="data_info.merchantID">
+          <el-option
+            v-for="merchant in merchant_list"
+            :key="merchant.merchantID"
+            :label="`${merchant.merchantName}(${merchant.shopName})`"
+            :value="merchant.merchantID"
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -59,7 +79,7 @@
 
       <el-form-item label="过期时间">
         <el-date-picker
-          v-model="data_info.pastDate"
+          v-model="data_info.expireTime"
           type="datetime"
           placeholder="选择日期时间"
         >
@@ -78,13 +98,19 @@
     <!-- 弹出框-模型列表 -->
     <el-dialog title="选择模型" :visible.sync="show_mode">
       <!-- 模型 -->
-      <ul id="model_list">
+      <ul class="model_list">
         <li
           v-for="model in model_list"
           :key="model.resID"
           @click="selectModel(model)"
         >
-          {{ model.showResourceName }}
+          <el-avatar
+            :size="70"
+            :src="model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ model.showResourceName }}</div>
         </li>
       </ul>
       <!-- 分页插件 -->
@@ -93,15 +119,18 @@
         @sizeChange="pageChange('size', $event)"
         @currChange="pageChange('curr', $event)"
       ></Pagination>
-      <!-- 标签 -->
-      <div class="select_model">
-        <span>已选择</span>
-        <el-tag
-          closable
-          v-if="select_model.showResourceName"
-          @close="unSelect"
-          >{{ select_model.showResourceName }}</el-tag
-        >
+      <!-- 选中模型 -->
+      <div class="select_model" v-show="Object.keys(select_model).length">
+        <div class="title">已选择</div>
+        <div class="ico" @click="unSelect" title="点击删除">
+          <el-avatar
+            :size="70"
+            :src="select_model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ select_model.showResourceName }}</div>
+        </div>
       </div>
       <!-- 操作 -->
       <el-button type="primary" size="small" @click="confirmMode"
@@ -113,9 +142,10 @@
 </template>
 
 <script>
+const { ar_2d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import {
-  getDataDetails,
+  getDetails,
   updateDetails,
   getFileList,
   uploadFiles,
@@ -123,7 +153,7 @@ import {
   addDataList,
   geFile,
 } from "@/utils/api/apis";
-import { filteObj, createFormData, createGet } from "@/utils/common";
+import { filteObj, createFormData, createGet, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -134,7 +164,11 @@ export default {
     this.control = this.$route.query.type;
     if (propID) {
       this.operate = 1;
-      getDataDetails(this.model, this.control, 1, { propID }, this);
+      getDetails(this.model, this.control, 1, { propID }).then((res) => {
+        console.log(res);
+        this.data_info = res.resultObject;
+        this.modeImg = ar_2d + this.data_info.facadeImageID;
+      });
     }
 
     // 请求当前道具分支的所有类型
@@ -145,6 +179,16 @@ export default {
       createGet(1, 90),
       this,
       "type_list"
+    );
+
+    // 请求商家列表
+    getDataList(
+      "merchant",
+      "merchantInfo",
+      1,
+      createGet(1, 999),
+      this,
+      "merchant_list"
     );
 
     // 如果是房屋，请求风格列表
@@ -162,11 +206,13 @@ export default {
 
   data() {
     return {
-      data_info: { houseStyleIDList: [] },
+      platform: 0,
+      data_info: {},
       find_form: {},
       operate: 0, // 0新增 1修改
       show_mode: false,
       model_list: [], // 模型列表
+      merchant_list: [],
       type_list: [], // 道具类型
       style_list: [], // 房屋风格列表
 
@@ -175,6 +221,7 @@ export default {
 
       select_model: {},
 
+      modeImg: "",
       model: "",
       control: "",
     };
@@ -183,24 +230,39 @@ export default {
   methods: {
     // 提交修改
     sendSubmit() {
-      // 计算过期时间戳
-      var date = this.data_info.pastDate,
-        form = { ...this.data_info };
-      form.validityTimestamp = new Date(date).getTime();
-
       switch (this.operate) {
         case 0:
-          addDataList(this.model, this.control, 1, form, this, "props_list");
+          addDataList(this.model, this.control, 1, this.data_info, this, {
+            name: "道具列表",
+            params: { tab: this.control },
+          });
           break;
         case 1:
-          updateDetails(this.model, this.control, 1, form, this, "props_list");
+          updateDetails(this.model, this.control, 1, this.data_info, this, {
+            name: "道具列表",
+            params: { tab: this.control },
+          });
           break;
+      }
+    },
+
+    // 平台改变
+    platformChange(v) {
+      if (v == 0) {
+        this.data_info.merchantID = "";
+        this.data_info.isConsume = 0;
+      } else {
+        this.data_info.isConsume = 1;
+        this.data_info = { ...this.data_info };
       }
     },
 
     // 返回上一页
     cancel() {
-      this.$router.push("props_list");
+      this.$router.push({
+        name: "道具列表",
+        params: { tab: this.control },
+      });
     },
 
     // 打开模型列表框
@@ -213,7 +275,6 @@ export default {
     // 点击选中模型
     selectModel(mode) {
       this.select_model = { ...mode };
-      console.log(this.select_model);
     },
 
     // 取消选中
@@ -227,6 +288,7 @@ export default {
         this.data_info.resID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
         this.data_info.facadeImageID = this.select_model.mainImageID;
+        this.modeImg = this.select_model.imgUrl;
       }
       this.show_mode = false;
     },
@@ -242,6 +304,12 @@ export default {
           break;
       }
       getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
+    },
+  },
+
+  watch: {
+    model_list() {
+      spliceImg(this.model_list, "mainImageID", true);
     },
   },
 };

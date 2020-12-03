@@ -52,7 +52,6 @@
 
     <!-- 角色列表 -->
     <el-table :data="data_list" tooltip-effect="dark" :border="true">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="昵称" width="150"></el-table-column>
       <el-table-column prop="imgUrl" label="头像" width="150">
         <template slot-scope="scope">
@@ -149,10 +148,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
-          <el-select v-model="data_info.isEnable">
-            <el-option label="启用" :value="0"></el-option>
-            <el-option label="禁用" :value="1"></el-option>
-          </el-select>
+          <el-radio-group v-model="data_info.isEnable">
+            <el-radio :label="0">禁用</el-radio>
+            <el-radio :label="1">启用</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">提交</el-button>
@@ -193,7 +192,8 @@ export default {
       model: "comUser",
       control: "comUserInfo",
       show_details: false,
-      operate_type: "0", // 操作类型
+      operate: "0", // 操作类型
+      password: "",
     };
   },
 
@@ -202,15 +202,15 @@ export default {
     findData() {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
+      filteObj(form);
+      spliceKey(form.data);
       getDataList(this.model, this.control, 1, form, this, "data_list");
     },
 
     // 发送创建请求
     sendSubmit() {
       this.show_details = false;
-      if (this.operate_type == "0") {
+      if (this.operate == "0") {
         addData(this.model, this.control, 1, this.data_info).then((res) => {
           switch (res.code) {
             case "000000":
@@ -227,6 +227,11 @@ export default {
           }
         });
       } else {
+        var pwd =
+          this.data_info.password == this.password
+            ? null
+            : this.data_info.password;
+        this.data_info.password = pwd;
         updateData(this.model, this.control, 1, this.data_info).then((res) => {
           switch (res.code) {
             case "000000":
@@ -272,15 +277,17 @@ export default {
     // 展示详情 type: 0-新增 1-修改
     showDetails(type, row) {
       this.show_details = true;
-      this.operate_type = type;
-      if (this.operate_type == "1") {
+      this.operate = type;
+      if (this.operate == "1") {
         this.data_info = { ...row };
+        this.password = row.password;
       }
     },
 
     // 清空弹出框
     clear() {
       this.data_info = {};
+      this.password = "";
     },
 
     // 分页属性改变
@@ -299,15 +306,7 @@ export default {
 
     // 重置
     resetForm() {
-      this.find_form.data = {
-        _like_userName: "",
-        _like_userId: "",
-        isEnable: "",
-        RoleGroupId: "",
-        email: "",
-        _like_realName: "",
-        _like_idCard: "",
-      };
+      this.find_form.data = {};
     },
   },
 

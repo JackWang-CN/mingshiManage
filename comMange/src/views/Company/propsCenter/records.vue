@@ -186,8 +186,6 @@ export default {
     // 查询
     findData() {
       var form = { ...this.find_form };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
       getDataList(this.model, this.control, 1, form, this);
     },
 
@@ -251,7 +249,6 @@ export default {
     // 拼接图片url
     data_list() {
       this.data_list = spliceImg(this.data_list, "propIco");
-      console.log(this.data_list);
     },
   },
 };

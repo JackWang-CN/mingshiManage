@@ -1,6 +1,6 @@
 <template>
   <!-- 优惠券详情 -->
-  <div id="coupon_details" class="shadow_container">
+  <div id="coupon_details" class="card_container">
     <div class="pageTitle">优惠券详情</div>
 
     <!-- 表单 -->
