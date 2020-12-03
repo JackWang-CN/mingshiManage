@@ -1,6 +1,6 @@
 <template>
   <!-- 详情页  -->
-  <div id="goods_details" class="shadow_container">
+  <div id="goods_details" class="card_container">
     <div class="pageTitle">{{ type == "add" ? "新增商品" : "修改商品" }}</div>
 
     <!-- 表单 -->

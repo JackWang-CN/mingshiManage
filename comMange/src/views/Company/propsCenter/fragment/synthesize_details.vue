@@ -1,10 +1,10 @@
 <template>
-  <div id="event_details" class="shadow_container">
+  <div id="synthesize_details" class="shadow_container">
     <div class="pageTitle">方案详情</div>
     <el-form label-width="100px">
       <el-form-item label="合成道具">
-        <el-tag style="margin-right: 10px" v-if="data_info.propName">{{
-          data_info.propName
+        <el-tag style="margin-right: 10px" v-if="data_info.glueName">{{
+          data_info.glueName
         }}</el-tag>
         <el-button type="success" size="small" @click="showProps"
           >选择道具</el-button
@@ -24,18 +24,18 @@
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="启用状态">
+      <el-form-item label="启用状态" v-if="!operate">
         <el-select v-model="data_info.isEnable">
           <el-option :value="0" label="禁用"></el-option>
           <el-option :value="1" label="启用"></el-option>
         </el-select>
       </el-form-item>
 
-      <!-- 碎片列表 -->
       <el-form-item label="碎片列表">
         <el-button type="success" @click="showChips" size="small"
           >添加碎片</el-button
         >
+        <!-- 碎片列表 -->
         <el-table :data="data_info.chip" width="100%">
           <el-table-column
             prop="chipName"
@@ -172,8 +172,8 @@ export default {
   mounted() {
     var { id } = this.$route.query;
     if (id) {
-      this.operate = "1";
-      getDetails(this.model, this.control, 1, { propID: id }).then((res) => {
+      this.operate = 1;
+      getDetails(this.model, this.control, 1, { glueID: id }).then((res) => {
         this.data_info = res.resultObject;
         this.imageUrl = window.baseUrl.ar_2d + res.resultObject.glueImg;
         res.resultObject.chip.forEach((item) => {
@@ -197,7 +197,7 @@ export default {
       show_props: false,
       show_chips: false,
       imageUrl: "",
-      operate: "0", // 0-新增 1-修改
+      operate: 0, // 0-新增 1-修改
       model: "propChip",
       control: "propChipGlue",
 
@@ -211,7 +211,7 @@ export default {
     async sendSubmit() {
       switch (this.operate) {
         // 新增
-        case "0":
+        case 0:
           // 是否上传文件
           if (this.img_list.length > 0) {
             var res = await uploadFiles(
@@ -237,7 +237,7 @@ export default {
           );
           break;
         // 修改
-        case "1":
+        case 1:
           // 是否上传文件
           if (this.img_list.length > 0) {
             var res = await uploadFiles(
@@ -286,7 +286,7 @@ export default {
     // 选中道具
     selectProp(row) {
       var { name, propID } = row;
-      this.data_info.propName = name;
+      this.data_info.glueName = name;
       this.data_info.propID = propID;
       this.show_props = false;
     },
@@ -379,7 +379,7 @@ export default {
 </script>
 
 <style lang='scss'>
-#event_details {
+#synthesize_details {
   .el-form {
   }
 

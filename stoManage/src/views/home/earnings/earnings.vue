@@ -1,5 +1,5 @@
 <template>
-  <div id="earnings" class="shadow_container">
+  <div id="earnings" class="card_container">
     <!-- 我的收益 -->
     <div class="pageTitle">我的收益</div>
 
@@ -29,7 +29,7 @@
       </h3>
 
       <!-- 表格 -->
-      <el-table :data="data_list" border>
+      <el-table :data="flow_list" border>
         <el-table-column
           prop="accountFlowID"
           label="订单号"
@@ -87,32 +87,28 @@
 </template>
 
 <script>
-import { getDataList } from "@/utils/api/apis";
+import { getData, getDataList } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {
     var form = createGet();
     // 请求总金币数量
-    getDataList(this.model, this.control, 1, form, this, "gold_total", "Total");
+    getData(this.model, this.control, 1, {}, "Total").then((res) => {
+      this.gold_total = res.resultObject;
+    });
+
     // 请求当日收支
-    getDataList(
-      this.model,
-      this.control,
-      1,
-      form,
-      this,
-      "income_day",
-      "dayIncomeExpenses"
+    getData(this.model, this.control, 1, {}, "dayIncomeExpenses").then(
+      (res) => {
+        this.income_day = res.resultObject;
+      }
     );
+
     // 请求当月收支
-    getDataList(
-      this.model,
-      this.control,
-      1,
-      form,
-      this,
-      "income_month",
-      "MonthIncomeExpenses"
+    getData(this.model, this.control, 1, {}, "MonthIncomeExpenses").then(
+      (res) => {
+        this.income_month = res.resultObject;
+      }
     );
 
     // 请求金币流水账单
@@ -122,7 +118,7 @@ export default {
       1,
       form,
       this,
-      "data_list",
+      "flow_list",
       "flowList"
     );
   },
@@ -135,7 +131,7 @@ export default {
       income_month: {},
       remark: "", // 备注
 
-      data_list: [
+      flow_list: [
         {
           orderId: "000001",
           customer: "嘉伟",
@@ -153,7 +149,6 @@ export default {
 
   methods: {
     addMark(row) {
-      console.log(row);
       this.showMark = true;
     },
 

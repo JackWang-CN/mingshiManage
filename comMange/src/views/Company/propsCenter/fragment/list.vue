@@ -9,7 +9,7 @@
     <!-- 查询表单 -->
     <el-form label-width="80px">
       <el-form-item label="碎片名称">
-        <el-input v-model="find_form.data.weaponName"></el-input>
+        <el-input v-model="find_form.data.name" clearable></el-input>
         <el-button type="primary" style="margin-left: 20px" @click="findData"
           >查询</el-button
         >
@@ -23,7 +23,7 @@
         width="180"
       ></el-table-column>
 
-      <el-table-column prop="ico" label="图标" width="120">
+      <el-table-column label="图标" width="120">
         <template slot-scope="scope">
           <el-avatar
             :size="80"
@@ -33,20 +33,45 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="图片（未凑齐）" width="120">
+        <template slot-scope="scope">
+          <el-avatar
+            :size="80"
+            :src="scope.row.noFullUrl"
+            shape="square"
+          ></el-avatar>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="describe"
+        label="碎片描述"
+        width="300"
+      ></el-table-column>
+
+      <el-table-column prop="isEnable" label="启用状态" width="80">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isEnable == 1">启用</span>
+          <span v-else>禁用</span>
+        </template></el-table-column
+      >
+
+      <el-table-column
+        prop="expireTime"
+        label="到期时间"
+        width="180"
+      ></el-table-column>
+
       <el-table-column
         prop="updateTime"
         label="更新时间"
         width="180"
       ></el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column label="操作" width="150">
+
+      <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <el-button
-            type="warning"
+            type="primary"
             @click="toDetails(1, scope.row.chipID)"
             size="small"
             >修改</el-button
@@ -57,6 +82,13 @@
             @click="delRow(scope.row.chipID)"
             size="small"
             >删除</el-button
+          >
+
+          <el-button
+            @click="switchState(scope.row)"
+            :type="scope.row.isEnable ? 'danger' : 'warning'"
+            size="small"
+            >{{ scope.row.isEnable ? "禁用" : "启用" }}</el-button
           >
         </template>
       </el-table-column>
@@ -72,9 +104,10 @@
 </template>
 
 <script>
+const fileUrl = window.baseUrl.ar_2d;
 import Pagination from "@/components/Pagination";
 import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
-import { getDataList, delData } from "@/utils/api/apis";
+import { getDataList, delData, updateData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -119,6 +152,19 @@ export default {
       });
     },
 
+    // 切换禁用/启用
+    switchState(row) {
+      var { chipID, isEnable } = row;
+      var operate = isEnable ? "disable" : "enable";
+      updateData(this.model, this.control, 1, { chipID }, operate).then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this);
+        }
+      );
+    },
+
     // 分页属性改变
     pageChange(type, page) {
       switch (type) {
@@ -130,14 +176,19 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      getDataList(this.model, this.control, 1, form, this, "data_list");
+      getDataList(this.model, this.control, 1, form, this);
     },
   },
 
   watch: {
     // 拼接图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "imgID", true);
+      spliceImg(this.data_list, "imgID", true);
+      this.data_list.forEach((item) => {
+        if (item.nonFullImgID) item.noFullUrl = fileUrl + item.nonFullImgID;
+      });
+
+      console.log(this.data_list);
     },
   },
 };

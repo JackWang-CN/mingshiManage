@@ -13,17 +13,17 @@
         width="150"
       ></el-table-column>
 
-      <el-table-column
-        prop="minHP"
-        label="血量高位"
-        width="150"
-      ></el-table-column>
+      <el-table-column prop="maxHP" label="血量高位" width="150">
+        <template slot-scope="scope">
+          {{ scope.row.maxHP + "%" }}
+        </template>
+      </el-table-column>
 
-      <el-table-column
-        prop="maxHP"
-        label="血量低位"
-        width="150"
-      ></el-table-column>
+      <el-table-column prop="minHP" label="血量低位" width="150">
+        <template slot-scope="scope">
+          {{ scope.row.minHP + "%" }}
+        </template>
+      </el-table-column>
 
       <el-table-column
         prop="lootStoreName"
@@ -63,17 +63,35 @@
       @currChange="pageChange('curr', $event)"
     ></Pagination>
 
+    <el-button style="margin: 20px 0 0 10px" type="info" @click="cancel"
+      >返回</el-button
+    >
+
     <!-- 弹出框 -->
-    <el-dialog title="对象列表" :visible.sync="show_details" width="25%">
-      <el-form label-width="80px">
+    <el-dialog
+      title="对象列表"
+      :visible.sync="show_details"
+      width="25%"
+      @closed="clear"
+    >
+      <el-form
+        label-width="80px"
+        :rules="rules"
+        ref="details_form"
+        :model="data_info"
+      >
         <el-form-item label="阶段名称">
           <el-input v-model="data_info.stateName"></el-input>
         </el-form-item>
-        <el-form-item label="血量高位">
-          <el-input v-model="data_info.maxHP"></el-input>
+        <el-form-item label="血量高位" prop="maxHP">
+          <el-input v-model="data_info.maxHP" clearable>
+            <template slot="append">%</template>
+          </el-input>
         </el-form-item>
-        <el-form-item label="血量低位">
-          <el-input v-model="data_info.minHP"></el-input>
+        <el-form-item label="血量低位" prop="minHP">
+          <el-input v-model="data_info.minHP" clearable>
+            <template slot="append">%</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="选择奖池">
           <el-select v-model="data_info.lootStoreID">
@@ -134,18 +152,45 @@ export default {
       operate: 0, // 0-新增 1-修改
       model: "ARGame",
       control: "stageConfiguration",
+
+      rules: {
+        maxHP: [
+          { required: true, message: "数值不能为空", trigger: "blur" },
+          {
+            validator: this.HPScope,
+            trigger: "blur",
+          },
+        ],
+
+        minHP: [
+          { required: true, message: "数值不能为空", trigger: "blur" },
+          {
+            validator: this.HPScope,
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
 
   methods: {
     // 点击提交按钮
     sendSubmit() {
+      var flag = true;
+      this.$refs["details_form"].validate((res) => {
+        flag = res;
+        console.log(res);
+      });
+
+      if (!flag) {
+        return;
+      }
+
       this.data_info.gameObjectID = this.gameObjectID;
       switch (this.operate) {
         // 新增
         case 0:
           addData(this.model, this.control, 1, this.data_info).then((res) => {
-            console.log(res);
             hintMessage(this, res);
             getDataList(
               this.model,
@@ -236,10 +281,50 @@ export default {
       });
     },
 
+    // 清空
+    clear() {
+      this.data_info = {};
+      this.$refs["details_form"].resetFields();
+    },
+
     // 取消回到列表页
     cancel() {
-      this.$router.push("gameEnity_list");
+      this.$router.push({
+        name: "实体对象列表",
+        params: { tab: "1" },
+      });
     },
+
+    // 验证器：血量范围
+    HPScope(rule, value, callback) {
+      if (value > 100 || value < 0) {
+        callback(new Error("取值范围为0~100之间"));
+      } else {
+        switch (rule.fullField) {
+          case "minHP":
+            if (value - 0 >= this.data_info.maxHP) {
+              callback(new Error("必须小于高位血量值"));
+            } else {
+              callback();
+            }
+            break;
+          case "maxHP":
+            if (value - 0 <= this.data_info.minHP) {
+              callback(new Error("必须大于低位血量值"));
+            } else {
+              callback();
+            }
+            break;
+        }
+      }
+    },
+
+    // 验证器：血量范围
+    // HPScope(rule, value, callback) {
+    //   if (value > 100 || value < 0) {
+    //     callback(new Error("取值范围为0~100之间"));
+    //   }
+    // },
   },
 };
 </script>

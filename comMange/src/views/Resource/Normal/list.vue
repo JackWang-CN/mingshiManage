@@ -17,6 +17,7 @@
         <el-input
           v-model="find_form.data.resExtName"
           placeholder="如：.jpg"
+          clearable
         ></el-input>
       </el-form-item>
       <el-form-item label="是否禁用" v-if="activeName == 'user'">
@@ -29,6 +30,7 @@
         <el-input
           v-model="find_form.data.uploadUName"
           placeholder="上传用户名"
+          clearable
         ></el-input>
       </el-form-item>
 
@@ -168,7 +170,6 @@ export default {
       data_info: {}, // 详情数据对象
       isShowDetails: false, // 是否显示详情
       activeName: "",
-      fileUrl: "https://api.resources.scmsar.com/",
 
       model: "file",
       control: "info",
@@ -178,13 +179,7 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.currPage = 1;
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      // form.data = spliceKey(form.data);
-
-      getFileList(undefined, 1, form, this);
+      getFileList(undefined, 1, this.find_form, this);
     },
 
     // 禁用文件

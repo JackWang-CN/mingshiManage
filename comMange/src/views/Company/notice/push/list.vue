@@ -124,7 +124,6 @@ export default {
   methods: {
     // 跳转到详情页
     toDetails(type, id) {
-      console.log(id);
       this.$router.push({
         path: "push_details",
         query: { id },

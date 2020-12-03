@@ -1,6 +1,6 @@
 <!-- 商品列表 -->
 <template>
-  <div id="goods_list" class="shadow_container">
+  <div id="goods_list" class="card_container">
     <div class="pageTitle">商品列表</div>
     <!-- 查询表单 -->
     <el-form id="find_form" :model="find_form" label-width="100px">
@@ -235,8 +235,6 @@ export default {
     // 发送提交
     async sendSubmit() {
       var data_info = { ...this.data_info };
-      console.log(data_info);
-      // return;
       this.show_details = false;
 
       // 判断是否上传图片
@@ -306,8 +304,6 @@ export default {
 
     // 删除当前
     delRow(goodsID) {
-      console.log(goodsID);
-      return;
       delData(this.model, this.control, 1, { goodsID }).then((res) => {
         if (res) {
           this.$message.success("删除成功！");

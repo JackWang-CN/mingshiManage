@@ -7,9 +7,14 @@
       <!-- 当前阶段 -->
       <el-tab-pane label="当前阶段" name="current">
         <!-- 进度条 -->
-        <el-steps :active="activeState" :space="170">
+        <el-steps
+          :active="activeState"
+          :space="170"
+          :process-status="process_status"
+          finish-status="success"
+        >
           <el-step
-            v-for="item in progress_list"
+            v-for="item in stage_list"
             :key="item.stateID"
             :title="item.stateName"
           ></el-step>
@@ -25,6 +30,7 @@
               action="#"
               multiple
               :limit="3"
+              :file-list="file_list"
             >
               <el-button size="small" type="primary">选择文件</el-button>
             </el-upload>
@@ -51,7 +57,6 @@
             >
           </el-form-item>
         </el-form>
-        <el-button type="info" @click="cancel">返回</el-button>
       </el-tab-pane>
 
       <!-- 历史进度 -->
@@ -91,23 +96,24 @@
       </el-tab-pane>
     </el-tabs>
 
-    <!-- 弹出框-历史阶段详情 -->
-    <el-dialog title="阶段详情" width="30%" :visible.sync="show_details">
+    <el-button style="margin-top: 20px" type="info" @click="cancel"
+      >返回</el-button
+    >
+
+    <!-- 弹出框-阶段附件 -->
+    <el-dialog title="附件" width="30%" :visible.sync="show_details">
       <el-form label-width="80px">
         <el-form-item label="附件资源" v-if="attachment_list.length">
           <div class="file_list">
             <a
               v-for="item in attachment_list"
               :key="item.resID"
-              :href="
-                'https://api.resources.scmsar.com/file/download/source/v1?Mark=' +
-                item.resID
-              "
+              :href="fileUrl + item.resID"
               >{{ item.affixID }}</a
             >
           </div>
         </el-form-item>
-        <el-form-item v-else>暂无数据</el-form-item>
+        <el-form-item v-else><span> 暂无数据</span></el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -125,24 +131,69 @@ import { createGet, hintMessage } from "@/utils/common";
 export default {
   created() {
     this.entrustID = this.$route.query.id;
+    this.fileUrl = window.baseUrl.normal_file;
 
     // 1.获取商家委托阶段列表（一共有几个阶段）
-    getData(this.model, this.control, 1, createGet(1, 99), "stage/list").then(
-      (res) => {
-        this.progress_list = res.resultObject;
-        this.breakOff = this.progress_list.pop();
-      }
-    );
+    getData(this.model, this.control, 1, {}, "stage/list").then((res) => {
+      this.progress_list = res.resultObject;
+      this.breakOff = this.progress_list.pop();
+    });
 
     // 2.获取委托进度信息列表
     this.activeName = "current";
+    getData(
+      this.model,
+      this.control,
+      1,
+      { value: this.entrustID },
+      "progress/current"
+    ).then((res) => {
+      this.activeObj = res.resultObject;
+      // 获取当前的阶段名称，遍历所有阶段，取得当前阶段在所有阶段中的序号
+      var phaseStatus = this.activeObj.phaseStatus;
+      this.isEnd = this.roll_list.includes(phaseStatus);
+      switch (phaseStatus) {
+        case "中止":
+          if (this.activeObj.prePhaseStatus) {
+            // 判断是否存在上一阶段
+
+            this.progress_list.some((item, index) => {
+              if (item.stateName == this.activeObj.prePhaseStatus) {
+                this.progress_list.splice(index, 0, this.breakOff);
+                this.activeState = index;
+              }
+              // 满足条件终止循环
+              return item.stateName == this.activeObj.prePhaseStatus;
+            });
+          } else {
+            // 若上一阶段状态为null（委托直接被拒绝时出现该情况），则固定在第二个阶段显示中断
+
+            this.progress_list.splice(1, 0, this.breakOff);
+            this.activeState = 1;
+          }
+          this.process_status = "error";
+          break;
+
+        default:
+          this.progress_list.some((item, index) => {
+            if (item.stateName == phaseStatus) {
+              this.activeState = index;
+            }
+            // 满足条件终止循环
+            return item.stateName == phaseStatus;
+          });
+          break;
+      }
+
+      this.stage_list = [...this.progress_list];
+    });
   },
 
   data() {
     return {
+      fileUrl: "",
       roll_list: [
         "待受理",
-
         "受理",
         "需求确认",
         "签订合同",
@@ -150,10 +201,12 @@ export default {
         "完结待商户确认",
         "商户确认完结",
       ],
+      process_status: "process",
       data_list: [],
       data_info: {},
       file_list: [], // 文件列表
       progress_list: [], // 商家委托列表
+      stage_list: [],
       attachment_list: [], //当前阶段的附件列表
       breakOff: {}, // 中断的阶段数据模型
       entrustID: "",
@@ -173,36 +226,6 @@ export default {
     activeName() {
       switch (this.activeName) {
         case "current":
-          getData(
-            this.model,
-            this.control,
-            1,
-            { value: this.entrustID },
-            "progress/current"
-          ).then((res) => {
-            this.activeObj = res.resultObject;
-            // 获取当前的阶段名称，遍历所有阶段，取得当前阶段在所有阶段中的序号
-            var phaseStatus = this.activeObj.phaseStatus;
-            this.isEnd = this.roll_list.includes(phaseStatus);
-            if (phaseStatus == "中止" && !this.progress_list.includes("中止")) {
-              this.progress_list.some((item, index) => {
-                if (item.stateName == this.activeObj.prePhaseStatus) {
-                  this.progress_list.splice(index, 0, this.breakOff);
-                  this.activeState = index;
-                }
-                // 满足条件终止循环
-                return item.stateName == this.activeObj.prePhaseStatus;
-              });
-            } else {
-              this.progress_list.some((item, index) => {
-                if (item.stateName == phaseStatus) {
-                  this.activeState = index;
-                }
-                // 满足条件终止循环
-                return item.stateName == phaseStatus;
-              });
-            }
-          });
           break;
         case "history":
           getData(
@@ -269,6 +292,7 @@ export default {
       this.data_info = {};
       updateData(this.model, this.control, 1, form, operate).then((res) => {
         hintMessage(this, res);
+        this.file_list = [];
         getData(
           this.model,
           this.control,
@@ -293,21 +317,23 @@ export default {
     // 中止委托
     shutdownEntrust() {
       this.data_info.entrustID = this.entrustID;
-      console.log(this.data_info);
       updateDetails(
         this.model,
         this.control,
         1,
         this.data_info,
         this,
-        "merchant_entrustList",
+        "entrust_list",
         "end"
       );
     },
 
     // 返回上一页
     cancel() {
-      this.$router.push("entrust_list");
+      this.$router.push({
+        name: "商户委托",
+        params: { tab: this.$route.query.type },
+      });
     },
   },
 };

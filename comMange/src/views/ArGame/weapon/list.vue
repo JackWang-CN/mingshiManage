@@ -19,7 +19,7 @@
         width="180"
       ></el-table-column>
 
-      <el-table-column label="图标" width="120">
+      <!-- <el-table-column label="图标" width="120">
         <template slot-scope="scope">
           <el-avatar
             :size="80"
@@ -27,7 +27,7 @@
             shape="square"
           ></el-avatar>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         prop="spendGlod"
@@ -37,7 +37,8 @@
 
       <el-table-column prop="type" label="类型" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.weaponType == 1">小型武器</span>
+          <span v-if="scope.row.weaponType == 0">免费武器</span>
+          <span v-else-if="scope.row.weaponType == 1">轻型武器</span>
           <span v-else-if="scope.row.weaponType == 2">中型武器</span>
           <span v-else-if="scope.row.weaponType == 3">重型武器</span>
         </template>
@@ -121,7 +122,6 @@ export default {
   methods: {
     // 跳转到详情页
     toDetails(type, id) {
-      console.log(id);
       this.$router.push({
         path: "weapon_details",
         query: { id },

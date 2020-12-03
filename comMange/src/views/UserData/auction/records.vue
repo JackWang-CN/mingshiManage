@@ -7,7 +7,7 @@
     <el-form ref="find_form" :model="find_form" label-width="80px">
       <el-form-item label="道具名称" label-width="100px">
         <el-input
-          v-model="find_form.data.aname"
+          v-model="find_form.data.assetsName"
           placeholder="请输入道具名称"
           clearable
         ></el-input>
@@ -62,7 +62,7 @@
           <el-avatar
             shape="square"
             :size="80"
-            :src="scope.row.imageID"
+            :src="scope.row.imgUrl"
           ></el-avatar>
         </template>
       </el-table-column>
@@ -100,7 +100,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, spliceKey, filteObj } from "@/utils/common";
+import { createGet, spliceKey, filteObj, spliceImg } from "@/utils/common";
 import { getDataList } from "@/utils/api/apis";
 export default {
   components: {
@@ -128,15 +128,11 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
       getDataList(
         this.model,
         this.control,
         this.vision,
-        form,
+        this.find_form,
         this,
         "data_list"
       );
@@ -167,6 +163,12 @@ export default {
         this,
         "data_list"
       );
+    },
+  },
+
+  watch: {
+    data_list() {
+      spliceImg(this.data_list, "imageID");
     },
   },
 };

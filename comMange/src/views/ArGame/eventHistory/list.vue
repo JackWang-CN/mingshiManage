@@ -110,9 +110,7 @@ export default {
     },
 
     // 删除当前行
-    delRow(id) {
-      console.log("删除", id);
-    },
+    delRow(id) {},
 
     // 分页属性改变
     pageChange(type, page) {

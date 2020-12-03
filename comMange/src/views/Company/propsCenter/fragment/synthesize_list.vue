@@ -9,7 +9,7 @@
     <!-- 查询表单 -->
     <el-form label-width="80px">
       <el-form-item label="方案名称">
-        <el-input v-model="find_form.data.weaponName"></el-input>
+        <el-input v-model="find_form.data.glueName" clearable></el-input>
         <el-button type="primary" style="margin-left: 20px" @click="findData"
           >查询</el-button
         >
@@ -17,6 +17,12 @@
     </el-form>
 
     <el-table :data="data_list" style="width: 100%" border>
+      <el-table-column
+        prop="glueName"
+        label="配方名称"
+        width="180"
+      ></el-table-column>
+
       <el-table-column
         prop="propName"
         label="道具名称"
@@ -34,14 +40,14 @@
       </el-table-column>
 
       <el-table-column
-        prop="describe"
+        prop="glueDescribe"
         label="配方描述"
-        width="200"
+        width="300"
       ></el-table-column>
 
-      <el-table-column prop="isEnable" label="启用状态" width="120">
+      <el-table-column prop="glueIsEnable" label="启用状态" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.isEnable == 0">禁用</span>
+          <span v-if="scope.row.glueIsEnable == 0">禁用</span>
           <span v-else>启用</span>
         </template></el-table-column
       >
@@ -51,18 +57,25 @@
         width="180"
       ></el-table-column>
 
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <el-button
-            type="warning"
-            @click="toDetails(1, scope.row.propID)"
+            type="primary"
+            @click="toDetails(1, scope.row.glueID)"
             size="small"
             >修改</el-button
           >
 
           <el-button
+            :type="scope.row.glueIsEnable ? 'danger' : 'warning'"
+            @click="switchState(scope.row.glueIsEnable, scope.row.glueID)"
+            size="small"
+            >{{ scope.row.glueIsEnable ? "禁用" : "启用" }}</el-button
+          >
+
+          <el-button
             type="danger"
-            @click="delRow(scope.row.propID)"
+            @click="delRow(scope.row.glueID)"
             size="small"
             >删除</el-button
           >
@@ -81,8 +94,8 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, filteObj, spliceImg } from "@/utils/common";
-import { getDataList } from "@/utils/api/apis";
+import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
+import { getDataList, updateData, delData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -118,9 +131,25 @@ export default {
       getDataList(this.model, this.control, 1, form, this, "data_list");
     },
 
+    // 启用禁用
+    switchState(state, glueID) {
+      var operate = state ? "disable" : "enable";
+      updateData(this.model, this.control, 1, { glueID }, operate).then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this, "data_list");
+        }
+      );
+    },
+
     // 删除当前行
-    delRow(id) {
-      console.log("删除", id);
+    delRow(glueID) {
+      delData(this.model, this.control, 1, { glueID }).then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getDataList(this.model, this.control, 1, form, this, "data_list");
+      });
     },
 
     // 分页属性改变

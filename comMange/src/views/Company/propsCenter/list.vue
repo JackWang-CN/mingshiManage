@@ -16,17 +16,18 @@
         <el-input
           v-model="find_form.data.name"
           placeholder="请输入道具名称"
+          clearable
         ></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.typeID" placeholder="请选择道具类型">
+          <el-option label="全部" value></el-option>
           <el-option
             v-for="item in type_list"
             :key="item.typeID"
             :label="item.name"
             :value="item.typeID"
           ></el-option>
-          <el-option label="全部" value></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="道具状态" label-width="100px">
@@ -55,11 +56,6 @@
         width="120"
       ></el-table-column>
       <el-table-column prop="typeName" label="道具类型" width="120">
-        <!-- <template slot-scope="scope">
-          <span v-if="scope.row.typeID==1">户型风格</span>
-          <span v-else-if="scope.row.typeID==2">屋内道具</span>
-          <span v-else-if="scope.row.typeID==3">AR宠物</span>
-        </template>-->
       </el-table-column>
       <el-table-column prop="isShelfPropMall" label="上架状态" width="120">
         <template slot-scope="scope">
@@ -67,9 +63,26 @@
           <span v-else>未上架</span>
         </template>
       </el-table-column>
+
+      <el-table-column prop="merchantName" label="商户名称" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.merchantName">{{
+            scope.row.merchantName
+          }}</span>
+          <span v-else>公司平台</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="isConsume" label="可否消费" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.isConsume == 1">可消费</span>
+          <span v-else>不可消费</span>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="isEnable" label="道具状态" width="120">
         <template slot-scope="scope">
-          <span v-if="(scope.row.isEnable = 1)">启用</span>
+          <span v-if="scope.row.isEnable == 1">启用</span>
           <span v-else>禁用</span>
         </template>
       </el-table-column>
@@ -95,8 +108,8 @@
       ></el-table-column>
       <el-table-column prop="expireTime" label="有效期限" width="170">
         <template slot-scope="scope">
-          <span v-if="scope.row.validityTimestamp == -1">永久有效</span>
-          <span v-else>{{ scope.row.pastDate }}</span>
+          <span v-if="scope.row.expireTime == -1">永久有效</span>
+          <span v-else>{{ scope.row.expireTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="280">
@@ -107,14 +120,21 @@
             size="small"
             >修改</el-button
           >
+
           <el-button
-            v-if="!scope.row.isShelfPropMall"
+            @click="switchState(scope.row)"
+            :type="scope.row.isEnable ? 'danger' : 'warning'"
+            size="small"
+            >{{ scope.row.isEnable ? "禁用" : "启用" }}</el-button
+          >
+
+          <el-button
+            v-if="!scope.row.isShelfPropMall && !scope.row.merchantID"
             @click="onshelve(scope.row.propID)"
             type="success"
             size="small"
             >上架</el-button
           >
-          <!-- <el-button @click="delRow(scope.row.propID)" type="danger" size="small">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -138,13 +158,14 @@ import {
   spliceImg,
   translateTime,
 } from "@/utils/common";
-import { getDataList, addData, delData } from "@/utils/api/apis";
+import { getDataList, addData, updateData } from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
   },
   mounted() {
-    this.activeName = "prop";
+    var { tab } = this.$route.params;
+    this.activeName = tab || "prop";
     this.find_form = createGet();
   },
 
@@ -164,11 +185,7 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      // form.data = spliceKey(form.data);
-      getDataList(this.model, this.control, 1, form, this);
+      getDataList(this.model, this.control, 1, this.find_form, this);
     },
 
     // 跳转到详情页
@@ -195,13 +212,17 @@ export default {
       );
     },
 
-    // 删除当前
-    delRow(propID) {
-      delData(this.model, this.control, 1, { propID }).then((res) => {
-        hintMessage(this, res);
-        var form = { ...this.find_form };
-        getDataList(this.model, this.control, 1, form, this);
-      });
+    // 切换禁用/启用
+    switchState(row) {
+      var { propID, isEnable } = row;
+      var operate = isEnable ? "disable" : "enable";
+      updateData(this.model, this.control, 1, { propID }, operate).then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(this.model, this.control, 1, form, this);
+        }
+      );
     },
 
     // 重置

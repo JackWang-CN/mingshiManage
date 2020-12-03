@@ -13,7 +13,7 @@
     <el-form class="find_form" :model="find_form" label-width="80px">
       <el-form-item label="请求编号" label-width="100px">
         <el-input
-          v-model="find_form.data.reqId"
+          v-model="find_form.data.entrustID"
           placeholder="请输入请求编号"
         ></el-input>
       </el-form-item>
@@ -33,6 +33,10 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         ></el-date-picker>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="findData">查询</el-button>
       </el-form-item>
     </el-form>
     <!-- 商户列表 -->
@@ -142,11 +146,11 @@
       title="委托处理"
       :visible.sync="show_details"
       width="30%"
-      @close="closeOperate"
+      @closed="clear"
     >
       <el-form label-width="80px">
         <el-form-item label="任务分配" v-show="this.operate == 0">
-          <el-radio-group v-model="data_info.userID" @change="selectManger">
+          <el-radio-group v-model="data_info.userID">
             <el-radio
               v-for="item in manager_list"
               :key="item.userID"
@@ -192,7 +196,9 @@ export default {
   mounted() {
     // 首次加载
     this.find_form = createGet();
-    this.activeName = "ongoing/list";
+
+    var { tab } = this.$route.params;
+    this.activeName = tab || "ongoing/list";
   },
 
   data() {
@@ -225,11 +231,15 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      form.data = spliceKey(form.data);
-      getDataList(this.model, this.control, this.vision, form, this);
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        this.find_form,
+        this,
+        null,
+        this.activeName
+      );
     },
 
     // 点击处理按钮
@@ -239,6 +249,7 @@ export default {
           path: "entrust_details",
           query: {
             id: entrustID,
+            type: this.activeName,
           },
         });
       } else {
@@ -259,7 +270,7 @@ export default {
     },
 
     // 关闭弹出框的回调
-    closeOperate() {
+    clear() {
       this.data_info = {};
     },
 
@@ -282,14 +293,17 @@ export default {
         (res) => {
           hintMessage(this, res);
           var form = { ...this.find_form };
-          getDataList(this.model, this.control, this.vision, form, this);
+          getDataList(
+            this.model,
+            this.control,
+            this.vision,
+            form,
+            this,
+            null,
+            "ongoing/list"
+          );
         }
       );
-    },
-
-    // 勾选客户经理
-    selectManger(v) {
-      console.log(v);
     },
 
     // 分页属性改变

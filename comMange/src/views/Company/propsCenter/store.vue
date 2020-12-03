@@ -16,17 +16,18 @@
         <el-input
           v-model="find_form.data.name"
           placeholder="请输入道具名称"
+          clearable
         ></el-input>
       </el-form-item>
       <el-form-item label="道具类型" label-width="100px">
         <el-select v-model="find_form.data.typeID" placeholder="请选择道具类型">
+          <el-option label="全部" :value="null"></el-option>
           <el-option
             v-for="type in type_list"
             :key="type.typeID"
             :label="type.name"
             :value="type.typeID"
           ></el-option>
-          <el-option label="全部" value></el-option>
         </el-select>
       </el-form-item>
 
@@ -150,15 +151,11 @@ export default {
   methods: {
     // 查询
     findData() {
-      var form = { ...this.find_form };
-      form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
-      // form.data = spliceKey(form.data);
       getDataList(
         this.model,
         this.control,
         1,
-        form,
+        this.find_form,
         this,
         "data_list",
         this.activeName + "List"

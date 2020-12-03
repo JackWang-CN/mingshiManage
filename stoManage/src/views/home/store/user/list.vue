@@ -15,15 +15,13 @@
       <!-- 查询条件 -->
       <el-form-item>
         <el-input
-          v-model="find_form.name"
+          v-model="find_form.userName"
           placeholder="请输入用户名或账号"
         ></el-input>
       </el-form-item>
 
-      <el-form-item>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info" @click="resetForm">重置</el-button>
-        <el-button type="danger">批量删除</el-button>
+      <el-form-item style="margin-left: 10px">
+        <el-button type="primary" @click="findData">查询</el-button>
       </el-form-item>
     </el-form>
 
@@ -38,7 +36,7 @@
       <el-table-column
         prop="userName"
         label="用户名"
-        width="100"
+        width="180"
       ></el-table-column>
       <el-table-column
         prop="userAccount"
@@ -143,6 +141,11 @@ export default {
     };
   },
   methods: {
+    findData() {
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, form, this, "user_list");
+    },
+
     // 跳转到详情页
     showDetails(type, row) {
       this.show_details = true;
@@ -167,7 +170,6 @@ export default {
 
     // 发送提交修改
     sendSubmit() {
-      console.log(this.data_info);
       switch (this.operate) {
         // 新增
         case 0:

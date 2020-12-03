@@ -3,49 +3,20 @@
   <div id="store_type" class="shadow_container">
     <div class="pageTitle">
       商户经营类别
-      <el-button type="success" @click="showDetails(0)">添加类型</el-button>
+      <!-- <el-button type="success" @click="showDetails(0)">添加类型</el-button> -->
     </div>
 
     <!-- 列表 -->
     <el-table :data="data_list" border>
       <el-table-column
-        prop="merchantName"
-        label="商户名称"
+        prop="name"
+        label="类型名称"
         width="180"
       ></el-table-column>
+
       <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
+        prop="typeID"
+        label="类型ID"
         width="180"
       ></el-table-column>
     </el-table>

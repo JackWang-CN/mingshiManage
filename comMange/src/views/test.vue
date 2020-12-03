@@ -1,17 +1,27 @@
 <template>
-  <div id="parent">
-    <!-- 3.使用子组件 -->
-    <Pagination></Pagination>
+  <div>
+    <el-input v-model="data_info.name[0].num"></el-input>
   </div>
 </template>
 
 <script>
-// 1.引入子组件
-import Pagination from "@/components/Pagination";
 export default {
-  // 2.注册子组件
-  components: {
-    Pagination,
+  data() {
+    return {
+      data_info: { name: [{ num: "" }] },
+    };
+  },
+
+  watch: {
+    "data_info.name[0].num": {
+      deep: true,
+      handler(newV, old) {
+        console.log(newV, old);
+      },
+    },
   },
 };
 </script>
+
+<style>
+</style>

@@ -32,35 +32,35 @@
 
       <el-form-item label="能否被攻击">
         <el-select v-model="data_info.attacked">
-          <el-option :value="0" label="是"></el-option>
-          <el-option :value="1" label="否"></el-option>
+          <el-option :value="0" label="否"></el-option>
+          <el-option :value="1" label="是"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="最大血量">
+      <el-form-item label="最大血量" v-show="data_info.attacked">
         <el-input-number v-model="data_info.maxHp"></el-input-number>
       </el-form-item>
 
-      <el-form-item label="最小血量">
+      <el-form-item label="最小血量" v-show="data_info.attacked">
         <el-input-number v-model="data_info.minHp"></el-input-number>
       </el-form-item>
 
-      <el-form-item label="暴击几率">
+      <el-form-item label="暴击几率" v-show="data_info.attacked">
         <el-input v-model="data_info.criticalChance"></el-input>
       </el-form-item>
 
-      <el-form-item label="是否会回血">
-        <el-select v-model="data_info.backBlood">
+      <el-form-item label="是否会回血" v-show="data_info.attacked">
+        <el-select v-model="data_info.backHP">
           <el-option :value="1" label="是"></el-option>
           <el-option :value="0" label="否"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="脱战回血量" v-show="data_info.backBlood">
+      <el-form-item label="脱战回血量" v-show="data_info.backHP">
         <el-input v-model="data_info.normalBackCount"></el-input>
       </el-form-item>
 
-      <el-form-item label="战斗回血量" v-show="data_info.backBlood">
+      <el-form-item label="战斗回血量" v-show="data_info.backHP">
         <el-input v-model="data_info.attackedBackCount"></el-input>
       </el-form-item>
 
@@ -68,9 +68,15 @@
         <el-button type="success" size="small" @click="showModel"
           >选择模型</el-button
         >
-        <el-tag style="margin-left: 5px" v-if="data_info.resName">{{
-          data_info.resName
-        }}</el-tag>
+        <div class="mode_img" v-show="data_info.modeImg">
+          <el-avatar
+            :size="80"
+            :src="data_info.modeImg"
+            shape="square"
+            v-if="data_info.resName"
+          ></el-avatar>
+          <el-tag>{{ data_info.resName }}</el-tag>
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -126,10 +132,11 @@
 </template>
 
 <script>
+const fileUrl = window.baseUrl.ar_2d;
 import Pagination from "@/components/Pagination";
 import {
   getDataList,
-  getDataDetails,
+  getDetails,
   addDataList,
   updateDetails,
   getFileList,
@@ -158,7 +165,12 @@ export default {
     if (id) {
       this.operate = "1";
       var form = { creatureInfoID: id };
-      getDataDetails(this.model, this.control, 1, form, this, "data_info");
+      getDetails(this.model, this.control, 1, form).then((res) => {
+        this.data_info = res.resultObject;
+        this.data_info.modeImg = fileUrl + this.data_info.mainImageID;
+        this.data_info.resName = this.data_info.showResourceName;
+        console.log(this.data_info);
+      });
     }
   },
 
@@ -180,30 +192,21 @@ export default {
   methods: {
     // 点击提交按钮
     sendSubmit() {
-      console.log(this.data_info);
       //   return;
       switch (this.operate) {
         // 新增
         case "0":
-          addDataList(
-            this.model,
-            this.control,
-            1,
-            this.data_info,
-            this,
-            "gameObj_list"
-          );
+          addDataList(this.model, this.control, 1, this.data_info, this, {
+            name: "游戏对象列表",
+            params: { tab: "biologyObj" },
+          });
           break;
         // 修改
         case "1":
-          updateDetails(
-            this.model,
-            this.control,
-            1,
-            this.data_info,
-            this,
-            "gameObj_list"
-          );
+          updateDetails(this.model, this.control, 1, this.data_info, this, {
+            name: "游戏对象列表",
+            params: { tab: "biologyObj" },
+          });
           break;
       }
     },
@@ -230,6 +233,7 @@ export default {
       if (this.select_model.resID) {
         this.data_info.resourceID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
+        this.data_info.modeImg = this.select_model.imgUrl;
       }
       this.show_mode = false;
     },
@@ -249,7 +253,10 @@ export default {
 
     // 取消回到列表页
     cancel() {
-      this.$router.push("gameObj_list");
+      this.$router.push({
+        name: "游戏对象列表",
+        params: { tab: "biologyObj" },
+      });
     },
   },
 
@@ -271,6 +278,16 @@ export default {
       .el-select,
       .el-textarea {
         width: 100%;
+      }
+
+      .mode_img {
+        width: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .el-tag {
+          margin-top: 10px;
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div id="order_check" class="shadow_container">
+  <div id="order_check" class="card_container">
     <div class="pageTitle">商户审核</div>
     <!-- 查询表单 -->
     <el-form ref="find_form" :model="find_form" label-width="100px">

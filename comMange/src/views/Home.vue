@@ -12,188 +12,27 @@
         :router="true"
         :unique-opened="true"
       >
-        <!-- 首页 -->
-        <el-menu-item index="index">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">首页</span>
-        </el-menu-item>
-
-        <!-- 道具商城 -->
-        <el-submenu index="props">
-          <template slot="title">
-            <i class="el-icon-shopping-cart-2"></i>
-            <span>道具商城</span>
-          </template>
-          <el-menu-item index="props_store">商城道具</el-menu-item>
-          <el-menu-item index="props_records">交易记录</el-menu-item>
-        </el-submenu>
-
-        <!-- 道具管理 -->
-        <el-submenu index="props_manage">
-          <template slot="title">
-            <i class="el-icon-shopping-cart-2"></i>
-            <span>道具管理</span>
-          </template>
-          <el-menu-item index="props_list">道具列表</el-menu-item>
-          <el-menu-item index="props_type">道具类型</el-menu-item>
-          <el-menu-item index="props_fragmentList">道具碎片</el-menu-item>
-          <el-menu-item index="props_synthesizeList">合成方案</el-menu-item>
-          <!-- <el-menu-item index="house_style">房屋风格</el-menu-item> -->
-        </el-submenu>
-
-        <!-- 拍卖行 -->
-        <el-submenu index="auction">
-          <template slot="title">
-            <i class="el-icon-office-building"></i>
-            <span>拍卖行</span>
-          </template>
-          <el-menu-item index="auction_list">拍卖列表</el-menu-item>
-          <el-menu-item index="auction_records">交易记录</el-menu-item>
-        </el-submenu>
-
-        <!-- 资源管理 -->
-        <el-submenu index="resource">
-          <template slot="title">
-            <i class="el-icon-s-grid"></i>
-            <span>资源管理</span>
-          </template>
-          <el-menu-item index="normal_list">普通资源管理</el-menu-item>
-          <el-menu-item index="ar_list">AR资源管理</el-menu-item>
-          <el-menu-item index="ar_type">AR资源类型</el-menu-item>
-        </el-submenu>
-
-        <!-- 活动管理 -->
-        <el-submenu index="activity">
-          <template slot="title">
-            <i class="el-icon-s-management"></i>
-            <span>活动管理</span>
-          </template>
-          <el-menu-item index="activity_list">商户活动</el-menu-item>
-          <el-menu-item index="activity_type">活动类型</el-menu-item>
-          <el-menu-item index="activity_rule">活动规则</el-menu-item>
-          <el-menu-item index="coupon_list">优惠券</el-menu-item>
-          <el-menu-item index="coupon_type">优惠券类型</el-menu-item>
-          <!-- <el-menu-item index="user_accFlow">帐户流水</el-menu-item>
-          <el-menu-item index="userdata_spaceData">空间数据管理</el-menu-item>
-          <el-menu-item index="userdata_spaEstLicense">地产数据管理</el-menu-item>
-          <el-menu-item index="userdata_houseList">房产数据管理</el-menu-item>-->
-        </el-submenu>
-
-        <!-- 商户管理 -->
-        <el-submenu index="merchant">
-          <template slot="title">
-            <i class="el-icon-s-goods"></i>
-            <span>商户管理</span>
-          </template>
-          <el-menu-item index="merchant_list">商户列表</el-menu-item>
-          <el-menu-item index="merchant_check">商户审核</el-menu-item>
-          <el-menu-item index="entrust_list">商户委托</el-menu-item>
-          <el-menu-item index="merchant_type">经营类别</el-menu-item>
-          <!-- <el-menu-item index="merchant_advert">商户广告</el-menu-item> -->
-          <el-menu-item index="merchant_drawing">提现管理</el-menu-item>
-          <el-menu-item index="merchant_database">商户数据库</el-menu-item>
-          <!-- <el-menu-item index="merchant_order">订单管理</el-menu-item> -->
-        </el-submenu>
-
-        <!-- 用户管理 -->
-        <el-submenu index="userdata">
-          <template slot="title">
-            <i class="el-icon-user-solid"></i>
-            <span>用户管理</span>
-          </template>
-          <el-menu-item index="customer_list">用户列表</el-menu-item>
-          <!-- <el-menu-item index="user_group">群组管理</el-menu-item> -->
-        </el-submenu>
-
-        <!-- 公告管理 -->
-        <el-submenu index="notice">
-          <template slot="title">
-            <i class="el-icon-message-solid"></i>
-            <span>公告管理</span>
-          </template>
-          <el-menu-item index="notice_list">公告记录</el-menu-item>
-          <el-menu-item index="push_list">推送记录</el-menu-item>
-        </el-submenu>
-
-        <!-- 配置管理 -->
-        <el-submenu index="configure">
-          <template slot="title">
-            <i class="el-icon-s-tools"></i>
-            <span>配置管理</span>
-          </template>
-          <el-menu-item index="recharge_list">金币充值配置</el-menu-item>
-          <el-menu-item index="version_list">APP版本控制</el-menu-item>
-          <el-menu-item index="role_list">角色管理</el-menu-item>
-          <el-menu-item index="user_list">账号管理</el-menu-item>
-        </el-submenu>
-
-        <!-- AR游戏配置 -->
-        <el-submenu index="arGame">
-          <template slot="title">
-            <i class="el-icon-coordinate"></i>
-            <span>AR游戏配置</span>
-          </template>
-          <el-menu-item index="gameObj_type">游戏对象类型</el-menu-item>
-          <el-menu-item index="gameObj_list">游戏对象列表</el-menu-item>
-          <el-menu-item index="prizePool_list">奖池列表</el-menu-item>
-          <el-menu-item index="contentPool_list">内容池列表</el-menu-item>
-          <el-menu-item index="gameEnity_list">实体列表</el-menu-item>
-          <el-menu-item index="event_list">事件列表</el-menu-item>
-          <el-menu-item index="weapon_list">武器配置</el-menu-item>
-          <el-menu-item index="config_activity">活动配置</el-menu-item>
-          <el-menu-item index="config_scope">城市范围配置</el-menu-item>
-        </el-submenu>
-
-        <!-- <el-menu-item-group>
-            <template slot="title">奖品配置</template>
-            <el-menu-item index="prize_list">奖品列表</el-menu-item>
-            <el-menu-item index="prize_type">奖品类型</el-menu-item>
-          </el-menu-item-group>
-
-          <el-menu-item-group>
-            <template slot="title">内容配置</template>
-            <el-menu-item index="content_list">内容列表</el-menu-item>
-          </el-menu-item-group>
-
-          <el-menu-item-group>
-            <template slot="title">游戏对象</template>
-          </el-menu-item-group>
-
-          <el-menu-item-group>
-            <template slot="title">事件元素</template>
-            <el-menu-item index="eventHistory_list">历史事件</el-menu-item>
-            <el-menu-item index="eventType_list">事件类型</el-menu-item>
-          </el-menu-item-group>
-
-          <el-menu-item-group>
-            <template slot="title">其他配置</template>
-
-            <el-menu-item index="config_server">服务器配置</el-menu-item>
-          </el-menu-item-group>-->
-
-        <el-menu-item index="test">
-          <i class="el-icon-setting"></i>
-          <span slot="title">测试页</span>
-        </el-menu-item>
-
-        <!-- 
-          【无下拉菜单】
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
+        <div v-for="(dom, index) in dom_list" :key="dom.authNodeID">
+          <!-- 无子节点 -->
+          <el-menu-item v-if="!dom.childNodeList" :index="dom.path">
+            <i :class="dom.ico"></i>
+            <span slot="title">{{ dom.name }}</span>
           </el-menu-item>
-          
-          【带下拉菜单】
-          <el-submenu index="1">
+
+          <!-- 有子节点 -->
+          <el-submenu v-else :index="index.toString()">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <i :class="dom.ico"></i>
+              <span>{{ dom.name }}</span>
             </template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-menu-item
+              v-for="child in dom.childNodeList"
+              :key="child.authNodeID"
+              :index="child.path"
+              >{{ child.name }}</el-menu-item
+            >
           </el-submenu>
-        -->
+        </div>
       </el-menu>
     </el-aside>
 
@@ -246,38 +85,15 @@
         <!-- 弹出框 -->
         <el-dialog
           title="修改密码"
-          :visible.sync="dialogFormVisible"
+          :visible.sync="show_password"
           id="change_password"
           width="30%"
         >
-          <el-form :model="changePwd">
-            <el-form-item label="原密码" label-width="100px">
-              <el-input
-                v-model="changePwd.old_password"
-                autocomplete="off"
-                show-password
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="新密码" label-width="100px">
-              <el-input
-                v-model="changePwd.new_password"
-                autocomplete="off"
-                show-password
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" label-width="100px">
-              <el-input
-                v-model="changePwd.check_password"
-                autocomplete="off"
-                show-password
-              ></el-input>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false"
-              >确 定</el-button
-            >
+          <el-input v-model="newPassword" clearable></el-input>
+
+          <div style="margin-top: 20px">
+            <el-button type="primary" @click="changePwd">确 定</el-button>
+            <el-button @click="show_password = false">取 消</el-button>
           </div>
         </el-dialog>
       </el-header>
@@ -291,31 +107,71 @@
 </template>
 
 <script>
-import tree from "@/assets/json/tree.json";
+const fileUrl = window.baseUrl.normal_file;
+import { getData, updateData } from "@/utils/api/apis";
+import { hintMessage } from "@/utils/common";
 export default {
   created() {
-    // console.log(tree);
     var token = sessionStorage.getItem("token");
     if (!token) {
       this.$router.replace("/login");
       this.$message.error("账号已注销，请重新登录！");
     }
     this.UserName = sessionStorage.getItem("userName");
-    this.circleUrl =
-      "https://api.resources.scmsar.com/file/download/source/v1?Mark=" +
-      sessionStorage.getItem("headImg");
+    this.circleUrl = fileUrl + sessionStorage.getItem("headImg");
+
+    // 获取允许的节点ID
+    var permitList = JSON.parse(sessionStorage.getItem("nodeList"));
+
+    // 获取所有的节点信息
+    var allNodes = sessionStorage.getItem("nodes");
+
+    if (allNodes) {
+      this.dom_list = JSON.parse(allNodes);
+      return;
+    }
+
+    // 请求所有的节点列表
+    getData("comUser", "comAuthInfoConfig", 1, {}, "allNode").then((res) => {
+      var list = res.resultObject;
+
+      sessionStorage.setItem("nodes", JSON.stringify(list));
+      var newList = [];
+      list.forEach((item) => {
+        // 判断父节点是否被允许
+        var flag = permitList.includes(item.authNodeID);
+        if (!flag) return;
+
+        // 被允许，判断有无子节点
+        var childrenList = item.childNodeList;
+
+        if (childrenList) {
+          var newChildren = [];
+          childrenList.forEach((child) => {
+            // 判断子节点是否被允许
+            var isChild = permitList.includes(child.authNodeID);
+            if (!isChild) return;
+
+            // 被允许，添加到列表里
+            newChildren.push(child);
+          });
+          item.childNodeList = [...newChildren];
+        }
+        newList.push(item);
+      });
+
+      this.dom_list = newList;
+    });
   },
 
   data() {
     return {
       circleUrl: "",
-      dialogFormVisible: false,
+      show_password: false,
       UserName: "未登录",
-      changePwd: {
-        old_password: "",
-        new_password: "",
-        check_password: "",
-      },
+      newPassword: "",
+
+      dom_list: [],
     };
   },
 
@@ -326,12 +182,22 @@ export default {
     },
     // 修改密码
     changePassword() {
-      this.dialogFormVisible = true;
+      this.show_password = true;
     },
     // 注销
     logout() {
       sessionStorage.clear();
       this.$router.replace("/login");
+    },
+
+    // 确认修改密码
+    changePwd() {
+      this.show_password = false;
+      updateData("comUser", "comUserInfo", 1, {
+        password: this.newPassword,
+      }).then((res) => {
+        hintMessage(this, res, "密码修改成功！");
+      });
     },
   },
 };

@@ -92,7 +92,12 @@ export const getDataList = (
       operate == "getClacRuleList" ||
       operate == "allPropsType" ||
       operate == "progress/affixList" ||
-      operate == "getTypeNameList"
+      operate == "getTypeNameList" ||
+      operate == "getCityNameList" ||
+      operate == "getARActivityNameList" ||
+      operate == "getARActivity" ||
+      operate == "getServerName" ||
+      operate == "allNode"
       // operate == "withdrawalRequestList"
     ) {
       _this[key] = res.resultObject;
@@ -185,7 +190,8 @@ export const getFileList = (
       key = "data_list";
     }
     _this[key] = res.resultObject.data;
-    _this.find_form.totalDataNum = res.resultObject.totalDataNum;
+    if (_this.find_form)
+      _this.find_form.totalDataNum = res.resultObject.totalDataNum;
   });
 };
 

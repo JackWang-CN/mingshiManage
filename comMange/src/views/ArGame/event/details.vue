@@ -13,6 +13,16 @@
       <el-table-column prop="gameEntityName" label="游戏实体名称" width="180">
       </el-table-column>
 
+      <el-table-column prop="objMainImageID" label="游戏实体图标" width="180">
+        <template slot-scope="scope">
+          <el-avatar
+            :size="80"
+            :src="scope.row.imgUrl"
+            shape="square"
+          ></el-avatar>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="entityCount" label="游戏实体数量" width="180">
       </el-table-column>
 
@@ -53,7 +63,7 @@
       <el-table-column prop="endTime" label="结束时间" width="180">
       </el-table-column>
 
-      <el-table-column label="操作" width="180">
+      <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
           <el-button
             size="small"
@@ -78,6 +88,10 @@
       @currChange="pageChange('curr', $event)"
     ></Pagination>
 
+    <el-button style="margin: 20px 0 0 10px" type="info" @click="cancel"
+      >返回</el-button
+    >
+
     <!-- 弹出框 -->
     <el-dialog
       title="事件元素详情"
@@ -97,9 +111,10 @@
           <el-button type="success" size="small" @click="showObj"
             >选择实体</el-button
           >
-          <el-tag style="margin-left: 5px" v-if="data_info.entityName">{{
-            data_info.entityName
-          }}</el-tag>
+          <div class="mode_img" v-show="data_info.gameEntityID">
+            <el-avatar :size="80" :src="entityImg" shape="square"></el-avatar>
+            <el-tag>{{ data_info.gameEntityName }}</el-tag>
+          </div>
         </el-form-item>
 
         <el-form-item label="实体数量">
@@ -216,24 +231,26 @@
         <el-button type="primary" size="small" @click="confirmMode"
           >确认</el-button
         >
-        <el-button size="small" @click="show_mode = false">取消</el-button>
+        <el-button size="small" @click="show_obj = false">取消</el-button>
       </el-dialog>
     </el-dialog>
   </div>
 </template>
 
 <script>
+const { ar_2d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import { getDataList, addData, updateData, delData } from "@/utils/api/apis";
-import { createGet, hintMessage } from "@/utils/common";
+import { createGet, hintMessage, spliceImg } from "@/utils/common";
 export default {
   components: {
     Pagination,
   },
   mounted() {
-    var { id, name } = this.$route.query;
+    var { id, name, tab } = this.$route.query;
     this.event_name = name;
     this.eventID = id;
+    this.tab = tab;
     // 请求事件元素列表
     this.find_form = createGet();
     this.find_form.data = { eventID: id };
@@ -242,6 +259,7 @@ export default {
 
   data() {
     return {
+      tab: "",
       event_name: "",
       find_form: {},
       data_info: {},
@@ -253,6 +271,7 @@ export default {
       model_list: [], // 模型列表
       select_model: {},
       eventID: "",
+      entityImg: "",
 
       operate: "0", // 0-新增 1-修改
       model: "ARGame",
@@ -265,7 +284,6 @@ export default {
   methods: {
     // 点击提交按钮
     sendSubmit() {
-      console.log(this.data_info);
       this.data_info.eventID = this.eventID;
 
       if (this.data_info.respawnType == 0) {
@@ -311,7 +329,10 @@ export default {
     showDetails(type, row) {
       this.show_details = true;
       this.operate = type;
-      this.data_info = { ...row };
+      if (row) {
+        this.data_info = { ...row };
+        this.entityImg = row.imgUrl;
+      }
     },
 
     // 打开实体列表框
@@ -325,7 +346,6 @@ export default {
     // 点击选中模型
     selectModel(mode) {
       this.select_model = { ...mode };
-      console.log(this.select_model);
     },
 
     // 刷新方式改变
@@ -340,9 +360,9 @@ export default {
     confirmMode() {
       if (this.select_model.gameEntityID) {
         this.data_info.gameEntityID = this.select_model.gameEntityID;
-        this.data_info.entityName = this.select_model.entityName;
+        this.data_info.gameEntityName = this.select_model.entityName;
+        this.entityImg = this.select_model.imgUrl;
       }
-      console.log(this.data_info);
       this.show_obj = false;
     },
 
@@ -389,7 +409,20 @@ export default {
 
     // 取消回到列表页
     cancel() {
-      this.$router.push("event_list");
+      this.$router.push({
+        name: "事件元素",
+        params: { tab: this.tab },
+      });
+    },
+  },
+
+  watch: {
+    obj_list() {
+      spliceImg(this.obj_list, "mainImageID", true);
+    },
+
+    data_list() {
+      spliceImg(this.data_list, "objMainImageID", true);
     },
   },
 };

@@ -9,6 +9,11 @@
     <!-- 列表 -->
     <el-table :data="data_list" border @cell-click="cellClick">
       <el-table-column
+        prop="merchantName"
+        label="商户名称"
+        width="250"
+      ></el-table-column>
+      <el-table-column
         prop="database"
         label="数据库名称"
         width="180"
@@ -23,16 +28,12 @@
         label="数据库密码"
         width="180"
       ></el-table-column>
-      <el-table-column
-        prop="serverConfigID"
-        label="服务器配置ID"
-        width="250"
-      ></el-table-column>
-      <el-table-column
-        prop="merchantID"
-        label="商户名称（暂无）"
-        width="180"
-      ></el-table-column>
+      <el-table-column label="服务器IP" width="250">
+        <template slot-scope="scope">
+          {{ `${scope.row.serverHostIP} : ${scope.row.serverHostPort}` }}
+        </template>
+      </el-table-column>
+
       <el-table-column
         prop="createTime"
         label="创建时间"
@@ -52,6 +53,7 @@
         class="details_form"
         :rules="rules"
         :model="data_info"
+        ref="database_form"
       >
         <el-form-item label="绑定商户">
           <el-button type="success" size="small" @click="showStore"
@@ -67,7 +69,7 @@
             <el-option
               v-for="server in server_list"
               :key="server.serverConfigID"
-              :label="server.server"
+              :label="`${server.server} : ${server.port}`"
               :value="server.serverConfigID"
             ></el-option>
           </el-select>
@@ -229,14 +231,28 @@ export default {
 
     // 发送提交
     async sendSubmit() {
-      var reg = /^[A-Za-z]{1,1}[A-Za-z]*\d*_*$/;
-      if (!this.data_info.database) {
-        this.$message.error("数据库名称不能为空");
+      // 表单验证
+      this.$refs.database_form.validate((res) => {
+        if (!res) {
+          return;
+        }
+      });
+
+      var reg = /^[A-Za-z]{1}[A-Za-z\d_]+$/;
+
+      if (!reg.test(this.data_info.database)) {
+        console.log(
+          this.data_info.database,
+          reg2.test(this.data_info.database)
+        );
+        this.$message.error(
+          "数据库名称必须以字母开头，且只能包含字母、数字、下划线"
+        );
         return;
       }
 
-      if (!reg.test(this.data_info.database)) {
-        this.$message.error("数据库名称必须以字母开头");
+      if (!reg.test(this.data_info.dbUserId)) {
+        this.$message.error("账号必须以字母开头，且只能包含字母、数字、下划线");
         return;
       }
 

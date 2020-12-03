@@ -2,20 +2,36 @@
   <!-- 我需要援助 -->
   <div id="entrust_details" class="card_container">
     <div class="tabs">
-      <span :class="activeName=='apply'?'active':''" @click="switchTabs('apply')">申请援助</span>
-      <span :class="activeName=='history'?'active':''" @click="switchTabs('history')">历史援助</span>
+      <span
+        :class="activeName == 'apply' ? 'active' : ''"
+        @click="switchTabs('apply')"
+        >申请援助</span
+      >
+      <span
+        :class="activeName == 'history' ? 'active' : ''"
+        @click="switchTabs('history')"
+        >历史援助</span
+      >
     </div>
     <!-- 申请援助 -->
-    <div class="apply" v-show="activeName=='apply'">
+    <div class="apply" v-show="activeName == 'apply'">
       <el-form label-width="100px" class="apply_form">
         <el-form-item label="援助主题:">
           <el-input v-model="apply_form.assistanceTheme"></el-input>
         </el-form-item>
         <el-form-item label="活动描述:">
-          <el-input type="textarea" v-model="apply_form.describe" :rows="7"></el-input>
+          <el-input
+            type="textarea"
+            v-model="apply_form.describe"
+            :rows="7"
+          ></el-input>
         </el-form-item>
         <el-form-item label="活动内容:">
-          <el-input type="textarea" v-model="apply_form.assistanceContent" :rows="7"></el-input>
+          <el-input
+            type="textarea"
+            v-model="apply_form.assistanceContent"
+            :rows="7"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sendSubmit">提交申请</el-button>
@@ -24,33 +40,78 @@
       </el-form>
     </div>
     <!-- 历史援助 -->
-    <div class="history" v-show="activeName=='history'">
+    <div class="history" v-show="activeName == 'history'">
       <el-table :data="data_list">
-        <el-table-column prop="applyTime" label="申请时间" width="180"></el-table-column>
-        <el-table-column prop="assistanceTheme" label="援助主题" width="180"></el-table-column>
-        <el-table-column prop="assistanceContent" label="援助描述" width="250"></el-table-column>
-        <el-table-column prop="customerManager" label="客户经理" width="180"></el-table-column>
-        <el-table-column prop="progressStatus" label="处理进度" width="180"></el-table-column>
-        <el-table-column prop="completeTime" label="完成时间" width="180"></el-table-column>
+        <el-table-column
+          prop="applyTime"
+          label="申请时间"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="assistanceTheme"
+          label="援助主题"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="assistanceContent"
+          label="援助描述"
+          width="250"
+        ></el-table-column>
+        <el-table-column
+          prop="customerManager"
+          label="客户经理"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="progressStatus"
+          label="处理进度"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="completeTime"
+          label="完成时间"
+          width="180"
+        ></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <el-button @click="showDetail(scope.row.assistanceID)" type="primary" size="small">详情</el-button>
             <el-button
-              v-if="scope.row.progressStatus=='完结待商户确认'"
+              @click="showDetail(scope.row.assistanceID)"
+              type="primary"
+              size="small"
+              >详情</el-button
+            >
+            <el-button
+              v-if="scope.row.progressStatus == '完结待商户确认'"
               @click="confirm(scope.row.assistanceID)"
               type="success"
               size="small"
-            >确认完结</el-button>
+              >确认完结</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页插件 -->
+      <pagination
+        :find="find_form"
+        @sizeChange="pageChange('size', $event)"
+        @currChange="pageChange('curr', $event)"
+      ></pagination>
     </div>
 
     <!-- 弹出框 -->
     <el-dialog title="详情内容" :visible.sync="show_detail" @closed="clear">
       <el-table :data="progress_list" style="width: 100%">
-        <el-table-column prop="customerManager" label="业务经理" width="180"></el-table-column>
-        <el-table-column prop="describe" label="阶段描述" width="180"></el-table-column>
+        <el-table-column
+          prop="customerManager"
+          label="业务经理"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="describe"
+          label="阶段描述"
+          width="180"
+        ></el-table-column>
         <el-table-column prop="phaseStatus" label="阶段状态"></el-table-column>
         <el-table-column prop="time" label="更新时间"></el-table-column>
         <el-table-column label="操作">
@@ -59,32 +120,50 @@
               @click="showFiles(scope.row.entrustProgressID)"
               size="small"
               type="primary"
-            >查看附件</el-button>
+              >查看附件</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 嵌套的弹出框 -->
-      <el-dialog width="30%" title="附件列表" :visible.sync="show_files" append-to-body>
+      <el-dialog
+        width="30%"
+        title="附件列表"
+        :visible.sync="show_files"
+        append-to-body
+      >
         <ul class="file_list">
-          <li v-for="(item,index) in file_list" :key="index" style="margin:10px 0">
-            <el-link>{{item.name}}</el-link>
+          <li
+            v-for="(item, index) in file_list"
+            :key="index"
+            style="margin: 10px 0"
+          >
+            <el-link :href="fileUrl + item.resID"
+              >{{ item.affixID }}（点击下载）</el-link
+            >
           </li>
         </ul>
-        <span v-if="file_list.length<1">暂无数据</span>
+        <span v-if="file_list.length < 1">暂无数据</span>
       </el-dialog>
     </el-dialog>
   </div>
 </template>
 
 <script>
+const fileUrl = window.baseUrl.normal_file;
+import pagination from "@/components/Pagination";
 import { getData, getDataList, addData } from "@/utils/api/apis";
 import { createGet, hintMessage } from "@/utils/common";
 export default {
+  components: {
+    pagination,
+  },
+
   mounted() {
+    this.fileUrl = fileUrl;
     this.activeName = "apply";
     this.find_form = createGet(1, 10, "applyTime");
-    console.log(this.find_form);
   },
 
   data() {
@@ -96,7 +175,7 @@ export default {
       data_list: [],
       progress_list: [],
       file_list: [{ name: "文件1" }, { name: "文件2" }, { name: "文件3" }],
-
+      fileUrl: "",
       activeName: "",
       show_detail: false,
       show_files: false,
@@ -112,7 +191,7 @@ export default {
         case "history":
           var form = { ...this.find_form };
           getData(this.model, this.control, 1, form).then((res) => {
-            hintMessage(this, res);
+            console.log(res);
             this.data_list = res.resultObject.data;
           });
       }
@@ -159,7 +238,6 @@ export default {
 
     // 点击查看附件
     showFiles(value) {
-      console.log(value);
       this.show_files = true;
       getData(
         this.model,
@@ -168,16 +246,13 @@ export default {
         { value },
         "progress/affixList"
       ).then((res) => {
-        switch (res.code) {
-          case "000000":
-          // this.file_list = res.resultObject;
-        }
+        console.log(res);
+        this.file_list = res.resultObject;
       });
     },
 
     // 点击确认完结
     confirm(value) {
-      console.log(value);
       addData(this.model, this.control, 1, { value }, "confirm").then((res) => {
         switch (res.code) {
           case "000000":
@@ -185,6 +260,22 @@ export default {
         }
         var form = { ...this.find_form };
         getDataList(this.model, this.control, 1, form, this);
+      });
+    },
+
+    // 分页改变时触发
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getData(this.model, this.control, 1, form).then((res) => {
+        this.data_list = res.resultObject.data;
       });
     },
   },

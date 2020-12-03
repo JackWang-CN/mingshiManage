@@ -8,13 +8,13 @@
         <h3 class="title_first">我的收益</h3>
         <!-- 收益数 -->
         <div class="earnings">
-          <span class="num">{{income_day.glodAmount}}</span>
+          <span class="num">{{ income_day.incomeAmount }}</span>
           <span>当日收益</span>
         </div>
         <!-- 总金币数 -->
         <div class="gold">
           <span>总金币</span>
-          <span class="num">{{gold_total}}</span>
+          <span class="num">{{ gold_total }}</span>
         </div>
       </div>
 
@@ -23,16 +23,25 @@
         <!-- 官网公告 -->
         <div class="card_container">
           <h3 class="title_second">
-            <img width="23" height="23" src="@/assets/images/icon/notice.png" alt />
+            <img
+              width="23"
+              height="23"
+              src="@/assets/images/icon/notice.png"
+              alt
+            />
             官方公告
             <div class="btn">
               <button>更多</button>
             </div>
           </h3>
           <ul class="list">
-            <li v-for="(item,index) in notice_list" :key="index" @click="showNotice('details')">
-              <p>{{item.title}}</p>
-              <span>{{item.creationTime}}</span>
+            <li
+              v-for="(item, index) in notice_list"
+              :key="index"
+              @click="showNotice('details')"
+            >
+              <p>{{ item.title }}</p>
+              <span>{{ item.creationTime }}</span>
             </li>
           </ul>
         </div>
@@ -40,16 +49,25 @@
         <!-- 消息通知 -->
         <div class="card_container">
           <h3 class="title_second">
-            <img width="23" height="23" src="@/assets/images/icon/message.png" alt />
+            <img
+              width="23"
+              height="23"
+              src="@/assets/images/icon/message.png"
+              alt
+            />
             消息通知
             <div class="btn">
               <button>更多</button>
             </div>
           </h3>
           <ul class="list">
-            <li v-for="(item,index) in message_list" :key="index" @click="showNotice('details')">
-              <p>{{item.title}}</p>
-              <span>{{item.creationTime}}</span>
+            <li
+              v-for="(item, index) in message_list"
+              :key="index"
+              @click="showNotice('details')"
+            >
+              <p>{{ item.title }}</p>
+              <span>{{ item.creationTime }}</span>
             </li>
           </ul>
         </div>
@@ -60,8 +78,16 @@
     <div class="bottom card_container">
       <h3 class="title_first">当前订单:</h3>
       <el-table :data="order_list" style="width: 100%">
-        <el-table-column prop="creationTime" label="日期" width="180"></el-table-column>
-        <el-table-column prop="aName" label="商品名称" width="180"></el-table-column>
+        <el-table-column
+          prop="creationTime"
+          label="日期"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="aName"
+          label="商品名称"
+          width="180"
+        ></el-table-column>
         <el-table-column prop="price" label="金额"></el-table-column>
       </el-table>
     </div>
@@ -70,7 +96,9 @@
     <el-dialog title="详情" :visible.sync="showNoticeDetails" width="30%">
       <span>这是一段信息</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showNoticeDetails = false">确 定</el-button>
+        <el-button type="primary" @click="showNoticeDetails = false"
+          >确 定</el-button
+        >
         <el-button @click="showNoticeDetails = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -79,7 +107,9 @@
     <el-dialog title="官方公告" :visible.sync="showNoticeList" width="30%">
       <span>这是一段信息</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="showNoticeList = false">确 定</el-button>
+        <el-button type="primary" @click="showNoticeList = false"
+          >确 定</el-button
+        >
         <el-button @click="showNoticeList = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -87,23 +117,21 @@
 </template>
 
 <script>
-import { getDataList } from "@/utils/api/apis";
+import { getDataList, getData } from "@/utils/api/apis";
 import { createGet } from "@/utils/common";
 export default {
   mounted() {
     var form = createGet();
     // 请求总金币数量
-    getDataList(this.model, this.control, 1, form, this, "gold_total", "Total");
+    getData(this.model, this.control, 1, {}, "Total").then((res) => {
+      this.gold_total = res.resultObject;
+    });
 
     // 请求当日收支
-    getDataList(
-      this.model,
-      this.control,
-      1,
-      form,
-      this,
-      "income_day",
-      "dayIncomeExpenses"
+    getData(this.model, this.control, 1, {}, "dayIncomeExpenses").then(
+      (res) => {
+        this.income_day = res.resultObject;
+      }
     );
 
     // 请求公告列表
@@ -265,6 +293,11 @@ export default {
       }
       .card_container {
         flex: 1 0 auto;
+        .list {
+          li:hover {
+            color: rgb(102, 177, 255);
+          }
+        }
       }
     }
   }

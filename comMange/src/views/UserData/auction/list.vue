@@ -17,13 +17,13 @@
       :model="find_form"
       label-width="80px"
     >
-      <el-form-item label="道具名称" label-width="100px">
+      <el-form-item label="道具名称">
         <el-input
-          v-model="find_form.data.name"
+          v-model="find_form.data.assetsName"
           placeholder="请输入道具名称"
         ></el-input>
       </el-form-item>
-      <el-form-item label="道具类型" label-width="100px">
+      <el-form-item label="道具类型">
         <el-select
           v-model="find_form.data.assetType"
           placeholder="请选择道具类型"
@@ -35,7 +35,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="卖家昵称" label-width="100px">
+      <el-form-item label="卖家昵称">
         <el-input v-model="find_form.data.userName"></el-input>
       </el-form-item>
 
@@ -197,7 +197,7 @@ export default {
     findData() {
       var form = { ...this.find_form };
       form.data = { ...this.find_form.data };
-      form.data = filteObj(form.data);
+      filteObj(form);
       getDataList(
         this.model,
         this.control,
@@ -272,7 +272,7 @@ export default {
   watch: {
     // 拼接道具图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "facadeImageID");
+      this.data_list = spliceImg(this.data_list, "imageID");
     },
 
     // 监听页面激活

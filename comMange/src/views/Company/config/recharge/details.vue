@@ -4,12 +4,6 @@
 
     <!-- 充值模版编辑页 -->
     <el-form label-width="100px">
-      <el-form-item label="充值方式">
-        <el-select v-model="data_info.type">
-          <el-option label="支付宝" :value="0"></el-option>
-          <el-option label="微信" :value="1"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="终端平台">
         <el-select v-model="data_info.platform">
           <el-option label="苹果" value="ios"></el-option>
@@ -57,7 +51,6 @@ export default {
       var type = this.data_info.type ? "微信" : "支付宝";
       var platform = this.data_info.platform ? "安卓" : "IOS";
       this.data_info.describe = platform + "-" + type;
-      console.log(this.data_info);
 
       addDataList(
         this.model,

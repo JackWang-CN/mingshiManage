@@ -8,9 +8,9 @@
 
       <el-form-item label="受众类型">
         <el-select v-model="data_info.audience">
-          <el-option label="全体用户" :value="0"></el-option>
-          <el-option label="普通用户" :value="1"></el-option>
-          <el-option label="商户" :value="2"></el-option>
+          <el-option label="所有用户" :value="0"></el-option>
+          <el-option label="APP用户" :value="1"></el-option>
+          <el-option label="全部商户" :value="2"></el-option>
         </el-select>
       </el-form-item>
 
@@ -62,7 +62,6 @@ export default {
   methods: {
     // 点击提交按钮
     sendSubmit() {
-      console.log(this.data_info);
       switch (this.operate) {
         // 新增
         case "0":

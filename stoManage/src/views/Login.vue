@@ -54,7 +54,7 @@
 <script>
 import Verify from "@/components/verify.vue";
 import { getData } from "@/utils/api/apis";
-import { spliceImg } from "@/utils/common";
+import { spliceImg, hintMessage } from "@/utils/common";
 export default {
   components: { Verify },
   data() {
@@ -136,6 +136,9 @@ export default {
                   this.$router.replace("home");
                   break;
               }
+              hintMessage(this, res, "登录成功！");
+              this.loading = false;
+              clearTimeout(timer);
             });
           } else {
             this.$message.error("请进行验证！");
@@ -178,7 +181,7 @@ export default {
     background: url("../assets/images/bg/background_2.png") no-repeat;
     background-size: 100% 100%;
     border-radius: 20px;
-    margin: 5rem auto;
+    margin: 0 auto;
     padding: 8rem 0;
     box-sizing: border-box;
     box-shadow: 0px 0px 15px #006b6e;

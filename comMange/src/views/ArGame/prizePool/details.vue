@@ -15,6 +15,7 @@
             :size="60"
             :src="scope.row.imgUrl"
             shape="square"
+            v-if="scope.row.typeID != 0"
           ></el-avatar>
         </template>
       </el-table-column>
@@ -45,12 +46,17 @@
         </template>
       </el-table-column>
     </el-table>
+
     <!-- 分页 -->
     <Pagination
       :find="find_form"
       @sizeChange="pageChange('size', $event)"
       @currChange="pageChange('curr', $event)"
     ></Pagination>
+
+    <el-button style="margin: 20px 0 0 10px" type="info" @click="cancel"
+      >返回</el-button
+    >
 
     <!-- 弹出框 -->
     <el-dialog
@@ -71,16 +77,19 @@
             <el-option label="碎片" :value="2"></el-option>
             <el-option label="优惠券" :value="3"></el-option>
             <el-option label="兑换券" :value="4"></el-option>
+            <el-option label="配方" :value="5"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="道具名称" v-show="data_info.typeID">
-          <el-tag style="margin-right: 10px" v-if="data_info.propName">{{
-            data_info.propName
-          }}</el-tag>
+        <el-form-item label="选择奖品" v-show="data_info.typeID">
           <el-button type="success" size="small" @click="showProps"
             >选择战利品</el-button
           >
+
+          <div class="mode_img" v-if="data_info.propID">
+            <el-avatar :size="80" :src="propImg" shape="square"></el-avatar>
+            <el-tag>{{ data_info.propName }}</el-tag>
+          </div>
         </el-form-item>
 
         <el-form-item label="掉落数量" v-show="data_info.typeID">
@@ -109,7 +118,7 @@
 
       <!-- 内层弹出框 -->
       <el-dialog
-        title="道具列表"
+        :title="prop_title"
         :visible.sync="show_props"
         width="25%"
         append-to-body
@@ -154,6 +163,8 @@
 </template>
 
 <script>
+const arUrl = window.baseUrl.ar_2d;
+const normalUrl = window.baseUrl.normal_file;
 import Pagination from "@/components/Pagination";
 import { addData, updateData, getDataList, delData } from "@/utils/api/apis";
 import { createGet, spliceImg, hintMessage } from "@/utils/common";
@@ -184,8 +195,9 @@ export default {
       prize_list: [], // 奖品列表
       select_model: {},
       prop_list: [],
+      propImg: "",
 
-      imageUrl: "",
+      prop_title: "道具",
       operate: 0,
       model: "ARGame",
       control: "lootInfo",
@@ -198,7 +210,7 @@ export default {
     // 点击提交按钮
     async sendSubmit() {
       this.show_details = false;
-
+      this.data_info.lootStoreID = this.lootStoreID;
       switch (this.operate) {
         // 新增
         case 0:
@@ -235,10 +247,48 @@ export default {
 
     // 展示详情
     showDetails(type, row) {
+      this.prop_form = createGet();
+      if (row) {
+        switch (row.typeID) {
+          // 道具
+          case 1:
+            this.dialogModel = "prop";
+            this.dialogControl = "prop";
+            this.prop_title = "道具";
+            break;
+          // 碎片
+          case 2:
+            this.dialogModel = "propChip";
+            this.dialogControl = "propChip";
+            this.prop_title = "碎片";
+            break;
+          // 优惠券
+          case 3:
+            this.dialogModel = "coupon";
+            this.dialogControl = "coupon";
+            this.prop_form.data.typeID = "20100913374479831440037790705421";
+            this.prop_title = "优惠券";
+            break;
+          // 兑换券
+          case 4:
+            this.dialogModel = "coupon";
+            this.dialogControl = "coupon";
+            this.prop_form.data.typeID = "20100913374479831440037790705423";
+            this.prop_title = "兑换券";
+            break;
+          // 配方
+          case 5:
+            this.dialogModel = "propChip";
+            this.dialogControl = "propChipGlue";
+            this.prop_title = "配方";
+            break;
+        }
+      }
+
       this.show_details = true;
       this.operate = type;
       if (type) {
-        this.imageUrl = row.imgUrl;
+        this.propImg = row.imgUrl;
         this.data_info = { ...row };
       }
     },
@@ -265,12 +315,14 @@ export default {
     selectProp(row) {
       this.data_info.propName = row.name;
       this.data_info.propID = row.myID;
+      this.propImg = row.imgUrl;
       this.show_props = false;
     },
 
     // 删除当前行
     delRow(row) {
       var { lootInfoID, lootStoreID } = row;
+      console.log(row);
       delData(this.model, this.control, 1, { lootInfoID, lootStoreID }).then(
         (res) => {
           hintMessage(this, res);
@@ -288,6 +340,7 @@ export default {
 
     // 奖品类型改变
     typeChange(type) {
+      console.log(type);
       if (type == 0) {
         this.data_info.count = 0;
       } else {
@@ -302,23 +355,33 @@ export default {
         case 1:
           this.dialogModel = "prop";
           this.dialogControl = "prop";
+          this.prop_title = "道具";
           break;
         // 碎片
         case 2:
           this.dialogModel = "propChip";
           this.dialogControl = "propChip";
+          this.prop_title = "碎片";
           break;
         // 优惠券
         case 3:
           this.dialogModel = "coupon";
           this.dialogControl = "coupon";
-          this.prop_form.data.typeID = "20100913374479831440037790705421";
+          this.prop_form.data.couponTypeID = "20100913374479831440037790705421";
+          this.prop_title = "优惠券";
           break;
         // 兑换券
         case 4:
           this.dialogModel = "coupon";
           this.dialogControl = "coupon";
-          this.prop_form.data.typeID = "20100913374479831440037790705423";
+          this.prop_form.data.couponTypeID = "20100913374479831440037790705423";
+          this.prop_title = "兑换券";
+          break;
+        // 配方
+        case 5:
+          this.dialogModel = "propChip";
+          this.dialogControl = "propChipGlue";
+          this.prop_title = "配方";
           break;
       }
     },
@@ -339,8 +402,8 @@ export default {
 
     // 清空
     clear() {
-      this.data_info = {};
-      this.imageUrl = "";
+      this.data_info = { typeID: 0 };
+      this.propImg = "";
     },
 
     // 取消回到列表页
@@ -352,11 +415,21 @@ export default {
   watch: {
     // 拼接图片url
     data_list() {
-      spliceImg(this.data_list, "showResourceID", true);
+      // spliceImg(this.data_list, "propImage", true);
+      this.data_list.forEach((item) => {
+        if (item.typeID == 0) return;
+
+        var imgID = item.propImage || item.mainImageID;
+        if (item.typeID == 3 || item.typeID == 4) {
+          item.imgUrl = normalUrl + imgID;
+        } else {
+          item.imgUrl = arUrl + imgID;
+        }
+      });
     },
 
     prop_list() {
-      switch (this.dialogModel) {
+      switch (this.dialogControl) {
         case "prop":
           spliceImg(this.prop_list, "facadeImageID", true);
           var key = "propID";
@@ -368,6 +441,13 @@ export default {
         case "coupon":
           spliceImg(this.prop_list, "imageID");
           var key = "couponID";
+          break;
+        case "propChipGlue":
+          this.prop_list.forEach((item) => {
+            item.name = item.glueName;
+            item.imgUrl = arUrl + item.glueImg;
+          });
+          var key = "glueID";
           break;
       }
       this.prop_list.forEach((item) => {

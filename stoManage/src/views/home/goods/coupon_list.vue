@@ -1,6 +1,6 @@
 <template>
   <!-- 优惠券 -->
-  <div id="coupon_list" class="shadow_container">
+  <div id="coupon_list" class="card_container">
     <div class="pageTitle">
       我的优惠券
       <el-button type="success" style="margin-left: 50px" @click="toDetails()"

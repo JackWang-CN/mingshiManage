@@ -1,6 +1,6 @@
 <!-- 商品分类 -->
 <template>
-  <div id="goods_type" class="shadow_container">
+  <div id="goods_type" class="card_container">
     <div class="pageTitle">商品分类</div>
     <!-- 查询表单 -->
 
@@ -190,7 +190,6 @@ export default {
     // 展示详情
     showDetails(type, row) {
       this.show_details = true;
-      console.log(row);
       if (type) {
         this.operate = type;
         this.data_info = { ...row };
@@ -217,7 +216,6 @@ export default {
       var index = sort - 1;
       list.splice(index, 1);
       list = this.reSort(list);
-      console.log(list);
 
       getData(this.model, this.control, 1, list, "editTypeList").then((res) => {
         hintMessage(this, res);

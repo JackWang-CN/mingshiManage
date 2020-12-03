@@ -134,7 +134,6 @@ export default {
   methods: {
     // 点击提交按钮
     sendSubmit() {
-      console.log(this.data_info);
       return;
       switch (this.operate) {
         // 新增

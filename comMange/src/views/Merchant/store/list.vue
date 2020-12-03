@@ -8,17 +8,11 @@
 
     <!-- 表格 -->
     <el-table :data="data_list" border>
-      <el-table-column
-        prop="merchantName"
-        label="商户名称"
-        width="180"
-      ></el-table-column>
-
-      <el-table-column
-        prop="shopName"
-        label="商铺名称"
-        width="180"
-      ></el-table-column>
+      <el-table-column prop="merchantName" label="商户名称" width="220">
+        <template slot-scope="scope">
+          {{ `${scope.row.merchantName}（${scope.row.shopName}）` }}
+        </template>
+      </el-table-column>
 
       <el-table-column prop="headImage" label="商户头像" width="150">
         <template slot-scope="scope">

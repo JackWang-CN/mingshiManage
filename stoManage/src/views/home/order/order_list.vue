@@ -1,7 +1,7 @@
-<!-- 订单明细 -->
+<!-- 订单管理 -->
 <template>
-  <div id="order_list" class="shadow_container">
-    <div class="pageTitle">订单记录</div>
+  <div id="order_list" class="card_container">
+    <div class="pageTitle">订单管理</div>
     <!-- 查询条件 -->
     <el-form
       ref="find_form"
@@ -13,30 +13,6 @@
         <el-input
           v-model="find_form.data.orderId"
           placeholder="请输入订单编号"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="商品ID">
-        <el-input
-          v-model="find_form.data.orderId"
-          placeholder="请输入商品ID"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="用户ID">
-        <el-input
-          v-model="find_form.data.userId"
-          placeholder="请输入用户ID"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="订单金额">
-        <el-input
-          v-model="find_form.data.amount"
-          placeholder="请输入订单金额"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="实付金额">
-        <el-input
-          v-model="find_form.data.paidAmount"
-          placeholder="请输入实付金额"
         ></el-input>
       </el-form-item>
 
@@ -52,18 +28,6 @@
       <el-form-item label="下单时间" label-width="100px">
         <el-date-picker
           v-model="find_form.data.orderTime"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-
-      <el-form-item label="支付时间" label-width="100px">
-        <el-date-picker
-          v-model="find_form.data.payTime"
           type="daterange"
           align="right"
           unlink-panels
@@ -202,7 +166,7 @@ export default {
   },
   mounted() {
     getDataList(
-      this.$vision.merchant,
+      this.model,
       "Order",
       createGet(1, 10),
       "order_list",
@@ -229,6 +193,9 @@ export default {
       // 备注弹出框
       show_remark: false,
       remark_data: {},
+
+      model: "",
+      control: "",
     };
   },
   methods: {

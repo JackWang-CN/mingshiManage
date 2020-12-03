@@ -63,9 +63,6 @@
         >
           <el-button size="small" type="primary">选择图片</el-button>
         </el-upload>
-        <el-button type="success" @click="uploadImg" size="small"
-          >上传</el-button
-        >
       </el-form-item>
       <el-form-item label="3D模型">
         <el-button type="primary" size="small" @click="showModel"
@@ -233,7 +230,6 @@ export default {
 
     // 点击模型添加到选中列表
     selectModel(id) {
-      console.log(id);
       if (this.select_model.includes(id)) {
         return;
       } else {
@@ -243,7 +239,6 @@ export default {
 
     // 点击选中模型
     selectModel(mode) {
-      console.log(mode);
       this.select_model = { ...mode };
     },
 
@@ -286,27 +281,12 @@ export default {
       });
     },
 
-    // 点击上传文件（图片）
-    uploadImg() {
-      // 非空判断
-      if (this.img_list.length < 1) {
-        this.$message.error("请先选择需上传的图片文件");
-        return;
-      }
-      // 执行上传
-      uploadFiles(2, 1, this.img_list, "创建活动-测试图片").then((res) => {
-        this.img_list = [];
-        switch (res.code) {
-          case "000000":
-            this.$message.success("上传成功！");
-            this.data_info.activtyIcoID = res.resultObject[0].resID;
-        }
-      });
-    },
-
     // 取消操作回到上一页
     cancel() {
-      this.$router.push("activity_list");
+      this.$router.push({
+        name: "活动列表",
+        params: { tab: this.$route.query.type },
+      });
     },
 
     // 切换模型类型
@@ -319,8 +299,21 @@ export default {
     },
 
     //  点击提交按钮
-    sendSubmit() {
-      console.log(this.data_info);
+    async sendSubmit() {
+      var now = new Date();
+      if (now - this.data_info.startTime > 0) {
+        this.$message.error("活动开始时间必须大于当前时间！");
+        return;
+      }
+
+      // 判断是否有图片
+      if (this.img_list.length < 1) {
+        this.$message.error("请先选择需上传的图片文件");
+        return;
+      }
+      // 执行上传
+      var res = await uploadFiles(2, 1, this.img_list, "活动图片");
+      this.data_info.activtyIcoID = res.resultObject[0].resID;
 
       updateDetails(
         this.model,

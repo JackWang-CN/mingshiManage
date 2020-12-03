@@ -1,5 +1,5 @@
 <template>
-  <div id="friend_list" class="shadow_container">
+  <div id="friend_list" class="card_container">
     <!-- 好友列表 -->
     <div class="pageTitle">好友列表</div>
 

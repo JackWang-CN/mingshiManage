@@ -6,6 +6,7 @@
         <el-form>
           <el-form-item>
             <el-input
+              clearable
               v-model="goldNum"
               :placeholder="`可用金币：${totalNum}`"
             ></el-input>
@@ -13,6 +14,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="withdraw">申请提现</el-button>
+            <el-button @click="cancel">返回</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -51,7 +53,7 @@
 <script>
 import Pagination from "@/components/Pagination";
 import { getData, getDataList } from "@/utils/api/apis";
-import { createGet } from "@/utils/common";
+import { createGet, hintMessage } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -61,6 +63,7 @@ export default {
       activeName: "",
       totalNum: 0,
       goldNum: "", // 提现金额
+      find_form: {},
       data_list: [],
 
       model: "personalCenter",
@@ -73,14 +76,13 @@ export default {
 
     // 请求总金额
     getData("merProfit", "glod", 1, {}, "total").then((res) => {
-      this.totalNum = res.resultObject;
+      this.totalNum = res.resultObject || 0;
     });
   },
 
   methods: {
     // 申请提现
     withdraw() {
-      console.log(1);
       getData(
         this.model,
         this.control,
@@ -88,8 +90,14 @@ export default {
         { goldNum: this.goldNum },
         "merWithdrawalApply"
       ).then((res) => {
-        console.log(res);
+        hintMessage(this, res, "申请提现成功");
+        this.$router.push("earnings");
       });
+    },
+
+    // 取消返回收益页
+    cancel() {
+      this.$router.push("earnings");
     },
 
     // 分页属性改变

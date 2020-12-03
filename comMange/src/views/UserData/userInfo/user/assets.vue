@@ -1,12 +1,7 @@
 <template>
   <!-- 道具资产 -->
   <div id="assets" class="shadow_container">
-    <div class="pageTitle">
-      {{ nickname }}道具资产
-      <el-button type="primary" size="small" @click="toDetails('auction')"
-        >去拍卖行</el-button
-      >
-    </div>
+    <div class="pageTitle">{{ nickname }}道具资产</div>
 
     <!-- 标签页 -->
     <el-tabs type="card" v-model="activeName">
@@ -48,17 +43,6 @@
 
           <el-table-column prop="expireTime" label="有效期" width="200">
           </el-table-column>
-
-          <el-table-column label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="small"
-                @click="showDetails(scope.row.dataId)"
-                >详情</el-button
-              >
-            </template>
-          </el-table-column>
         </el-table>
       </el-tab-pane>
 
@@ -88,17 +72,6 @@
             label="变更描述"
             width="200"
           ></el-table-column>
-
-          <el-table-column label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="small"
-                @click="showDetails(scope.row.dataId)"
-                >详情</el-button
-              >
-            </template>
-          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>

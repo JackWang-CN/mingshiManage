@@ -1,6 +1,6 @@
 <template>
   <!-- 订单详情 -->
-  <div id="order_details" class="shadow_container">
+  <div id="order_details" class="card_container">
     <div class="pageTitle">订单详情</div>
 
     <!-- 表单 -->
