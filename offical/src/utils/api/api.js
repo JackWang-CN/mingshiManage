@@ -3,7 +3,8 @@
 import axios from "axios";
 
 // 设置基础地址
-axios.defaults.baseURL = "https://api.official.scmsar.com/";
+//axios.defaults.baseURL = "https://api.official.scmsar.com/";
+axios.defaults.baseURL = "http://192.168.0.189:800//";
 
 /*
  *  1.ClientPlatform     ---- web ios android

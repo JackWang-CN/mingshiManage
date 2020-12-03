@@ -14,7 +14,7 @@
               class="wrap"
               v-for="(item, index) in case_list"
               :key="index"
-              @click="toDetails(item.caseId)"
+              @click="toDetails(item.caseID)"
             >
               <img :src="item.mainMediaUrl" alt />
               <div class="mask">
@@ -57,12 +57,14 @@ export default {
 
     // 请求轮播列表
     getList("media", media_form).then(res => {
-      this.banner_list = spliceUrl(res.data, "mediaUrl");
+      //console.log(res);
+      this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
     // 请求产品案例
     getList("case", case_form).then(res => {
-      this.case_list = spliceUrl(res.data, "mainMediaUrl");
+      //console.log(res);
+      this.case_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
     });
   },
   components: {
@@ -89,17 +91,17 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 3,
-        orderByFileds: "creationtime desc",
+        orderByFileds: "createTime desc",
         data: {
           scene: "0"
         }
       },
 
       // 跳转到详情页
-      toDetails(caseId) {
+      toDetails(caseID) {
         this.$router.push({
           path: "product_details",
-          query: { caseId }
+          query: { caseID }
         });
       }
     };

@@ -8,7 +8,7 @@ export const toWrap = (str) => {
 export const spliceUrl = (arr, key) => {
   arr.forEach((item) => {
     item[key] =
-      "http://api.resources.scmsar.com/f1/FileResources/downLoad?pathtemp=" +
+      "https://api.resources.scmsar.com/file/download/source/v1?mark=" +
       item[key];
   });
   return arr;
