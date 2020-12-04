@@ -182,7 +182,7 @@ export default {
     background-size: 100% 100%;
     border-radius: 20px;
     margin: 0 auto;
-    padding: 8rem 0;
+    padding: 5rem 0;
     box-sizing: border-box;
     box-shadow: 0px 0px 15px #006b6e;
     // 表单

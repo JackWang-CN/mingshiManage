@@ -69,6 +69,7 @@ export default {
           var data = { ...this.loginForm };
           sendLogin(data)
             .then((res) => {
+              res = res.data.resultObject;
               // 保存返回的token
               var token = res.accessToken,
                 username = res.user.loginName,

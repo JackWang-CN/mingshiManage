@@ -59,8 +59,9 @@ export default {
         remarks: "新闻中心-文章",
       },
       remarks: "新闻中心-文章",
+      imageUrl: "",
 
-      imageUrl: "", // 预览封面图
+      img_list: [],
 
       model: "config",
       control: "case",
@@ -71,10 +72,13 @@ export default {
     // 提交发布
     async submitNews() {
       this.data_info.caseScene = "0";
+      if (this.img_list.length == 0) {
+        this.$message.error("请上传图片");
+        return;
+      }
 
-      var file = this.img_list;
-      var res = await uploadFiles(2, 1, file);
-      this.data_info.mainMediaUrl = res[0].resID;
+      var res = await uploadFiles(2, 1, this.img_list);
+      this.data_info.mainMediaUrl = res.resultObject[0].resID;
 
       console.log(this.data_info);
       addData(this.model, this.control, 1, this.data_info).then((res) => {
@@ -101,9 +105,9 @@ export default {
     },
 
     // 点击'+'号按钮-获取文件列表
-    getFileList(file, list) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+    getFileList(file, fileList) {
       this.img_list = [file];
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
   },
 };

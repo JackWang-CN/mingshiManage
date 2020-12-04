@@ -22,7 +22,7 @@ axios.interceptors.request.use(
 // 响应拦截
 axios.interceptors.response.use(
   (res) => {
-    return res.data.resultObject;
+    return res.data;
   },
   (err) =>
     Promise.reject((err) => {

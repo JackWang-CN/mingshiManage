@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { addData } from "@/utils/api/apis";
+import { addDataList } from "@/utils/api/apis";
 import { hintMessage } from "@/utils/common";
 export default {
   data() {
@@ -107,13 +107,14 @@ export default {
     // 提交发布
     sendAdd() {
       this.data_info.regmen = this.data_info.regmen - 0;
-
-      console.log(this.data_info);
-      addData(this.model, this.control, 1, this.data_info).then((res) => {
-        console.log(res);
-        hintMessage(this, res, "职位发布成功！");
-        this.$router.push("recruit_list");
-      });
+      addDataList(
+        this.model,
+        this.control,
+        1,
+        this.data_info,
+        this,
+        "recruit_list"
+      );
     },
   },
 };

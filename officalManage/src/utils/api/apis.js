@@ -70,13 +70,15 @@ export const getDataList = (
       key = "data_list";
     }
 
-    _this[key] = res.data;
+    _this.totalDataNum = res.resultObject.totalDataNum;
+    _this[key] = res.resultObject.data;
   });
 };
 
 // 2) 创建数据
 export const addDataList = (model, control, version, info, _this, path) => {
   addData(model, control, version, info).then((res) => {
+    console.log(res);
     switch (res.code) {
       case "000000":
         _this.$message.success("创建成功！");

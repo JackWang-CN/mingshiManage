@@ -1,16 +1,33 @@
 <template>
   <!-- 案例列表 -->
   <div class="container" id="case_list">
-    <h1>案例列表</h1>
+    <h1>
+      案例列表
+      <div>
+        <el-button type="success" @click="addOne">添加</el-button>
+        <el-button type="danger" @click="deleteManyRows">批量删除</el-button>
+      </div>
+    </h1>
     <template>
       <!-- 查询表单 -->
-      <el-form ref="get_form" :model="get_form" label-width="100px" class="shadow_container">
+      <el-form
+        ref="get_form"
+        :model="get_form"
+        label-width="100px"
+        class="shadow_container"
+      >
         <!-- 查询条件 -->
         <el-form-item label="新闻标题">
-          <el-input v-model="get_form.data.title" placeholder="请输入新闻标题"></el-input>
+          <el-input
+            v-model="get_form.data.title"
+            placeholder="请输入新闻标题"
+          ></el-input>
         </el-form-item>
         <el-form-item label="新闻编号">
-          <el-input v-model="get_form.data.caseId" placeholder="请输入新闻编号"></el-input>
+          <el-input
+            v-model="get_form.data.caseId"
+            placeholder="请输入新闻编号"
+          ></el-input>
         </el-form-item>
         <el-form-item label="是否禁用">
           <el-select v-model="get_form.data.isDisable" placeholder="请选择状态">
@@ -19,30 +36,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布人">
-          <el-input v-model="get_form.data.issuer" placeholder="请输入发布人"></el-input>
+          <el-input
+            v-model="get_form.data.issuer"
+            placeholder="请输入发布人"
+          ></el-input>
         </el-form-item>
-        <!-- 日期查询 -->
-        <div class="date_btn">
-          <el-form-item label="发表时间" label-width="100px">
-            <el-date-picker
-              v-model="get_form.data._gt_creationTime"
-              lang="chinese"
-              type="datetimerange"
-              align="right"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </el-form-item>
-          <!-- 按钮组 -->
-          <el-form-item>
-            <el-button type="primary" @click="filterList">查询</el-button>
-            <el-button type="info" @click="resetForm">重置</el-button>
-            <el-button type="success" @click="addOne">添加</el-button>
-            <el-button type="danger" style="margin-left:50px" @click="deleteManyRows">批量删除</el-button>
-          </el-form-item>
-        </div>
+        <!-- 按钮组 -->
+        <el-form-item>
+          <el-button type="primary" @click="filterList">查询</el-button>
+          <el-button type="info" @click="resetForm">重置</el-button>
+        </el-form-item>
       </el-form>
 
       <!-- 列表 -->
@@ -53,55 +56,69 @@
         border
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="title" label="标题" sortable width="200"></el-table-column>
-        <el-table-column label="置顶" sortable width="100">
+        <el-table-column
+          prop="title"
+          label="标题"
+          sortable
+          width="150"
+        ></el-table-column>
+        <el-table-column prop="mainMediaUrl" label="封面" width="200">
           <template slot-scope="scope">
-            {{
-            scope.row.isStick == "1" ? "是" : "否"
-            }}
+            <el-avatar
+              :size="100"
+              :src="scope.row.imgUrl"
+              shape="square"
+            ></el-avatar>
           </template>
         </el-table-column>
-        <el-table-column label="主页显示" sortable width="120">
+        <el-table-column label="置顶" width="100">
           <template slot-scope="scope">
-            {{
-            scope.row.isMainPage == "1" ? "是" : "否"
-            }}
+            {{ scope.row.isStick ? "是" : "否" }}
           </template>
         </el-table-column>
-        <el-table-column prop="isDisable" label="状态" sortable width="100">
+        <el-table-column
+          prop="content"
+          label="文章内容"
+          width="300"
+        ></el-table-column>
+        <el-table-column label="是否置顶" width="120">
           <template slot-scope="scope">
-            {{
-            scope.row.isDisable == "1" ? "禁用" : "启用"
-            }}
+            {{ scope.row.isMainPage == "1" ? "是" : "否" }}
           </template>
         </el-table-column>
-        <el-table-column prop="caseId" label="新闻编号" sortable width="250">
+        <el-table-column prop="isEnable" label="启用状态" width="100">
           <template slot-scope="scope">
-            {{
-            scope.row.caseId.substring(5)
-            }}
+            {{ scope.row.isEnable ? "启用" : "禁用" }}
           </template>
         </el-table-column>
-        <el-table-column prop="creationtime" label="发表时间" sortable width="180">
-          <template slot-scope="scope">{{ new Date(scope.row.creationtime).toJSON() }}</template>
+        <el-table-column prop="createTime" label="发表时间" width="180">
         </el-table-column>
-        <el-table-column prop="issuerName" label="作者" sortable width="180"></el-table-column>
-        <el-table-column prop="mainMediaUrl" label="封面" sortable width="350">
-          <template slot-scope="scope">
-            <img :src="scope.row.mainMediaUrl" height="150px" alt />
-          </template>
-        </el-table-column>
-        <el-table-column prop="content" label="文章内容"></el-table-column>
+        <el-table-column
+          prop="issuer"
+          label="作者"
+          width="180"
+        ></el-table-column>
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="changeRow(scope.row.caseId)">编辑</el-button>
-            <el-button type="text" size="small" @click="deleteRow(scope.row.caseId)">删除</el-button>
             <el-button
-              :type="scope.row.isDisable - 0 ? 'success' : 'danger'"
+              type="primary"
+              size="small"
+              @click="changeRow(scope.row.caseID)"
+              >编辑</el-button
+            >
+            <el-button
+              type="danger"
+              size="small"
+              @click="delRow(scope.row.caseID)"
+              >删除</el-button
+            >
+            <el-button
+              :type="scope.row.isEnable ? 'danger' : 'success'"
               size="small"
               @click="switchSta(scope.row)"
-            >{{ scope.row.isDisable - 0 ? "启用" : "禁用" }}</el-button>
+              >{{ scope.row.isEnable ? "禁用" : "启用" }}</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -123,12 +140,12 @@
 </template>
 
 <script>
-import { getList, delList, delManyList, update } from "@/utils/api/api";
-import { spliceUrl } from "@/utils/utils";
+import { getDataList, updateData, delData } from "@/utils/api/apis";
+import { hintMessage, spliceImg } from "@/utils/common";
 
 export default {
   mounted() {
-    this.getCaseList(); // 首次加载产品案例列表
+    getDataList(this.model, this.control, 1, this.get_form, this, "case_list");
   },
   data() {
     return {
@@ -144,28 +161,18 @@ export default {
       case_list: [], // 案例列表
 
       select_list: [], // 选中的列表
+
+      model: "config",
+      control: "case",
     };
   },
   methods: {
-    // 请求列表数据
-    getCaseList() {
-      getList("case", this.get_form)
-        .then((res) => {
-          if (!res) {
-            this.case_list = [];
-          } else {
-            this.case_list = spliceUrl(res.data, "mainMediaUrl");
-            this.totalDataNum = res.totalDataNum;
-          }
-        })
-        .catch((err) => {});
-    },
-
     // 每页显示条数改变
     pageSizeChange(val) {
       this.get_form.pageSize = val;
       this.getCaseList(this.get_form); // 重新加载列表
     },
+
     // 当前页码改变
     currentChange(val) {
       this.get_form.currPage = val;
@@ -193,22 +200,18 @@ export default {
 
     /* ========================================删======================================== */
     // 删除当前行
-    deleteRow(caseId) {
-      var obj = {};
-      obj.caseId = caseId;
-      delList("case", obj)
-        .then((res) => {
-          // 删除成功
-          if (res == "1") {
-            this.$message({
-              type: "success",
-              message: "删除成功！",
-            });
-          }
-          // 重新加载列表
-          this.getCaseList(this.get_form);
-        })
-        .catch((err) => {});
+    delRow(caseID) {
+      delData(this.model, this.control, 1, { caseID }).then((res) => {
+        hintMessage(this, res);
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          this.get_form,
+          this,
+          "case_list"
+        );
+      });
     },
 
     // 批量删除
@@ -232,30 +235,30 @@ export default {
 
     /* ========================================改======================================== */
     // 改变禁用状态
-    switchSta(sta) {
-      var obj = {};
-      obj.caseId = sta.caseId;
-      var status = sta.isDisable - 0;
-      status = !status - 0;
-      obj.isDisable = status.toString();
-      update("case", obj)
-        .then((res) => {
-          if (res == "1") {
-            this.$message({
-              type: "success",
-              message: "修改已生效",
-            });
-            this.getCaseList(this.get_form);
-          }
-        })
-        .catch((err) => {});
+    switchSta(row) {
+      var { inEnable, caseID } = row;
+      var status = !inEnable - 0;
+      updateData(this.model, this.control, 1, {
+        caseID,
+        inEnable: status,
+      }).then((res) => {
+        hintMessage(this, res);
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          this.get_form,
+          this,
+          "case_list"
+        );
+      });
     },
 
     // 修改当前行
-    changeRow(caseId) {
+    changeRow(caseID) {
       this.$router.push({
         path: "case_change",
-        query: { caseId },
+        query: { id: caseID },
       });
     },
 
@@ -278,6 +281,12 @@ export default {
     // 添加
     addOne() {
       this.$router.push("case_publish");
+    },
+  },
+
+  watch: {
+    case_list() {
+      spliceImg(this.case_list, "mainMediaUrl");
     },
   },
 };

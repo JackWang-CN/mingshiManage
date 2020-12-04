@@ -31,62 +31,37 @@
             <el-option label="贵阳" value="贵阳"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="职位编号">
-          <el-input
-            v-model="find_form.id"
-            placeholder="请输入职位编号"
-          ></el-input>
+
+        <!-- 按钮组 -->
+        <el-form-item>
+          <el-button type="primary">查询</el-button>
+          <el-button type="info" @click="resetForm">重置</el-button>
+          <el-button type="danger" style="margin-left: 50px"
+            >批量删除</el-button
+          >
         </el-form-item>
-        <el-form-item label="发布人">
-          <el-input
-            v-model="find_form.author"
-            placeholder="请输入发布人"
-          ></el-input>
-        </el-form-item>
-        <!-- 日期查询 -->
-        <div class="date_btn">
-          <el-form-item label="发布时间" label-width="100px">
-            <el-date-picker
-              v-model="find_form.date"
-              lang="chinese"
-              type="daterange"
-              align="right"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
-          </el-form-item>
-          <!-- 按钮组 -->
-          <el-form-item>
-            <el-button type="primary">查询</el-button>
-            <el-button type="info" @click="resetForm">重置</el-button>
-            <el-button type="danger" style="margin-left:50px"
-              >批量删除</el-button
-            >
-          </el-form-item>
-        </div>
       </el-form>
 
       <!-- 列表 -->
       <el-table :data="job_list" style="width: 100%" border>
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="isDisable" label="是否禁用" sortable width="150">
-          <template slot-scope="scope">{{
-            scope.row.isDisable - 0 ? "是" : "否"
-          }}</template>
-        </el-table-column>
-        <el-table-column prop="isStick" label="是否置顶" sortable width="150">
-          <template slot-scope="scope">{{
-            scope.row.isStick - 0 ? "是" : "否"
-          }}</template>
-        </el-table-column>
+
         <el-table-column
           prop="title"
           label="标题"
           sortable
           width="180"
         ></el-table-column>
+        <el-table-column prop="isEnable" label="启用状态" width="120">
+          <template slot-scope="scope">{{
+            scope.row.isEnable ? "启用" : "禁用"
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="isStick" label="是否置顶" width="120">
+          <template slot-scope="scope">{{
+            scope.row.isStick ? "是" : "否"
+          }}</template>
+        </el-table-column>
         <el-table-column
           prop="term"
           label="工作经验"
@@ -115,30 +90,27 @@
           label="招聘人数"
           width="100"
         ></el-table-column>
-        <el-table-column prop="creationtime" label="创建时间">
-          <template slot-scope="scope">
-            {{ new Date(scope.row.creationtime).toJSON() }}
-          </template>
+        <el-table-column prop="createTime" label="创建时间" width="180">
         </el-table-column>
         <el-table-column label="操作" width="220" fixed="right">
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="small"
-              @click="changeRow(scope.row.recruitId)"
+              @click="changeRow(scope.row.recruitID)"
               >编辑</el-button
             >
             <el-button
               type="danger"
               size="small"
-              @click="deleteRow(scope.row.recruitId)"
+              @click="delRow(scope.row.recruitID)"
               >删除</el-button
             >
             <el-button
-              :type="scope.row.isDisable - 0 ? 'success' : 'danger'"
+              :type="scope.row.isEnable ? 'danger' : 'success'"
               size="small"
-              @click="switchSta(scope.row)"
-              >{{ scope.row.isDisable - 0 ? "启用" : "禁用" }}</el-button
+              @click="switchState(scope.row)"
+              >{{ scope.row.isEnable ? "禁用" : "启用" }}</el-button
             >
           </template>
         </el-table-column>
@@ -162,9 +134,11 @@
 
 <script>
 import { getList, update, delList } from "@/utils/api/api";
+import { getDataList, updateData, delData } from "@/utils/api/apis";
+import { hintMessage } from "@/utils/common";
 export default {
   mounted() {
-    this.getDataList();
+    getDataList(this.model, this.control, 1, this.get_form, this, "job_list");
   },
   data() {
     return {
@@ -187,6 +161,9 @@ export default {
         email: "", // 企业邮箱
       },
       job_list: [],
+
+      model: "config",
+      control: "recruit",
     };
   },
   methods: {
@@ -207,12 +184,12 @@ export default {
     // 每页显示条数改变
     pageSizeChange(val) {
       this.get_form.pageSize = val;
-      this.getDataList(this.get_form); // 重新加载列表
+      getDataList(this.model, this.control, 1, this.get_form, this, "job_list");
     },
     // 当前页码改变
     currentChange(val) {
       this.get_form.currPage = val;
-      this.getDataList(this.get_form); // 重新加载列表
+      getDataList(this.model, this.control, 1, this.get_form, this, "job_list");
     },
 
     // 重置
@@ -221,50 +198,47 @@ export default {
     },
 
     // 修改当前行
-    changeRow(recruitId) {
+    changeRow(recruitID) {
       this.$router.push({
         path: "recruit_change",
-        query: { recruitId },
+        query: { id: recruitID },
       });
     },
 
     // 改变禁用状态
-    switchSta(sta) {
-      var obj = {};
-      obj.recruitId = sta.recruitId;
-      var status = sta.isDisable - 0;
-      status = !status - 0;
-      obj.isDisable = status.toString();
-      update("recruit", obj)
-        .then((res) => {
-          if (res == "1") {
-            this.$message({
-              type: "success",
-              message: "修改已生效",
-            });
-            this.getDataList(this.get_form);
-          }
-        })
-        .catch((err) => {});
+    switchState(row) {
+      var { isEnable, recruitID } = row;
+      var status = !isEnable - 0;
+
+      updateData(this.model, this.control, 1, {
+        recruitID,
+        isEnable: status,
+      }).then((res) => {
+        hintMessage(this, res);
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          this.get_form,
+          this,
+          "job_list"
+        );
+      });
     },
 
     // 删除当前行
-    deleteRow(recruitId) {
-      var obj = {};
-      obj.recruitId = recruitId;
-      delList("recruit", obj)
-        .then((res) => {
-          // 删除成功
-          if (res == "1") {
-            this.$message({
-              type: "success",
-              message: "删除成功！",
-            });
-          }
-          // 重新加载列表
-          this.getDataList(this.get_form);
-        })
-        .catch((err) => {});
+    delRow(recruitID) {
+      delData(this.model, this.control, 1, { recruitID }).then((res) => {
+        hintMessage(this, res);
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          this.get_form,
+          this,
+          "job_list"
+        );
+      });
     },
   },
 };

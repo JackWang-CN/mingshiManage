@@ -30,37 +30,34 @@
           sortable
           width="180"
         ></el-table-column>
-        <el-table-column prop="mediaId" label="编号" sortable width="200">
+
+        <el-table-column prop="isEnable" label="状态" width="150">
           <template slot-scope="scope">{{
-            scope.row.mediaId ? scope.row.mediaId.substring(6) : ""
+            scope.row.isEnable ? "启用" : "禁用"
           }}</template>
         </el-table-column>
-        <el-table-column
-          prop="creationtime"
-          label="上传时间"
-          sortable
-          width="180"
-        ></el-table-column>
-        <el-table-column prop="isDsable" label="状态" width="150">
-          <template slot-scope="scope">{{
-            scope.row.isDisable == "1" ? "禁用" : "启用"
-          }}</template>
-        </el-table-column>
-        <el-table-column label="图片预览" width="650">
+        <el-table-column label="图片预览" width="250">
           <template slot-scope="scope">
             <img
-              :src="scope.row.mediaUrl"
+              :src="scope.row.imgUrl"
               alt="图片加载失败"
               :title="scope.row.title"
               height="200"
             />
           </template>
         </el-table-column>
-        <el-table-column label="超链接" width="500">
+        <el-table-column label="超链接" width="250">
           <template slot-scope="scope">
             <a :href="scope.row.jumpUrl">{{ scope.row.jumpUrl }}</a>
           </template>
         </el-table-column>
+
+        <el-table-column
+          prop="updateTime"
+          label="修改时间"
+          sortable
+          width="180"
+        ></el-table-column>
 
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -73,14 +70,14 @@
             <el-button
               type="danger"
               size="small"
-              @click="deleteRow(scope.row.mediaId)"
+              @click="delRow(scope.row.mediaID)"
               >删除</el-button
             >
             <el-button
-              :type="scope.row.isDisable - 0 ? 'success' : 'info'"
+              :type="scope.row.isEnable ? 'danger' : 'success'"
               size="small"
-              @click="switchSta(scope.row)"
-              >{{ scope.row.isDisable - 0 ? "启用" : "禁用" }}</el-button
+              @click="switchState(scope.row)"
+              >{{ scope.row.isEnable ? "禁用" : "启用" }}</el-button
             >
           </template>
         </el-table-column>
@@ -100,22 +97,20 @@
     </div>
 
     <!-- 弹出框 -->
-    <el-dialog :title="operate ? '修改' : '添加'" :visible.sync="show_Dialog">
-      <el-form :model="change_form" label-width="100px">
+    <el-dialog :title="operate ? '修改' : '添加'" :visible.sync="show_details">
+      <el-form :model="data_info" label-width="100px">
         <el-form-item label="轮播标题">
-          <el-input v-model="change_form.title" autocomplete="off"></el-input>
+          <el-input v-model="data_info.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图片预览" v-show="operate">
-          <img :src="change_form.mediaUrl" height="250px" alt />
-        </el-form-item>
+
         <el-form-item label="跳转地址">
-          <el-input v-model="change_form.jumpUrl" autocomplete="off"></el-input>
+          <el-input v-model="data_info.jumpUrl" autocomplete="off"></el-input>
         </el-form-item>
 
         <!-- 下拉选择 -->
         <el-form-item label="上传到" v-if="!operate">
           <el-select
-            v-model="change_form.data.scene"
+            v-model="data_info.data.scene"
             placeholder="请选择"
             @change="changeUpPar"
           >
@@ -159,11 +154,11 @@
             </div>
           </el-upload>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="sendSubmit">确 定</el-button>
+          <el-button @click="show_details = false">取 消</el-button>
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="show_Dialog = false">取 消</el-button>
-        <el-button type="primary" @click="sendAdd">确 定</el-button>
-      </div>
     </el-dialog>
 
     <!-- 图片预览 -->
@@ -183,8 +178,14 @@ import {
   upLoadFiles,
   classifyFiles,
 } from "@/utils/api/api";
-import { getDataList, addData, uploadFiles } from "@/utils/api/apis";
-import { switchKeyName, spliceUrl } from "@/utils/utils";
+import {
+  getDataList,
+  addData,
+  uploadFiles,
+  delData,
+  updateData,
+} from "@/utils/api/apis";
+import { spliceImg, hintMessage } from "@/utils/common";
 export default {
   mounted() {
     this.activeName = "0";
@@ -211,7 +212,7 @@ export default {
 
       // 图片列表
       data_list: [],
-      show_Dialog: false,
+      show_details: false,
 
       // 首次请求表单
       get_form: {
@@ -222,8 +223,8 @@ export default {
         },
       },
 
-      // 修改请求表单
-      change_form: { data: {} },
+      // 详情表单
+      data_info: { data: {} },
 
       select_list: [], // 选中的列表
       img_list: [], // 上传的文件列表
@@ -233,64 +234,38 @@ export default {
     };
   },
   methods: {
-    // 请求列表数据
-    getDataList() {
-      this.banner = [];
-      getList("media", this.get_form)
-        .then((res) => {
-          if (res == null) {
-            this.banner = [];
-          } else {
-            this.banner = spliceUrl(res.data, "mediaUrl");
-            this.totalDataNum = res.totalDataNum;
-          }
-        })
-        .catch((err) => {});
-    },
-
     // 处理操作类型：新增||修改
     addImg(type, row) {
       if (type == "add") {
         this.operate = 0;
-        this.change_form = { data: {} }; //重置
-        this.change_form.scene = "0";
+        this.data_info = { data: {} }; //重置
+        this.data_info.scene = "0";
       } else {
         this.operate = 1;
-        this.change_form = { ...row };
+        this.data_info = { ...row };
       }
-      this.show_Dialog = true;
+      this.show_details = true;
     },
 
     // 改变禁用状态
-    switchSta(sta) {
-      var obj = {};
-      obj.mediaId = sta.mediaId;
-      var status = sta.isDisable - 0;
-      status = !status - 0;
-      obj.isDisable = status.toString();
-      update("media", obj)
-        .then((res) => {
-          this.getDataList();
-        })
-        .catch((err) => {});
+    switchState(row) {
+      var { isEnable, mediaID } = row;
+      var status = !isEnable - 0;
+      updateData(this.model, this.control, 1, {
+        isEnable: status,
+        mediaID,
+      }).then((res) => {
+        hintMessage(this, res);
+        getDataList(this.model, this.control, 1, this.get_form, this);
+      });
     },
 
     // 删除
-    deleteRow(mediaId) {
-      var obj = {};
-      obj.mediaId = mediaId;
-      delList("media", obj)
-        .then((res) => {
-          if (res) {
-            this.$message({
-              type: "success",
-              message: "删除成功",
-            });
-          }
-          this.get_form.data.scene = this.activeName;
-          this.getDataList();
-        })
-        .catch((err) => {});
+    delRow(mediaID) {
+      delData(this.model, this.control, 1, { mediaID }).then((res) => {
+        hintMessage(this, res);
+        getDataList(this.model, this.control, 1, this.get_form, this);
+      });
     },
 
     // 批量删除
@@ -318,47 +293,40 @@ export default {
     },
 
     // 点击上传按钮-上传文件
-    async sendAdd() {
+    async sendSubmit() {
       var file = this.img_list;
       this.img_list = [];
+      this.show_details = false;
 
-      if (!this.operate) {
+      switch (this.operate) {
         // 新增
-        if (file.length < 1) {
-          this.$message.error("请先添加图片");
-          return;
-        }
+        case 0:
+          if (file.length < 1) {
+            this.$message.error("请先添加图片");
+            return;
+          }
+          var res = await uploadFiles(2, 1, file);
+          this.data_info.mediaUrl = res.resultObject[0].resID;
+          addData(this.model, this.control, 1, this.data_info).then((res) => {
+            hintMessage(this, res);
+            getDataList(this.model, this.control, 1, this.get_form, this);
+          });
+          break;
 
-        this.show_Dialog = false;
-        var res = await uploadFiles(2, 1, file, this.remarks);
+        // 修改
+        case 1:
+          if (file.length) {
+            var res = await uploadFiles(2, 1, file);
+            this.data_info.mediaUrl = res.resultObject[0].resID;
+          }
+          updateData(this.model, this.control, 1, this.data_info).then(
+            (res) => {
+              hintMessage(this, res);
+              getDataList(this.model, this.control, 1, this.get_form, this);
+            }
+          );
 
-        console.log(res);
-      } else {
-        // 修改 --1 先判断是否上传图片 2-1 是则先上传，拿到resId再修改 2-2 否则直接修改
-        if (file.length < 1) {
-          update("media", this.change_form)
-            .then((res) => {
-              if (res) {
-                this.$message.success("修改成功");
-              }
-              this.getDataList();
-            })
-            .catch((err) => {});
-        } else {
-          upLoadFiles(this.remarks, formData)
-            .then((res) => {
-              this.change_form.mediaUrl = res[0].resId;
-
-              update("media", this.change_form).then((res) => {
-                switch (res) {
-                  case 1:
-                    this.$message.success("修改成功！");
-                }
-                this.getDataList();
-              });
-            })
-            .catch((err) => {});
-        }
+          break;
       }
     },
 
@@ -381,17 +349,17 @@ export default {
     // 每页显示条数改变
     pageSizeChange(val) {
       this.get_form.pageSize = val;
-      this.getDataList(this.get_form); // 重新加载列表
+      getDataList(this.model, this.control, 1, this.get_form, this);
     },
     // 当前页码改变
     currentChange(val) {
       this.get_form.currPage = val;
-      this.getDataList(this.get_form); // 重新加载列表
+      getDataList(this.model, this.control, 1, this.get_form, this);
     },
 
     // 选择上传场景时改变上传参数
     changeUpPar(v) {
-      this.upScene = v;
+      this.data_info.scene = v;
       switch (v) {
         case "0":
           this.remarks = "首页-轮播图";
@@ -402,7 +370,7 @@ export default {
         case "3":
           this.remarks = "招聘-轮播图";
           break;
-        case "0":
+        case "4":
           this.remarks = "联系-轮播图";
           break;
       }
@@ -414,6 +382,10 @@ export default {
       this.data_list = [];
       this.get_form.data.scene = this.activeName;
       getDataList(this.model, this.control, 1, this.get_form, this);
+    },
+
+    data_list() {
+      spliceImg(this.data_list, "mediaUrl");
     },
   },
 };
