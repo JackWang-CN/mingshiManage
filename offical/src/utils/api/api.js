@@ -3,8 +3,8 @@
 import axios from "axios";
 
 // 设置基础地址
-//axios.defaults.baseURL = "https://api.official.scmsar.com/";
-axios.defaults.baseURL = "http://192.168.0.189:800//";
+axios.defaults.baseURL = "https://api.official.scmsar.com/";
+//axios.defaults.baseURL = "http://192.168.0.189:800//";
 
 /*
  *  1.ClientPlatform     ---- web ios android
@@ -44,7 +44,7 @@ export const getDetails = (type, info) => {
   var url = "";
   switch (type) {
     case "case":
-      url = "/config/case/details/v1";
+      url = "/config/case/offcialDetails/v1";
       break;
     case "media":
       url = "/config/media/details/v1";

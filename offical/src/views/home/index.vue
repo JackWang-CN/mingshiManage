@@ -58,12 +58,14 @@ export default {
     // 请求轮播列表
     getList("media", media_form).then(res => {
       //console.log(res);
+      if(res.resultObject.data.length < 1) return;
       this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
     // 请求产品案例
     getList("case", case_form).then(res => {
       //console.log(res);
+      if(res.resultObject.data.length < 1) return;
       this.case_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
     });
   },
@@ -82,9 +84,9 @@ export default {
 
       // 关于我们
       about_us: {
-        title: "四川名视人工智能科技有限公司——人工智能领域的先行者",
+        title: "深度发展核心技术，用技术服务社会",
         content:
-          "四川名视人工智能科技有限公司主要从事：人工智能应用软件开发；技术服务、技术开发、技术咨询、技术交流、技术转让、技术推广；大气污染治理；住宅室内装饰装修；电影摄制服务；专业设计服务；广告设计、代理；广告制作；广告发布（非广播电台、电视台、报刊出版单位）；企业形象策划；市场营销策划；组织文化艺术交流活动；会议及展览服务；礼仪服务；摄影扩印服务；信息咨询服务（不含许可类信息咨询服务）；企业管理；文化娱乐经纪人服务；互联网销售（除销售需要许可的商品）；日用品零售；通讯设备销售；化妆品零售；五金产品零售；工艺美术品及收藏品零售（象牙及其制品除外）；体育用品及器材零售；电子产品销售；办公用品销售；服装服饰零售；鞋帽零售；家具销售；计算机软硬件及辅助设备零售；机械设备销售；建筑装饰材料销售；建筑材料销售"
+          "四川名视人工智能科技有限公司是2020年2月成立于成都市高新区的高新技术企业，是一家专注于人工智能核心技术及产品研发的创新型科技企业。我们是一家年轻、有底蕴的团队。公司团队专注于人工智能核心技术的研发，将AI技术，包括人脸识别、图像识别、视频分析、AR/VR等应用于用户消费、移动互联网以及商户安全等多个领域，致力于让全球每位消费者都能感受到人工智能技术为您带来的高效工作模式及全新生活体验。"
       },
 
       // 请求表单的对象
@@ -93,7 +95,8 @@ export default {
         pageSize: 3,
         orderByFileds: "createTime desc",
         data: {
-          scene: "0"
+          scene: "0",
+          isEnable: 1,
         }
       },
 

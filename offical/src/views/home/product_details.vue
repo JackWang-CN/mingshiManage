@@ -7,7 +7,7 @@
         <h3>{{ airtcle.title }}</h3>
         <!-- 发布信息 -->
         <div class="publish">
-          <span>作者：{{ airtcle.issuerName }}</span>
+          <!-- <span>作者：{{ airtcle.issuerName }}</span> -->
           <span>发布时间：{{ new Date(airtcle.createTime).toJSON() }}</span>
           <span>访问量：{{ airtcle.clickNum || 0 }}</span>
         </div>
@@ -26,8 +26,8 @@
         </div>
         <!-- 翻页 -->
         <div class="page">
-          <button>上一篇</button>
-          <button>下一篇</button>
+          <button @click="backList">返回</button>
+          <!-- <button>下一篇</button> -->
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@ export default {
     var caseID = this.$route.query;
 
     getDetails("case", caseID).then((res) => {
-      this.airtcle = spliceUrl([res], "mainMediaUrl")[0];
+      this.airtcle = spliceUrl([res.resultObject], "mainMediaUrl")[0];
     });
   },
   data() {
@@ -63,6 +63,10 @@ export default {
       }
       this.isPlay = !this.isPlay;
     },
+
+     backList(){
+      this.$router.push('product')
+    }
   },
 
   watch: {

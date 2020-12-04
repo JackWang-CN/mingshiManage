@@ -28,12 +28,14 @@ export default {
     this.get_form = creatGet(1, 1, 1);
     getList("media", this.get_form).then(res => {
       //console.log(res);
+      if(res.resultObject.data.length < 1) return;
       this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
     });
 
     var photo_form = creatGet(1, 12, 2);
     getList("media", photo_form).then(res => {
       //console.log(res);
+      if(res.resultObject.data.length < 1) return;
       this.photo_wall = spliceUrl(res.resultObject.data, "mediaUrl");
     });
   },

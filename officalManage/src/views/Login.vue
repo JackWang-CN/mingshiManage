@@ -69,14 +69,15 @@ export default {
           var data = { ...this.loginForm };
           sendLogin(data)
             .then((res) => {
-              res = res.data.resultObject;
+              //console.log(res)
+              res = res.resultObject;
               // 保存返回的token
               var token = res.accessToken,
                 username = res.user.loginName,
-                userId = res.user.userId;
+                userID = res.user.userID;
               sessionStorage.setItem("token", token);
-              sessionStorage.setItem("username", username);
-              sessionStorage.setItem("userId", userId);
+              sessionStorage.setItem("loginName", username);
+              sessionStorage.setItem("userID", userID);
               this.$message({
                 message: "登录成功！",
                 type: "success",

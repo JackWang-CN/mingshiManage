@@ -146,7 +146,7 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 10,
-        orderByFileds: "recruitId desc",
+        orderByFileds: "createTime desc",
       },
       find_form: {
         title: "", //职位名称

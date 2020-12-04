@@ -3,7 +3,7 @@ import { createFormData } from "@/utils/common";
 
 // 设置基础地址
 axios.defaults.baseURL = "https://api.official.scmsar.com";
-
+// axios.defaults.baseURL = "http://192.168.0.189:800";
 /* 基础接口 */
 // 1.查询列表
 export const getData = (model, control, version, info, operate = "list") => {
@@ -69,7 +69,7 @@ export const getDataList = (
     if (!key) {
       key = "data_list";
     }
-
+    console.log(res)
     _this.totalDataNum = res.resultObject.totalDataNum;
     _this[key] = res.resultObject.data;
   });

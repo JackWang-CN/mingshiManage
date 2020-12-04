@@ -54,6 +54,7 @@ export default {
   mounted() {
     // 请求轮播列表
     getList("media", this.banner_form).then((res) => {
+      if(res.resultObject.data.length < 1) return;
       this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
@@ -83,8 +84,10 @@ export default {
       banner_form: {
         currPage: 1,
         pageSize: 3,
+        orderByFileds: "createTime desc",
         data: {
           scene: "0",
+          isEnable: 1,
         },
       },
 
@@ -92,8 +95,10 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 3,
+        orderByFileds: "createTime desc",
         data: {
           caseScene: "1",
+          isEnable: 1,
         },
       },
     };
@@ -103,12 +108,14 @@ export default {
     // 当前页码改变
     currentChange(val) {
       this.get_form.currPage = val;
+      this.get_form.orderByFileds = "createTime desc";
       this.getDataList(); // 重新加载列表
     },
 
     // 请求数据列表
     getDataList() {
       getList("case", this.get_form).then((res) => {
+        if(res.resultObject.data.length < 1) return;
         this.product_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
         this.totalDataNum = res.totalDataNum;
       });
@@ -117,7 +124,7 @@ export default {
     // 跳转到详情页
     toDetails(caseID) {
       this.$router.push({
-        path: "news_details",
+        path: "product_details",
         query: { caseID },
       });
     },

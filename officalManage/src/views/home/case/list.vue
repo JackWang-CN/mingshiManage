@@ -153,6 +153,7 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 10,
+        orderByFileds: "createTime desc",
         data: {
           caseScene: "1", // 0--新闻 1--产品
         },
@@ -267,6 +268,7 @@ export default {
       this.get_form = {
         currPage: 1,
         pageSize: 5,
+        orderByFileds: "createTime desc",
         data: {
           caseScene: "1", // 0--新闻 1--产品
         },
