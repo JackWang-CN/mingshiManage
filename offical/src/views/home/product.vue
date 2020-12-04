@@ -16,7 +16,7 @@
           <li
             v-for="(item, index) in product_list"
             :key="index"
-            @click="toDetails(item.caseId)"
+            @click="toDetails(item.caseID)"
           >
             <div class="resource">
               <img :src="item.mainMediaUrl" alt class="proudct_img" />
@@ -54,7 +54,7 @@ export default {
   mounted() {
     // 请求轮播列表
     getList("media", this.banner_form).then((res) => {
-      this.banner_list = spliceUrl(res.data, "mediaUrl");
+      this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
     // 请求案例列表
@@ -109,16 +109,16 @@ export default {
     // 请求数据列表
     getDataList() {
       getList("case", this.get_form).then((res) => {
-        this.product_list = spliceUrl(res.data, "mainMediaUrl");
+        this.product_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
         this.totalDataNum = res.totalDataNum;
       });
     },
 
     // 跳转到详情页
-    toDetails(caseId) {
+    toDetails(caseID) {
       this.$router.push({
         path: "news_details",
-        query: { caseId },
+        query: { caseID },
       });
     },
   },

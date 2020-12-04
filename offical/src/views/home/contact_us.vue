@@ -38,7 +38,8 @@ export default {
   mounted() {
     this.banner_form = creatGet(1, 1, 4);
     getList("media", this.banner_form).then(res => {
-      this.banner_img = spliceUrl(res.data, "mediaUrl")[0].mediaUrl;
+      //console.log(res)
+      this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
     });
 
     // 初始化地图

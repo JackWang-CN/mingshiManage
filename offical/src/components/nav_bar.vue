@@ -43,11 +43,11 @@ export default {
   methods: {
     // 搜索
     sendSearch() {
-      console.log("点击了搜索");
+      //console.log("点击了搜索");
     },
     // 切换激活
     switchActive(index) {
-      console.log(index);
+      //console.log(index);
       this.active_index = index;
       this.nav_list.forEach((item) => {
         item.isActive = false;

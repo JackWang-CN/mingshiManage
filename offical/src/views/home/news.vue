@@ -11,7 +11,7 @@
 
         <!-- 新闻列表 -->
         <ul class="news_list">
-          <li v-for="(item, index) in news_list" :key="index" @click="toDetails(item.caseId)">
+          <li v-for="(item, index) in news_list" :key="index" @click="toDetails(item.caseID)">
             <div class="news_imgs">
               <img :src="item.mainMediaUrl" alt />
             </div>
@@ -48,7 +48,8 @@ export default {
   mounted() {
     // 请求轮播列表
     getList("media", this.banner_form).then(res => {
-      this.banner_list = spliceUrl(res.data, "mediaUrl");
+      //console.log(res);
+      this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
     // 请求案例列表
@@ -82,7 +83,7 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 3,
-        orderByFileds: "creationtime desc",
+        orderByFileds: "createTime desc",
 
         data: {
           caseScene: "0"
@@ -93,10 +94,10 @@ export default {
 
   methods: {
     // 跳转到详情页
-    toDetails(caseId) {
+    toDetails(caseID) {
       this.$router.push({
         path: "news_details",
-        query: { caseId }
+        query: { caseID }
       });
     },
 
@@ -109,7 +110,8 @@ export default {
     // 请求数据列表
     getDataList() {
       getList("case", this.get_form).then(res => {
-        this.news_list = spliceUrl(res.data, "mainMediaUrl");
+        //console.log(res);
+        this.news_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
         this.news_list.content = removeImg(this.news_list);
         this.totalDataNum = res.totalDataNum;
       });

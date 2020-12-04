@@ -27,12 +27,14 @@ export default {
   mounted() {
     this.get_form = creatGet(1, 1, 1);
     getList("media", this.get_form).then(res => {
-      this.banner_img = spliceUrl(res.data, "mediaUrl")[0].mediaUrl;
+      //console.log(res);
+      this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
     });
 
     var photo_form = creatGet(1, 12, 2);
     getList("media", photo_form).then(res => {
-      this.photo_wall = spliceUrl(res.data, "mediaUrl");
+      //console.log(res);
+      this.photo_wall = spliceUrl(res.resultObject.data, "mediaUrl");
     });
   },
   components: {

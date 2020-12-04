@@ -24,13 +24,17 @@ axios.interceptors.response.use(
   (res) => {
     switch (res.status) {
       case 200:
-        // console.log(res.data);
-        return res.data.resultObject;
+        //console.log(res.data);
+        return res.data;
+        // if (res.data.code == "000000"){
+        //   return res.data;
+        // }
+        return ;
       case 500:
-        console.log(res.status);
+        //console.log(res.status);
         break;
       case 401:
-        console.log(res.status);
+        //console.log(res.status);
         break;
     }
   },

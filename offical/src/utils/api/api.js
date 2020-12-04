@@ -3,7 +3,8 @@
 import axios from "axios";
 
 // 设置基础地址
-axios.defaults.baseURL = "https://api.official.scmsar.com/";
+//axios.defaults.baseURL = "https://api.official.scmsar.com/";
+axios.defaults.baseURL = "http://192.168.0.189:800//";
 
 /*
  *  1.ClientPlatform     ---- web ios android
@@ -20,17 +21,20 @@ export const getList = (type, info) => {
   var url = "";
   switch (type) {
     case "case":
-      url = "/o1/Case/list";
+      url = "/config/case/list/v1";
       break;
     case "media":
-      url = "/o1/Media/list";
+      url = "/config/media/list/v1";
       break;
     case "recruit":
-      url = "/o1/Recruit/list";
+      url = "/config/recruit/list/v1";
       break;
     case "userinfo":
-      url = "/o1/Userinfo/list";
+      url = "/offUser/userInfo/list/v1";
       break;
+      case "companyInfo":
+        url = "/config/companyInfo/list/v1";
+        break;
   }
   return axios.post(url, info);
 };
@@ -40,16 +44,19 @@ export const getDetails = (type, info) => {
   var url = "";
   switch (type) {
     case "case":
-      url = "/o1/Case/details";
+      url = "/config/case/details/v1";
       break;
     case "media":
-      url = "/o1/Media/details";
+      url = "/config/media/details/v1";
       break;
     case "recruit":
-      url = "/o1/Recruit/details";
+      url = "/config/recruit/details/v1";
       break;
     case "userinfo":
-      url = "/o1/Userinfo/details";
+      url = "/offUser/userInfo/details/v1";
+      break;
+    case "companyInfo":
+      url = "/config/companyInfo/details/v1";
       break;
   }
   return axios.post(url, info);

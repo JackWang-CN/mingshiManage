@@ -8,7 +8,7 @@
         <!-- 发布信息 -->
         <div class="publish">
           <span>作者：{{ airtcle.issuerName }}</span>
-          <span>发布时间：{{ new Date(airtcle.creationTime).toJSON() }}</span>
+          <span>发布时间：{{ new Date(airtcle.createTime).toJSON() }}</span>
           <span>访问量：{{ airtcle.clickNum || 0 }}</span>
         </div>
         <!-- 媒体资源 -->
@@ -40,9 +40,9 @@ import { spliceUrl } from "@/utils/utils";
 export default {
   mounted() {
     // 接收参数
-    var caseId = this.$route.query;
+    var caseID = this.$route.query;
 
-    getDetails("case", caseId).then((res) => {
+    getDetails("case", caseID).then((res) => {
       this.airtcle = spliceUrl([res], "mainMediaUrl")[0];
     });
   },
