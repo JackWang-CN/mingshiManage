@@ -14,6 +14,7 @@ Vue.use(ElementUI);
 import "@/utils/api/axiosUtil";
 
 import "@/utils/date";
+import "@/utils/im/wang.js";
 
 // 引入样式
 import "@/assets/css/reset.css";

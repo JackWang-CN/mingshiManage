@@ -54,7 +54,7 @@
         width="180"
       ></el-table-column>
       <el-table-column
-        prop="issue"
+        prop="issueName"
         label="发布人"
         width="150"
       ></el-table-column>

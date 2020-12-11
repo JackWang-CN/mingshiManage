@@ -191,7 +191,6 @@ export default {
         case "history":
           var form = { ...this.find_form };
           getData(this.model, this.control, 1, form).then((res) => {
-            console.log(res);
             this.data_list = res.resultObject.data;
           });
       }
@@ -246,7 +245,6 @@ export default {
         { value },
         "progress/affixList"
       ).then((res) => {
-        console.log(res);
         this.file_list = res.resultObject;
       });
     },

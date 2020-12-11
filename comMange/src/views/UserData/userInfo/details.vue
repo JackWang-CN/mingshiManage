@@ -80,7 +80,10 @@
           >
           <el-button size="small" @click="showList('cusCampaign')"
             >活动参与</el-button
-          ><el-button type="danger" size="small" @click="showList('cusCoupon')"
+          ><el-button
+            type="danger"
+            size="small"
+            @click="toDetails('cusCoupon_list')"
             >优惠券</el-button
           >
         </li>
@@ -95,58 +98,12 @@
           <el-button type="info" size="small" @click="showList('cusHouse')"
             >用户房产</el-button
           >
-          <el-button type="warning" size="small" @click="showList('cusPropPet')"
-            >用户宠物</el-button
-          >
         </li>
       </ul>
     </div>
 
     <!-- 弹出框 -->
     <el-dialog :title="title" :visible.sync="show_details" width="30%">
-      <!-- 优惠券列表 -->
-      <el-table v-show="dialog_type == 1" :data="data_list" style="width: 100%">
-        <el-table-column
-          prop="cusCouponID"
-          label="优惠券ID"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="describe"
-          label="说明"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="获奖时间"
-          width="180"
-        ></el-table-column>
-      </el-table>
-
-      <!-- 宠物列表 -->
-      <el-table v-show="dialog_type == 2" :data="data_list" style="width: 100%">
-        <el-table-column
-          prop="assetID"
-          label="宠物ID"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="number"
-          label="数量"
-          width="120"
-        ></el-table-column>
-        <el-table-column prop="useState" label="绑定状态" width="120">
-          <template slot-scope="scope">
-            {{ scope.row.useState ? "否" : "是" }}
-          </template></el-table-column
-        >
-        <el-table-column prop="isFrozen" label="是否冻结">
-          <template slot-scope="scope">
-            {{ scope.row.isFrozen ? "否" : "是" }}
-          </template>
-        </el-table-column>
-      </el-table>
-
       <!-- 房产列表 -->
       <el-table v-show="dialog_type == 4" :data="data_list" style="width: 100%">
         <el-table-column
@@ -237,7 +194,7 @@ export default {
       this.model,
       "cusGoldAccount",
       1,
-      { customerID: this.customerID },
+      { userID: this.customerID },
       this,
       "gold_info"
     );

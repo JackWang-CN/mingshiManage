@@ -10,7 +10,9 @@
               v-model="goldNum"
               :placeholder="`可用金币：${totalNum}`"
             ></el-input>
-            <el-button type="text" @click="goldNum = totalNum">全部</el-button>
+            <el-button type="text" @click="goldNum = new String(totalNum)"
+              >全部</el-button
+            >
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="withdraw">申请提现</el-button>
@@ -82,17 +84,32 @@ export default {
 
   methods: {
     // 申请提现
-    withdraw() {
-      getData(
+    async withdraw() {
+      var goldNum = this.goldNum.trim();
+      if (goldNum < 1) {
+        this.$message.error("提现金额不能为空，且最小为1");
+        return;
+      }
+
+      var res = await getData(
         this.model,
         this.control,
         1,
-        { goldNum: this.goldNum },
+        { goldNum },
         "merWithdrawalApply"
-      ).then((res) => {
-        hintMessage(this, res, "申请提现成功");
-        this.$router.push("earnings");
-      });
+      );
+
+      switch (res.code) {
+        case "000000":
+          this.$message.succsee("提现申请成功");
+          this.$route.push("earnings");
+          break;
+
+        default:
+          this.$message.error(res.resultMessage);
+          this.goldNum = 0;
+          break;
+      }
     },
 
     // 取消返回收益页

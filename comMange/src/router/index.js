@@ -384,6 +384,17 @@ export default new VueRouter({
             { name: "个人资产", path: "user_assets" },
           ],
         },
+
+        // 用户管理-用户优惠券
+        {
+          path: "cusCoupon_list",
+          component: () => import("../views/UserData/userInfo/user/coupon.vue"),
+          meta: [
+            { name: "用户管理", path: "" },
+            { name: "用户优惠券", path: "cusCoupon_list" },
+          ],
+        },
+
         // 用户管理-用户反馈
         {
           path: "feedback_list",

@@ -8,11 +8,18 @@
     <!-- 主体 -->
     <div class="main">
       <!-- 一级标题 -->
-      <SectionTitle :text="{ pri: '团队风采', sec: 'Team Style' }"></SectionTitle>
+      <SectionTitle
+        :text="{ pri: '团队风采', sec: 'Team Style' }"
+      ></SectionTitle>
 
       <!-- 照片墙 -->
       <div class="photo_wall">
-        <img :src="item.mediaUrl" alt v-for="(item, index) in photo_wall" :key="index" />
+        <img
+          :src="item.mediaUrl"
+          alt
+          v-for="(item, index) in photo_wall"
+          :key="index"
+        />
       </div>
     </div>
   </div>
@@ -26,20 +33,23 @@ import { spliceUrl, creatGet } from "@/utils/utils";
 export default {
   mounted() {
     this.get_form = creatGet(1, 1, 1);
-    getList("media", this.get_form).then(res => {
+    getList("media", this.get_form).then((res) => {
       //console.log(res);
-      this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
+      this.banner_img = spliceUrl(
+        res.resultObject.data,
+        "mediaUrl"
+      )[0].mediaUrl;
     });
 
     var photo_form = creatGet(1, 12, 2);
-    getList("media", photo_form).then(res => {
+    getList("media", photo_form).then((res) => {
       //console.log(res);
       this.photo_wall = spliceUrl(res.resultObject.data, "mediaUrl");
     });
   },
   components: {
     Banner,
-    SectionTitle
+    SectionTitle,
   },
   data() {
     return {
@@ -61,10 +71,10 @@ export default {
         { mediaUrl: require("@/assets/images/案例图3.png") },
         { mediaUrl: require("@/assets/images/案例图1.png") },
         { mediaUrl: require("@/assets/images/案例图2.png") },
-        { mediaUrl: require("@/assets/images/案例图3.png") }
-      ]
+        { mediaUrl: require("@/assets/images/案例图3.png") },
+      ],
     };
-  }
+  },
 };
 </script>
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import { createFormData } from "@/utils/common";
 
 // 设置基础地址
-// axios.defaults.baseURL = "http://192.168.0.139:800";
+// axios.defaults.baseURL = "http://192.168.0.166:800/";
 axios.defaults.baseURL = "https://api.merchant.scmsar.com/";
 
 /* 基础接口 */
@@ -97,10 +97,10 @@ export const getDataList = (
           control == "goods" ||
           operate == "merMonthTakePageLog"
         ) {
-          _this[key] = res.resultObject.data;
+          _this[key] = res.resultObject.data || [];
           return;
         }
-        _this[key] = res.resultObject;
+        _this[key] = res.resultObject || [];
         break;
       default:
         _this[key] = [];

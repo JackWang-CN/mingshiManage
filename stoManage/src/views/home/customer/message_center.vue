@@ -43,7 +43,7 @@
             >
               <el-avatar
                 :size="50"
-                :src="item.chatMode == 'out' ? my_headIco : data_info.imgUrl"
+                :src="item.imgUrl"
                 shape="square"
               ></el-avatar>
               <p :class="item.chatMode == 'out' ? 'send' : ''">
@@ -63,12 +63,16 @@
 </template>
 
 <script>
-import { spliceImg, createGet } from "@/utils/common";
-import { getDataList, getDetail } from "@/utils/api/apis";
+import { spliceImg, createGet, toBeProto } from "@/utils/common";
+import { getData, getDataList, getDetail } from "@/utils/api/apis";
 export default {
   created() {
-    window.websocket.onmessage = this.webMessage;
+    // window.websocket.onmessage = function () {
+    //   console.log("监听接收");
+    // };
   },
+
+  props: ["message"],
 
   mounted() {
     this.my_headIco = sessionStorage.getItem("headImg");
@@ -95,35 +99,28 @@ export default {
       data_list: [
         {
           isActive: false,
-          headIco:
-            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1597832125083&di=bffb4559f7fd706b877a42b1dd4ab95b&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2F1707a8e86693a27217ab27c24462e7109217ee00.jpg",
+          headIco: "",
           nickname: "林青檀",
-          message: [
-            { type: "16", content: "正哥，在干什么呢", create: "" },
-            { type: "0", content: "啊，我上班呢，咋了兄弟", create: "" },
-            { type: "0", content: "有啥事儿吗", create: "" },
-            { type: "16", content: "哦哦 没事 最近要来成都", create: "" },
-            { type: "16", content: "想来看看你", create: "" },
-          ],
         },
       ],
 
+      receiveID: "", // 当前聊天的客户ID
       message_list: [], // 聊天记录
+      chatHeight: 0, // 聊天窗口偏移值
     };
   },
 
   methods: {
     // 切换聊天窗口
-    switchCustomer(customer) {
+    async switchCustomer(customer) {
+      var { nickname, receiveID } = customer;
+      this.receiveID = receiveID;
       // 1.保存草稿
       if (this.data_info.draft) {
         this.saveDraft(this.data_info);
       }
-
       // 2.激活点击的会话
       this.data_info = { ...customer };
-      var { nickname } = customer;
-
       this.data_list.forEach((item) => {
         if (item.nickname == nickname) {
           item.isActive = true;
@@ -131,24 +128,34 @@ export default {
           item.isActive = false;
         }
       });
-
       // 3.请求点击会话的聊天记录
-      this.find_form = createGet(1, 20);
-      this.find_form.data = { receiveID: this.data_info.receiveID };
-      getDataList(
-        this.model,
-        this.control,
-        1,
-        this.find_form,
-        this,
-        "message_list",
-        "userChatLogList"
-      );
+      var chat_list = sessionStorage.getItem(receiveID);
+      if (chat_list) {
+        // 已保存
+        this.message_list = JSON.parse(chat_list) || [];
+      } else {
+        // 未保存
+        this.find_form = createGet(1, 20);
+        this.find_form.data = { receiveID: this.data_info.receiveID };
+        var res = await getData(
+          this.model,
+          this.control,
+          1,
+          this.find_form,
+          "userChatLogList"
+        );
+        debugger;
+        this.message_list = res.resultObject || [];
+        sessionStorage.setItem(receiveID, JSON.stringify(res.resultObject));
+      }
+      // 窗口向下偏移
+      this.rollBottom();
     },
 
     // 保存草稿
     saveDraft(obj) {
       var { userID, draft } = obj;
+
       this.data_list.forEach((item) => {
         if (item.userID == userID) {
           item.draft = draft;
@@ -190,31 +197,119 @@ export default {
 
     // 发送消息
     sendMessage() {
-      var Authorization = sessionStorage.getItem("token");
-      var Msg = this.data_info.draft; // 发送的内容
-      var MerchantsId = sessionStorage.getItem("MerchantsId");
-      var UserId = this.data_info.receiveID;
-      var TableId = this.data_info.userTableId;
-      var DateTime = new Date().toJSON();
-      var obj = {
-        Authorization,
-        Type: "8",
-        MerchantsId,
-        UserId,
-        TableId,
-        Msg,
-        DateTime,
-      };
-
+      var { draft, receiveID, userID } = this.data_info;
       this.data_info.draft = "";
-      var msgStr = JSON.stringify(obj);
-      window.websocket.send(msgStr);
+      console.log(receiveID, draft);
+      toBeProto(10, receiveID, draft);
+
+      // 存入緩存
+      var userHeadpng = sessionStorage.getItem("headImg");
+      var dateTime = new Date().toJSON();
+      var obj = {
+        chatMode: "out",
+        dateTime,
+        msg: draft,
+        userHeadpng,
+        userId: userID,
+      };
+      this.saveRecord(obj);
+      this.message_list = JSON.parse(sessionStorage.getItem(receiveID));
+
+      // 窗口向下偏移
+      this.rollBottom();
+    },
+
+    // 存储聊天记录
+    saveRecord(obj) {
+      // 1.获取用户ID
+      var receiveID = this.receiveID;
+
+      // 2.判断是否已存在
+      var chat_list = sessionStorage.getItem(receiveID);
+      if (!!chat_list) {
+        // 3-1.已存
+        chat_list = JSON.parse(chat_list);
+      } else {
+        // 3-2.未存
+        chat_list = [];
+      }
+      // 4.追加到记录中
+      chat_list.push(obj);
+      chat_list = JSON.stringify(chat_list);
+      sessionStorage.setItem(receiveID, chat_list);
+    },
+
+    // 获取消息长度并滚到最下
+    rollBottom() {
+      this.$nextTick(() => {
+        this.chatHeight = document.querySelector(".message_box").scrollHeight;
+        document.querySelector(".message_box").scrollTop = this.chatHeight;
+      });
     },
   },
 
   watch: {
     data_list() {
-      this.data_list = spliceImg(this.data_list, "userHeadpng");
+      spliceImg(this.data_list, "userHeadpng");
+    },
+
+    message_list() {
+      spliceImg(this.message_list, "userHeadpng");
+    },
+
+    // 当来新消息时触发
+    message(msg) {
+      if (!msg) return;
+      console.log(msg);
+      var receiveID = msg.friendID;
+
+      // 1.判断用户是否已在会话列表中
+      var flag = false;
+      var sort = null;
+      this.data_list.some((item, index) => {
+        if (item.receiveID == receiveID) {
+          flag = true;
+          sort = index;
+        }
+        return item.receiveID == receiveID;
+      });
+
+      if (flag) {
+        // 已存在则更新消息预览
+        this.data_list[sort].bulletin = msg.msg;
+      } else {
+        // 不存在则重新请求会话
+        getDataList(
+          this.model,
+          this.control,
+          1,
+          {},
+          this,
+          "data_list",
+          "merChatList"
+        );
+      }
+
+      // 2.判断消息来源是否为当前激活会话
+      if (this.receiveID == receiveID) {
+        var userHeadpng = this.data_info.userHeadpng;
+        console.log(this.data_info);
+        var dateTime = new Date(msg.time * 1000).toJSON();
+        // 编译并保存
+        var obj = {
+          chatMode: "in",
+          dateTime,
+          msg: msg.msg,
+          userHeadpng,
+          userId: receiveID,
+        };
+        this.saveRecord(obj);
+        var chat_list = sessionStorage.getItem(receiveID);
+        this.message_list = JSON.parse(chat_list);
+
+        // 窗口向下偏移
+        this.rollBottom();
+      }
     },
   },
 };
@@ -225,7 +320,7 @@ export default {
   width: 1500px;
   padding: 0;
   #chat_box {
-    height: 1000px;
+    // height: 800px;
 
     // 左侧会话列表
     aside {
@@ -278,6 +373,7 @@ export default {
     main {
       padding: 0;
       background-color: rgb(245, 245, 245);
+
       h3 {
         height: 59px;
         line-height: 60px;
@@ -288,7 +384,10 @@ export default {
       .chat_details {
         display: flex;
         flex-direction: column;
-        height: 940px;
+        height: 750px;
+        &::-webkit-scrollbar  {
+          display: none;
+        }
 
         // 聊天窗口
         .message_box {

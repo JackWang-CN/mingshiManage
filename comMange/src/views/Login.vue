@@ -58,11 +58,20 @@ import { getData } from "@/utils/api/apis";
 import { store } from "@/utils/store";
 import { spliceImg } from "@/utils/common";
 export default {
-  mounted() {},
+  created() {
+    document.addEventListener("keydown", (e) => {
+      var { keyCode } = e;
+      if (keyCode == 13) {
+        console.log("登录");
+      }
+    });
+  },
 
   components: { Verify },
   data() {
     return {
+      bodyHeight: 0, // 屏幕高度
+
       // 输入框
       loginForm: {
         username: "",
@@ -159,8 +168,9 @@ export default {
 
 <style lang="scss">
 #login {
-  height: 100%;
   background: url("../assets/images/bg/background_1.png") no-repeat;
+  height: 100%;
+  min-height: 900px;
   background-size: 100% 100%;
   .container {
     min-width: 1300px;
@@ -184,8 +194,9 @@ export default {
       background: url("../assets/images/bg/background_2.png") no-repeat;
       background-size: 100% 100%;
       border-radius: 20px;
-      margin: 5rem auto;
-      padding: 8rem 0;
+      margin: 0 auto;
+      margin-top: 4rem;
+      padding: 7rem 0;
       box-shadow: 0px 0px 15px #006b6e;
       // 表单
       .loginForm {

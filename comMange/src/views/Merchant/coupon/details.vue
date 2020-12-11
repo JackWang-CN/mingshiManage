@@ -384,30 +384,6 @@ export default {
     }
   }
 
-  // 模型列表
-  // #model_list {
-  //   margin-bottom: 20px;
-  //   li {
-  //     padding: 10px;
-  //     margin: 5px;
-  //     display: inline-block;
-  //     background-color: rgb(230, 230, 230);
-  //     border-radius: 5px;
-  //     cursor: pointer;
-  //     &:hover {
-  //       color: #409eff;
-  //     }
-  //   }
-  // }
-
-  // .select_model {
-  //   margin: 20px 0;
-  //   span {
-  //     margin-right: 10px;
-  //     line-height: 32px;
-  //   }
-  // }
-
   // 图片上传
   .img-upload {
     .el-upload {

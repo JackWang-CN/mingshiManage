@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <!-- 委托列表 -->
+    <!-- 好友列表 -->
     <el-table
       :data="data_list"
       tooltip-effect="dark"
@@ -51,22 +51,27 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页插件 -->
+    <pagination
+      :find="find_form"
+      @sizeChange="pageChange('size', $event)"
+      @currChange="pageChange('curr', $event)"
+    ></pagination>
   </div>
 </template>
 
 <script>
+import pagination from "@/components/Pagination";
 import { getDataList, delData } from "@/utils/api/apis";
 import { createGet, filteObj, spliceKey } from "@/utils/common";
 export default {
+  components: {
+    pagination,
+  },
   mounted() {
     // 首次加载
-    getDataList(
-      this.$vision.merchant,
-      "Entrustreqdata",
-      createGet(1, 10),
-      "data_list",
-      this
-    );
+    // getDataList(this.model, this.control, 1, createGet(1, 10), this);
   },
 
   data() {
@@ -75,6 +80,9 @@ export default {
       data_list: [],
       select_list: [],
       btn_status: false,
+
+      model: "",
+      control: "",
     };
   },
 
@@ -161,6 +169,20 @@ export default {
     // 获取选中项
     select(list) {
       this.select_list = list;
+    },
+
+    // 分页改变时触发
+    pageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.find_form.pageSize = page;
+          break;
+        case "curr":
+          this.find_form.currPage = page;
+          break;
+      }
+      var form = { ...this.find_form };
+      getDataList(this.model, this.control, 1, createGet(1, 10), this);
     },
   },
 };

@@ -65,26 +65,25 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        if (valid) {
-          var data = { ...this.loginForm };
-          sendLogin(data)
-            .then((res) => {
-              res = res.data.resultObject;
-              // 保存返回的token
-              var token = res.accessToken,
-                username = res.user.loginName,
-                userId = res.user.userId;
-              sessionStorage.setItem("token", token);
-              sessionStorage.setItem("username", username);
-              sessionStorage.setItem("userId", userId);
-              this.$message({
-                message: "登录成功！",
-                type: "success",
-              });
-              this.$router.push("home");
-            })
-            .catch((err) => {});
-        }
+        var data = { ...this.loginForm };
+        sendLogin(data)
+          .then((res) => {
+            console.log(res);
+            res = res.resultObject;
+            // 保存返回的token
+            var token = res.accessToken,
+              username = res.user.loginName,
+              userId = res.user.userId;
+            sessionStorage.setItem("token", token);
+            sessionStorage.setItem("username", username);
+            sessionStorage.setItem("userId", userId);
+            this.$message({
+              message: "登录成功！",
+              type: "success",
+            });
+            this.$router.push("home");
+          })
+          .catch((err) => {});
       });
     },
   },

@@ -5,13 +5,25 @@
     <!-- 表单 -->
     <el-form label-width="100px">
       <!-- 文件上传 -->
-      <el-form-item label="AR文件">
+      <el-form-item label="安卓模型">
         <el-upload
           class="upload-demo"
           action="#"
-          :on-change="arChange"
+          :on-change="androidAr"
           :auto-upload="false"
-          :file-list="file_ar"
+          :file-list="file_android"
+        >
+          <el-button size="small" type="primary">添加模型</el-button>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item label="IOS模型">
+        <el-upload
+          class="upload-demo"
+          action="#"
+          :on-change="iosAr"
+          :auto-upload="false"
+          :file-list="file_ios"
         >
           <el-button size="small" type="primary">添加模型</el-button>
         </el-upload>
@@ -87,7 +99,8 @@ export default {
     return {
       data_info: {},
       type_list: [],
-      file_ar: [], // ar文件对象
+      file_android: [], // 安卓ar文件对象
+      file_ios: [], // 苹果ar文件对象
       main_list: [], // 主缩略图文件对象
       main_img: "",
       children_list: [], // 子多图文件对象
@@ -116,16 +129,16 @@ export default {
       var flag = true;
 
       // 1.上传AR资源
-      if (this.file_ar.length > 0) {
+      if (this.file_android.length > 0) {
         var arRes = await uploadFiles(
           3,
           1,
-          this.file_ar,
+          this.file_android,
           TypeID,
           ShowResourceName,
           Remarks
         );
-        if (arRes.code !== "000000") flag = false;
+        if (arRes.code != "000000") flag = false;
       } else {
         this.$message.error("请先添加模型文件");
         return;
@@ -165,23 +178,41 @@ export default {
       this.file_list = [...list];
     },
 
-    // ar文件状态改变
-    arChange(file, list) {
+    // android AR文件状态改变
+    androidAr(file, list) {
       var { name } = file;
       console.log(file);
       var index = name.indexOf(".");
       var suffix = name.substring(index + 1);
       if (suffix != "ab") {
         this.$message.warning("请上传有效的ab资源包");
-        this.file_ar = [];
+        this.file_android = [];
         return;
       }
       var name = name.substring(0, index);
       this.data_info.ShowResourceName = name;
       var obj = { ...this.data_info };
       this.data_info = { ...obj };
-      this.file_ar = [file];
+      this.file_android = [file];
     },
+    // 苹果 AR文件状态改变
+    iosAr(file, list) {
+      var { name } = file;
+      console.log(file);
+      var index = name.indexOf(".");
+      var suffix = name.substring(index + 1);
+      if (suffix != "ab") {
+        this.$message.warning("请上传有效的ab资源包");
+        this.file_ios = [];
+        return;
+      }
+      var name = name.substring(0, index);
+      this.data_info.ShowResourceName = name;
+      var obj = { ...this.data_info };
+      this.data_info = { ...obj };
+      this.file_ios = [file];
+    },
+
     // 主缩略图状态改变
     mainChange(file, list) {
       this.main_img = URL.createObjectURL(file.raw);

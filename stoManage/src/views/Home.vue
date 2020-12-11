@@ -118,7 +118,7 @@
 
       <!-- 主体 -->
       <el-main>
-        <router-view></router-view>
+        <router-view :message="message"></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -127,13 +127,18 @@
 
 <script>
 const { IM_url } = window.baseUrl;
-import "@/utils/im/wang.js";
 const fileUrl = window.baseUrl.normal_file;
 import { getDetail } from "@/utils/api/apis";
-import { toBinary } from "@/utils/common";
+import { toBinary, translateProto, toBeProto } from "@/utils/common";
 export default {
   created() {
     var Authorization = sessionStorage.getItem("token");
+
+    if (!Authorization) {
+      this.$router.replace("/login");
+      this.$message.error("账号已注销，请重新登录！");
+    }
+
     this.initWebsocket();
 
     // 获取商户ID
@@ -144,59 +149,30 @@ export default {
       });
     }
 
-    // 1.创建IM登录包体
-    var HeadLength = 20; //消息头长度
-    var ClientVersion = 1; //客户端版本号
-    var MsgID = 3; //消息码ID
-    var Seq = Math.ceil(Math.random() * 10000); //消息序列
-
-    // 2.实例消息体，并赋值
-    var loginInfo = new proto.Wang.UserLogin();
-    loginInfo.setToken(Authorization);
-    loginInfo.setUsertype(1);
-    var time = Math.ceil(new Date().getTime() / 1000);
-    loginInfo.setTime(time);
-
-    // var heartInfo = new proto.Wang.TimeStamp();
-    // heartInfo.setTime(time);
-
-    // 3.将消息体转为二进制
-    var loginInfo2 = loginInfo.serializeBinary();
-    // var heartInfo2 = heartInfo.serializeBinary();
-    var loginLength = loginInfo2.length;
-    // var heartLength = heartInfo2.length;
-
-    // 4.将包体转为二进制
-    var HeadLength2 = toBinary(HeadLength);
-    var ClientVersion2 = toBinary(ClientVersion);
-    var MsgID2 = toBinary(MsgID);
-    var Seq2 = toBinary(Seq);
-    var loginLength2 = toBinary(loginLength);
-    // var heartLength2 = toBinary(heartLength);
-
-    // 5.拼接获得IM报文
-    var loginMsg = `${HeadLength2},${ClientVersion2},${MsgID2},${Seq2},${loginLength2},${loginInfo2}`;
-    // var heartMsg = `${HeadLength2},${ClientVersion2},${MsgID2},${Seq2},${heartLength2},${heartInfo2}`;
-
-    // 6.发送IM报文
+    // 发送IM登录
     window.websocket.addEventListener("open", function () {
       // 发送登录报文
-      window.websocket.onsend(loginMsg);
-
-      // 发送心跳包
-      // window.websocket.onsend(heartMsg);
+      toBeProto(3, Authorization);
     });
 
-    if (!Authorization) {
-      this.$router.replace("/login");
-      this.$message.error("账号已注销，请重新登录！");
-    }
     this.circleUrl = fileUrl + sessionStorage.getItem("headImg"); //获取头像
     this.userName = sessionStorage.getItem("userName"); //获取用户名
   },
 
   mounted() {
-    this.nav_list[this.activeIndex].isActive = true;
+    this.activeIndex = JSON.parse(sessionStorage.getItem("activeIndex")) || 0;
+    var activeIndex = this.activeIndex;
+    this.switchActive(0, false);
+    switch (typeof activeIndex) {
+      case "number":
+        this.nav_list[activeIndex].isActive = true;
+        break;
+      case "object":
+        var { parentIndex, childIndex } = activeIndex;
+        this.nav_list[parentIndex].showChildren = true;
+        this.nav_list[parentIndex].children[childIndex].isActive = true;
+        break;
+    }
   },
 
   data() {
@@ -209,6 +185,8 @@ export default {
         new_password: "",
         check_password: "",
       },
+
+      message: "",
 
       // 导航列表
       nav_list: [
@@ -233,12 +211,12 @@ export default {
         //     { name: "商品列表", url: "goods_list", isActive: false },
         //   ],
         // },
-        {
-          name: "订单管理",
-          haveChildren: false,
-          url: "order_list",
-          isActive: false,
-        },
+        // {
+        //   name: "订单管理",
+        //   haveChildren: false,
+        //   url: "order_list",
+        //   isActive: false,
+        // },
         {
           name: "我的收益",
           haveChildren: false,
@@ -267,8 +245,8 @@ export default {
           ],
         },
       ],
-      // 激活导航的路径
 
+      // 激活导航的路径
       activeIndex: 0,
 
       websocket: null,
@@ -312,6 +290,8 @@ export default {
       } else {
         this.activeIndex = { parentIndex: index, childIndex };
       }
+
+      sessionStorage.setItem("activeIndex", JSON.stringify(this.activeIndex));
     },
 
     // 切换激活 model：数据模型   isActive：布尔值，true表示激活，false表示取消激活
@@ -348,13 +328,13 @@ export default {
 
     // 接收消息
     webMessage(res) {
-      console.log("接收消息");
-      console.log(res);
+      var message = translateProto(res.data);
+      this.message = message;
     },
 
     // 建立连接
     webConnect() {
-      console.log("建立连接");
+      console.log("建立连接...");
     },
 
     // 发送消息
@@ -365,6 +345,14 @@ export default {
     // 连接建立失败
     webError() {
       console.log("连接建立失败");
+      this.$notify({
+        title: "提示",
+        message:
+          "聊天功能初始化失败，将无法正常接收客户信息，若需解决请重新登陆",
+        type: "error",
+        position: "bottom-right",
+        duration: 0,
+      });
     },
 
     // 连接关闭

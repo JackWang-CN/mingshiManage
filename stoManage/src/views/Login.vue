@@ -161,6 +161,7 @@ export default {
 <style lang="scss">
 #login {
   height: 100%;
+  min-height: 900px;
   background: url("../assets/images/bg/background_1.png") no-repeat;
   background-size: 100% 100%;
   .top {

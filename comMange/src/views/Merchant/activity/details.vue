@@ -53,24 +53,31 @@
         ></el-date-picker>
       </el-form-item>
 
-      <el-form-item label="活动图片">
+      <!-- 券图片 -->
+      <el-form-item label="券图片">
         <el-upload
-          :action="normal_url"
+          class="img-upload"
+          action="#"
           :auto-upload="false"
-          :on-preview="showPreview"
           :on-change="fileChange"
-          :on-remove="removeFile"
+          :show-file-list="false"
         >
-          <el-button size="small" type="primary">选择图片</el-button>
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="3D模型">
-        <el-button type="primary" size="small" @click="showModel"
+
+      <!-- AR资源 -->
+      <el-form-item label="AR资源">
+        <el-button size="small" type="primary" @click="showModel"
           >选择模型</el-button
         >
-        <span>模型名称：{{ data_info.resID }}</span>
-        <!-- <el-avatar :size="80" :src shape="square"></el-avatar> -->
+        <div class="mode_img" v-show="data_info.resID">
+          <el-avatar :size="80" :src="modeImg" shape="square"></el-avatar>
+          <el-tag>{{ data_info.resName }}</el-tag>
+        </div>
       </el-form-item>
+
       <el-form-item label="活动描述:">
         <el-input
           type="textarea"
@@ -100,13 +107,19 @@
     <!-- 弹出框-模型列表 -->
     <el-dialog title="选择模型" :visible.sync="show_model">
       <!-- 模型 -->
-      <ul id="model_list">
+      <ul class="model_list">
         <li
           v-for="(model, index) in model_list"
           :key="index"
           @click="selectModel(model)"
         >
-          {{ model.resID }}
+          <el-avatar
+            :size="70"
+            :src="model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ model.showResourceName }}</div>
         </li>
       </ul>
       <!-- 分页插件 -->
@@ -115,12 +128,18 @@
         @sizeChange="pageChange('size', $event)"
         @currChange="pageChange('curr', $event)"
       ></Pagination>
-      <!-- 标签 -->
-      <div class="select_model">
-        <span>已选择</span>
-        <el-tag closable v-if="select_model.resID" @close="unSelect">{{
-          select_model.resID
-        }}</el-tag>
+      <!-- 选中模型 -->
+      <div class="select_model" v-show="Object.keys(select_model).length">
+        <div class="title">已选择</div>
+        <div class="ico" @click="unSelect" title="点击删除">
+          <el-avatar
+            :size="70"
+            :src="select_model.imgUrl"
+            shape="square"
+            class="model_ico"
+          ></el-avatar>
+          <div class="model_name">{{ select_model.showResourceName }}</div>
+        </div>
       </div>
       <!-- 操作 -->
       <el-button type="primary" size="small" @click="confirmModel"
@@ -133,7 +152,7 @@
 
 <script>
 import Pagination from "@/components/Pagination";
-import { createGet, switchDateList } from "@/utils/common";
+import { createGet, switchDateList, spliceImg } from "@/utils/common";
 import {
   getDataList,
   getDataDetails,
@@ -206,8 +225,9 @@ export default {
 
       show_preview: false, // 预览图显隐
       preview_url: "", // 预览图地址
+      imageUrl: "",
+      modeImg: "",
       show_model: false, // 3D模型列表
-      normal_url: "#", // 普通资源上传地址
 
       select_date: [], // 有效日期
 
@@ -252,18 +272,17 @@ export default {
       if (this.select_model.resID) {
         this.data_info.resID = this.select_model.resID;
         this.data_info.resName = this.select_model.showResourceName;
-        this.data_info.facadeImageID = this.select_model.mainImageID;
+        this.modeImg = this.select_model.imgUrl;
       } else {
         this.data_info.resID = "";
-        this.data_info.resName = "";
-        this.data_info.facadeImageID = "";
       }
       this.show_model = false;
     },
 
     // 文件状态改变
     fileChange(file, list) {
-      this.img_list = [...list];
+      this.img_list = [file];
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
 
     // 图片预览
@@ -349,6 +368,12 @@ export default {
       getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
     },
   },
+
+  watch: {
+    model_list() {
+      spliceImg(this.model_list, "mainImageID", true);
+    },
+  },
 };
 </script>
 
@@ -360,6 +385,35 @@ export default {
       .el-input,
       .el-textarea {
         width: 300px;
+      }
+    }
+  }
+
+  // 图片上传
+  .img-upload {
+    .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      &:hover {
+        border-color: #409eff;
+      }
+
+      .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+        text-align: center;
+      }
+
+      img {
+        width: 150px;
+        height: 150px;
+        display: block;
       }
     }
   }

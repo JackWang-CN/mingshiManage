@@ -5,105 +5,225 @@
 
     <!-- tab分页 -->
     <el-tabs v-model="activeName" type="card">
+      <!-- 查询条件 -->
+      <el-form
+        ref="find_form"
+        class="find_form"
+        :model="find_form"
+        label-width="80px"
+      >
+        <el-form-item label="道具名称">
+          <el-input
+            v-model="find_form.data.assetsName"
+            placeholder="请输入道具名称"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="道具类型" v-show="activeName == 'propList'">
+          <el-select
+            v-model="find_form.data.assetType"
+            placeholder="请选择道具类型"
+          >
+            <el-option label="全部" value></el-option>
+            <el-option label="道具" :value="0"></el-option>
+            <!-- <el-option label="宠物" :value="1"></el-option>
+          <el-option label="房产" :value="2"></el-option>
+          <el-option label="地产" :value="2"></el-option> -->
+            <el-option label="道具碎片" :value="4"></el-option>
+            <el-option label="道具配方" :value="5"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="卖家昵称">
+          <el-input v-model="find_form.data.userName"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="findData">查询</el-button>
+        </el-form-item>
+      </el-form>
       <!-- <el-tab-pane label="房产道具" name="houseList"></el-tab-pane> -->
-      <el-tab-pane label="屋内道具" name="propList"></el-tab-pane>
-      <el-tab-pane label="优惠券" name="couponList"></el-tab-pane>
-    </el-tabs>
 
-    <!-- 查询条件 -->
-    <el-form
-      ref="find_form"
-      class="find_form"
-      :model="find_form"
-      label-width="80px"
-    >
-      <el-form-item label="道具名称">
-        <el-input
-          v-model="find_form.data.assetsName"
-          placeholder="请输入道具名称"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="道具类型">
-        <el-select
-          v-model="find_form.data.assetType"
-          placeholder="请选择道具类型"
-        >
-          <el-option label="全部" value></el-option>
-          <el-option label="优惠券" :value="1"></el-option>
-          <el-option label="道具" :value="2"></el-option>
-          <el-option label="虚拟房产" :value="3"></el-option>
-        </el-select>
-      </el-form-item>
+      <!-- 屋内道具 -->
+      <el-tab-pane label="屋内道具" name="propList">
+        <el-table :data="data_list" border>
+          <el-table-column
+            prop="name"
+            label="拍品名称"
+            width="150"
+          ></el-table-column>
 
-      <el-form-item label="卖家昵称">
-        <el-input v-model="find_form.data.userName"></el-input>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="findData">查询</el-button>
-      </el-form-item>
-    </el-form>
-
-    <!-- 数据列表 -->
-    <el-table :data="data_list" border>
-      <el-table-column
-        prop="name"
-        label="拍品名称"
-        width="150"
-      ></el-table-column>
-
-      <el-table-column prop="imgUrl" label="拍品图片" width="120">
-        <template slot-scope="scope">
-          <el-avatar
-            :size="80"
-            :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
-        </template>
-      </el-table-column>
-      <el-table-column prop="assetType" label="道具类型" width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.assetType == 1">优惠券</span>
-          <span v-else-if="scope.row.assetType == 2">道具</span>
-          <span v-else-if="scope.row.assetType == 3">虚拟房产</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="count" label="数量" width="120"></el-table-column>
-      <el-table-column prop="price" label="价格" width="120"></el-table-column>
-      <el-table-column
-        prop="describe"
-        label="拍品描述"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="userName"
-        label="卖家昵称"
-        width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="addedTime"
-        label="上架时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="expireTime"
-        label="到期时间"
-        width="160"
-      ></el-table-column>
-      <el-table-column label="操作" width="180">
-        <template slot-scope="scope">
-          <!-- <el-button
+          <el-table-column prop="imgUrl" label="拍品图片" width="120">
+            <template slot-scope="scope">
+              <el-avatar
+                :size="80"
+                :src="scope.row.imgUrl"
+                shape="square"
+              ></el-avatar>
+            </template>
+          </el-table-column>
+          <el-table-column prop="propTypeEnum" label="道具类型" width="100">
+            <template slot-scope="scope">
+              <span v-if="scope.row.propTypeEnum == 0">道具</span>
+              <span v-else-if="scope.row.propTypeEnum == 1">宠物</span>
+              <span v-else-if="scope.row.propTypeEnum == 2">房产</span>
+              <span v-else-if="scope.row.propTypeEnum == 3">地产</span>
+              <span v-else-if="scope.row.propTypeEnum == 4">碎片</span>
+              <span v-else-if="scope.row.propTypeEnum == 5">配方</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="num"
+            label="数量"
+            width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="price"
+            label="价格"
+            width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="describe"
+            label="拍品描述"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="userName"
+            label="卖家昵称"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="addedTime"
+            label="上架时间"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="expireTime"
+            label="到期时间"
+            width="160"
+          ></el-table-column>
+          <el-table-column fixed="right" label="操作" width="120">
+            <template slot-scope="scope">
+              <!-- <el-button
             @click="showDetails(scope.row.auctionID)"
             type="primary"
             size="small"
             >详情</el-button
           > -->
-          <el-button @click="switchState(scope.row)" type="warning" size="small"
-            >下架</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+              <el-button
+                @click="switchState(scope.row)"
+                type="warning"
+                size="small"
+                >下架</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+
+      <!-- 优惠券 -->
+      <el-tab-pane label="优惠券" name="couponList">
+        <el-table :data="data_list" border>
+          <el-table-column
+            prop="name"
+            label="优惠券名称"
+            width="150"
+          ></el-table-column>
+
+          <el-table-column prop="imgUrl" label="优惠券图片" width="120">
+            <template slot-scope="scope">
+              <el-avatar
+                :size="80"
+                :src="scope.row.imgUrl"
+                shape="square"
+              ></el-avatar>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="typeName"
+            label="券类型"
+            width="120"
+          ></el-table-column>
+
+          <el-table-column prop="limitQuoat" label="门槛金额" width="120">
+            <template slot-scope="scope">
+              {{ scope.row.limitQuoat }}金币
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="discountQuota" label="面值" width="120">
+            <template slot-scope="scope">
+              <!-- 1.抵扣 -->
+              <span v-if="scope.row.discountType == 1"
+                >{{ scope.row.discountQuota }}金币</span
+              >
+
+              <!-- 2.折扣 -->
+              <span v-else-if="scope.row.discountType == 2"
+                >{{ scope.row.discountQuota }}折</span
+              >
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="merName"
+            label="商户名称"
+            width="120"
+          ></el-table-column>
+
+          <el-table-column
+            prop="count"
+            label="数量"
+            width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="price"
+            label="价格"
+            width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="describe"
+            label="拍品描述"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="userName"
+            label="卖家昵称"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="auctionTime"
+            label="上架时间"
+            width="180"
+          ></el-table-column>
+          <el-table-column prop="expireTime" label="有效期限" width="160">
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.startTime }}至
+                <br />
+                {{ scope.row.endTime }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" width="120">
+            <template slot-scope="scope">
+              <!-- <el-button
+            @click="showDetails(scope.row.auctionID)"
+            type="primary"
+            size="small"
+            >详情</el-button
+          > -->
+              <el-button
+                @click="switchState(scope.row)"
+                type="warning"
+                size="small"
+                >下架</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
 
     <!-- 分页 -->
     <Pagination
@@ -135,24 +255,12 @@
         <el-button @click="show_details = false">关闭</el-button>
       </span>
     </el-dialog>
-
-    <el-dialog title="下架理由" :visible.sync="show_shelf">
-      <el-input
-        type="textarea"
-        :rows="3"
-        v-model="data_shelf.remarks"
-      ></el-input>
-      <span slot="footer">
-        <el-button @click="offShelf" type="primary">确定</el-button>
-        <el-button @click="show_shelf = false">取消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination";
-import { getDataList, getDataDetails, offTheShelf } from "@/utils/api/apis";
+import { getDataList, getDataDetails, getData } from "@/utils/api/apis";
 import {
   createGet,
   filteObj,
@@ -185,7 +293,6 @@ export default {
 
       activeName: "",
       show_details: false, // 是否显示详情
-      show_shelf: false, // 是否显示下架弹窗
       model: "auction",
       control: "auction",
       operate: "",
@@ -219,30 +326,25 @@ export default {
 
     // 点击下架
     switchState(row) {
-      var { owner, assetsID } = row;
-      console.log(row);
-      // 1.打开模态框 2.填写下架理由 3.提交关闭模态框并重新加载
-      this.data_shelf.owner = owner;
-      this.data_shelf.auctionID = assetsID;
-      this.show_shelf = true;
-    },
-
-    // 提交下架操作
-    offShelf() {
-      this.show_shelf = false;
-      offTheShelf(1, this.data_shelf).then((res) => {
-        hintMessage(this, res);
-        var form = { ...this.find_form };
-        getDataList(
-          this.model,
-          this.control,
-          1,
-          form,
-          this,
-          "data_list",
-          this.operate
-        );
-      });
+      var { userID, propTypeEnum, auctionID } = row;
+      this.data_shelf.customerID = userID;
+      this.data_shelf.assetTypeEnum = propTypeEnum;
+      this.data_shelf.auctionID = auctionID;
+      getData(this.model, this.control, 1, this.data_shelf, "onaway").then(
+        (res) => {
+          hintMessage(this, res);
+          var form = { ...this.find_form };
+          getDataList(
+            this.model,
+            this.control,
+            1,
+            form,
+            this,
+            "data_list",
+            this.operate
+          );
+        }
+      );
     },
 
     // 分页属性改变
@@ -256,7 +358,6 @@ export default {
           break;
       }
       var form = { ...this.find_form };
-      delete form.totalDataNum;
       getDataList(
         this.model,
         this.control,
@@ -272,12 +373,17 @@ export default {
   watch: {
     // 拼接道具图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "imageID");
+      var flag = this.activeName == "propList";
+      if (flag) {
+        spliceImg(this.data_list, "facadeImageID", flag);
+      } else {
+        spliceImg(this.data_list, "imageID");
+      }
     },
 
     // 监听页面激活
-    activeName() {
-      this.operate = this.activeName;
+    activeName(v) {
+      this.operate = v;
       getDataList(
         this.model,
         this.control,
@@ -285,7 +391,7 @@ export default {
         this.find_form,
         this,
         "data_list",
-        this.operate
+        v
       );
     },
   },

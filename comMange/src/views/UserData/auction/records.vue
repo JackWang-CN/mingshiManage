@@ -18,16 +18,19 @@
           placeholder="请选择房产类型"
         >
           <el-option label="全部" value></el-option>
-          <el-option label="优惠券" :value="1"></el-option>
-          <el-option label="道具" :value="2"></el-option>
-          <el-option label="虚拟房产" :value="3"></el-option>
+          <el-option label="道具" :value="0"></el-option>
+          <el-option label="宠物" :value="1"></el-option>
+          <el-option label="房产" :value="2"></el-option>
+          <el-option label="地产" :value="3"></el-option>
+          <el-option label="碎片" :value="4"></el-option>
+          <el-option label="配方" :value="5"></el-option>
+          <el-option label="优惠券" :value="1000"></el-option>
         </el-select>
       </el-form-item>
 
       <!-- 按钮组 -->
       <el-form-item class="btns_find">
         <el-button type="primary" @click="findData">查询</el-button>
-        <el-button type="info" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -46,9 +49,13 @@
       ></el-table-column>
       <el-table-column prop="assetType" label="道具类型" width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.assetType == 1">优惠券</span>
-          <span v-else-if="scope.row.assetType == 2">道具</span>
-          <span v-else-if="scope.row.assetType == 3">虚拟房产</span>
+          <span v-if="scope.row.assetType == 0">道具</span>
+          <span v-else-if="scope.row.assetType == 1">宠物</span>
+          <span v-else-if="scope.row.assetType == 2">房产</span>
+          <span v-else-if="scope.row.assetType == 3">地产</span>
+          <span v-else-if="scope.row.assetType == 4">碎片</span>
+          <span v-else-if="scope.row.assetType == 5">配方</span>
+          <span v-else-if="scope.row.assetType == 1000">优惠券</span>
         </template>
       </el-table-column>
       <el-table-column prop="number" label="数量" width="120"></el-table-column>
@@ -59,11 +66,11 @@
       ></el-table-column>
       <el-table-column prop="imageID" label="道具缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar
-            shape="square"
-            :size="80"
+          <el-image
+            class="table_img"
+            fit="contain"
             :src="scope.row.imgUrl"
-          ></el-avatar>
+          ></el-image>
         </template>
       </el-table-column>
       <el-table-column
@@ -99,6 +106,7 @@
 </template>
 
 <script>
+const { normal_file, ar_2d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import { createGet, spliceKey, filteObj, spliceImg } from "@/utils/common";
 import { getDataList } from "@/utils/api/apis";
@@ -138,11 +146,6 @@ export default {
       );
     },
 
-    // 重置
-    resetForm() {
-      this.find_form.data = {};
-    },
-
     // 分页属性改变
     pageChange(type, page) {
       switch (type) {
@@ -168,7 +171,13 @@ export default {
 
   watch: {
     data_list() {
-      spliceImg(this.data_list, "imageID");
+      this.data_list.forEach((item) => {
+        if (item.assetType == 1000) {
+          item.imgUrl = normal_file + item.imageID;
+        } else {
+          item.imgUrl = ar_2d + item.imageID;
+        }
+      });
     },
   },
 };

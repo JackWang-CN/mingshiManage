@@ -187,8 +187,6 @@ export default {
       this.data_list.forEach((item) => {
         if (item.nonFullImgID) item.noFullUrl = fileUrl + item.nonFullImgID;
       });
-
-      console.log(this.data_list);
     },
   },
 };
