@@ -57,6 +57,7 @@ import { spliceUrl, creatGet } from "@/utils/utils";
 export default {
   mounted() {
     getList("recruit", this.get_form).then(res => {
+      if(res.resultObject.data.length < 1) return;
       this.recruit_list = res.resultObject.data;
       // 重新编译排句;
       this.recruit_list.forEach(item => {
@@ -69,6 +70,7 @@ export default {
 
     this.banner_form = creatGet(1, 1, 3);
     getList("media", this.banner_form).then(res => {
+      if(res.resultObject.data.length < 1) return;
       this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
     });
   },
@@ -87,7 +89,11 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 10,
-        orderByFileds: ""
+        orderByFileds: "createTime desc",
+        data: {
+          scene: "3",
+          isEnable: 1,
+        }
       }
     };
   }

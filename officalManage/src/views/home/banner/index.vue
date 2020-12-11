@@ -10,7 +10,7 @@
         </span>
       </h1>
       <el-tabs v-model="activeName" type="card">
-        <el-tab-pane label="首页" name="0"></el-tab-pane>
+        <el-tab-pane label="首页/新闻/产品轮播" name="0"></el-tab-pane>
         <el-tab-pane label="关于我们" name="1"></el-tab-pane>
         <el-tab-pane label="招聘信息" name="3"></el-tab-pane>
         <el-tab-pane label="联系我们" name="4"></el-tab-pane>
@@ -30,12 +30,19 @@
           sortable
           width="180"
         ></el-table-column>
+        <!-- <el-table-column
+          prop="sortNum"
+          label="排序号"
+          sortable
+          width="80"
+        ></el-table-column> -->
 
         <el-table-column prop="isEnable" label="状态" width="150">
           <template slot-scope="scope">{{
             scope.row.isEnable ? "启用" : "禁用"
           }}</template>
         </el-table-column>
+
         <el-table-column label="图片预览" width="250">
           <template slot-scope="scope">
             <img
@@ -107,6 +114,10 @@
           <el-input v-model="data_info.jumpUrl" autocomplete="off"></el-input>
         </el-form-item>
 
+        <!-- <el-form-item label="顺序标号">
+          <el-input v-model="data_info.sortNum" autocomplete="off"></el-input>
+        </el-form-item> -->
+
         <!-- 下拉选择 -->
         <el-form-item label="上传到" v-if="!operate">
           <el-select
@@ -122,6 +133,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
 
         <!-- 图片上传 -->
         <el-form-item label="上传图片">
@@ -200,12 +212,12 @@ export default {
       upScene: "",
 
       options: [
-        { value: "0", label: "首页" },
+        { value: "0", label: "首页/新闻/产品轮播" },
         { value: "1", label: "关于我们" },
         { value: "3", label: "招聘信息" },
         { value: "4", label: "联系我们" },
       ],
-
+      
       show_img: false,
       show_imgUrl: "", // 预览图地址
       operate: 0, // 0--添加 1--修改
@@ -218,6 +230,7 @@ export default {
       get_form: {
         currPage: 1,
         pageSize: 10,
+        orderByFileds: "createTime desc",
         data: {
           scene: "0",
         },

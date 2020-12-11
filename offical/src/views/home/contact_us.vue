@@ -39,6 +39,7 @@ export default {
     this.banner_form = creatGet(1, 1, 4);
     getList("media", this.banner_form).then(res => {
       //console.log(res)
+      if(res.resultObject.data.length < 1) return;
       this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
     });
 
