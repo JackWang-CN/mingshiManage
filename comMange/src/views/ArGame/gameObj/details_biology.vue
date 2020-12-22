@@ -141,7 +141,7 @@ import {
   updateDetails,
   getFileList,
 } from "@/utils/api/apis";
-import { createGet, spliceImg } from "@/utils/common";
+import { createGet, spliceImg, filteObj } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -215,7 +215,8 @@ export default {
     showModel() {
       this.show_mode = true;
       this.find_form = createGet(1, 20);
-      getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
+      var form = filteObj({ ...this.find_form });
+      getFileList("u3dResourceNameList", 1, form, this, "model_list");
     },
 
     // 点击选中模型

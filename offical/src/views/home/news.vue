@@ -1,23 +1,29 @@
 <template>
   <div id="news">
-    <!-- 轮播图 -->
-    <Banner :banner="banner_list"></Banner>
-
     <!-- 主体 -->
     <div class="main">
       <div class="container">
         <!-- 一级标题 -->
-        <SectionTitle :text="{ pri: '新闻中心', sec: 'News Center' }"></SectionTitle>
+        <SectionTitle
+          :text="{ pri: '新闻中心', sec: 'News Center' }"
+        ></SectionTitle>
 
         <!-- 新闻列表 -->
         <ul class="news_list">
-          <li v-for="(item, index) in news_list" :key="index" @click="toDetails(item.caseID)">
+          <li
+            v-for="(item, index) in news_list"
+            :key="index"
+            @click="toDetails(item.caseID)"
+          >
             <div class="news_imgs">
               <img :src="item.mainMediaUrl" alt />
             </div>
             <div class="news_content">
               <PassageTitle :text="item.title"></PassageTitle>
-              <div class="airtcle_wrap" v-html="item.content.substring(0,1500)"></div>
+              <div
+                class="airtcle_wrap"
+                v-html="item.content.substring(0, 1500)"
+              ></div>
             </div>
           </li>
         </ul>
@@ -40,16 +46,15 @@
 <script>
 import SectionTitle from "@/components/section_title";
 import PassageTitle from "@/components/passage_title";
-import Banner from "@/components/banner";
 
 import { getList } from "@/utils/api/api";
 import { spliceUrl, removeImg } from "@/utils/utils";
 export default {
   mounted() {
     // 请求轮播列表
-    getList("media", this.banner_form).then(res => {
+    getList("media", this.banner_form).then((res) => {
       //console.log(res);
-      if(res.resultObject.data.length < 1) return;
+      if (res.resultObject.data.length < 1) return;
       this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
@@ -59,7 +64,6 @@ export default {
   components: {
     SectionTitle,
     PassageTitle,
-    Banner
   },
   data() {
     return {
@@ -79,7 +83,7 @@ export default {
         data: {
           scene: "0",
           isEnable: 1,
-        }
+        },
       },
 
       // 案例表单的对象
@@ -91,8 +95,8 @@ export default {
         data: {
           caseScene: "0",
           isEnable: 1,
-        }
-      }
+        },
+      },
     };
   },
 
@@ -101,7 +105,7 @@ export default {
     toDetails(caseID) {
       this.$router.push({
         path: "news_details",
-        query: { caseID }
+        query: { caseID },
       });
     },
 
@@ -114,15 +118,15 @@ export default {
 
     // 请求数据列表
     getDataList() {
-      getList("case", this.get_form).then(res => {
+      getList("case", this.get_form).then((res) => {
         //console.log(res);
-        if(res.resultObject.data.length < 1) return;
+        if (res.resultObject.data.length < 1) return;
         this.news_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
         this.news_list.content = removeImg(this.news_list);
         this.totalDataNum = res.totalDataNum;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

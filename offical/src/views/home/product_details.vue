@@ -1,35 +1,57 @@
-<!-- 新闻详情   -->
+<!-- 产品详情   -->
 <template>
   <div id="product_details">
     <!-- 主体 -->
-    <div class="main">
-      <div class="article_shadow container">
-        <h3>{{ airtcle.title }}</h3>
-        <!-- 发布信息 -->
-        <div class="publish">
-          <!-- <span>作者：{{ airtcle.issuerName }}</span> -->
-          <span>发布时间：{{ new Date(airtcle.createTime).toJSON() }}</span>
-          <span>访问量：{{ airtcle.clickNum || 0 }}</span>
+    <div class="main container">
+      <!-- tab菜单 -->
+      <ul class="tabs">
+        <li
+          v-for="(item, index) in tabs_list"
+          :key="item.name"
+          @click="switchTab(index)"
+          :class="item.isActive ? 'active' : ''"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
+
+      <!-- 媒体 -->
+      <div class="media">
+        <div class="left wrap">
+          <div class="pages last" @click="pageChange(0)"></div>
+          <div class="pages next" @click="pageChange(1)"></div>
+          <el-carousel
+            ref="photo_wall"
+            indicator-position="outside"
+            height="460px"
+            arrow="never"
+          >
+            <el-carousel-item v-for="item in photo_wall" :key="item">
+              <img :src="item" alt="" />
+            </el-carousel-item>
+          </el-carousel>
         </div>
-        <!-- 媒体资源 -->
-        <div class="resource">
-          <img :src="airtcle.mainMediaUrl" alt />
-          <!-- <video
-            :src="airtcle.resource.url"
-            v-if="airtcle.resource.type === 'video'"
-          ></video>-->
-        </div>
-        <!-- 正文 -->
-        <div class="content">
-          <h4>{{ airtcle.title }}</h4>
-          <div v-html="airtcle.content"></div>
-        </div>
-        <!-- 翻页 -->
-        <div class="page">
-          <button @click="backList">返回</button>
-          <!-- <button>下一篇</button> -->
+        <div class="right paragraph">
+          <h2>{{ airtcle.title }}</h2>
+          <p v-html="airtcle.content"></p>
         </div>
       </div>
+
+      <!-- 正文 -->
+      <!-- <div class="content paragraph">
+        <h2>VR描述</h2>
+        <p>
+          VR又叫虚拟现实（Virtual Reality，简称
+          VR）。其最大的特点是利用电脑模拟产生一个
+          三维空间的虚拟世界，提供使用者关于视觉、
+          听觉、触觉等感官的模拟，让使用者如同身临 其境一般,
+          可以及时、没有限制地观察三度空间
+          内的事物,在这个虚拟空间内，使用者形成交互 的是虚拟世界的东西。
+        </p>
+      </div> -->
+
+      <!-- 按钮 -->
+      <div class="text_btn" @click="backList">返回</div>
     </div>
   </div>
 </template>
@@ -39,18 +61,35 @@ import { getDetails } from "@/utils/api/api";
 import { spliceUrl } from "@/utils/utils";
 export default {
   mounted() {
+    this.active_index = 0;
+
     // 接收参数
     var caseID = this.$route.query;
-
     getDetails("case", caseID).then((res) => {
       this.airtcle = spliceUrl([res.resultObject], "mainMediaUrl")[0];
+      this.photo_wall = [this.airtcle.mainMediaUrl];
+      console.log(this.airtcle);
     });
+    this.photo_wall = [require("../../assets/images/product/case1.png")];
   },
   data() {
     return {
       isPlay: false,
       showPlay: true,
       airtcle: {},
+      photo_wall: [],
+
+      tabs_list: [
+        {
+          name: "照片",
+          isActive: false,
+        },
+        // {
+        //   name: "视频",
+        //   isActive: false,
+        // },
+      ],
+      active_index: "",
     };
   },
 
@@ -64,14 +103,30 @@ export default {
       this.isPlay = !this.isPlay;
     },
 
-     backList(){
-      this.$router.push('product')
-    }
+    backList() {
+      this.$router.push("product");
+    },
+
+    // 切换激活tab
+    switchTab(index) {
+      if (this.active_index == index) return;
+      this.tabs_list[this.active_index].isActive = false;
+      this.active_index = index;
+    },
+
+    // 照片翻页
+    pageChange(type) {
+      if (!type) {
+        this.$refs.photo_wall.prev();
+      } else {
+        this.$refs.photo_wall.next();
+      }
+    },
   },
 
   watch: {
-    isPlay() {
-      this.showPlay = !this.showPlay;
+    active_index() {
+      this.tabs_list[this.active_index].isActive = true;
     },
   },
 };
@@ -80,111 +135,141 @@ export default {
 <style lang="scss">
 #product_details {
   .main {
-    padding-bottom: 80px;
-    .article_shadow {
-      max-width: 900px;
-      padding-bottom: 20px;
-      h3 {
-        font-size: 36px;
-        color: #000000ff;
-        padding-bottom: 28px;
-        border-bottom: 1px solid #e5e5e5ff;
-        margin-bottom: 18px;
+    border-bottom: 1px solid #dcdcdc;
+    padding-bottom: 0;
+    margin-bottom: 50px;
+    // tab菜单
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      li {
+        background-image: url("../../assets/images/ico_resource.png");
+        background-repeat: no-repeat;
+        background-size: 30px;
+        background-position-x: 26px;
+        cursor: pointer;
+        color: #666;
+        padding: 16px 32px;
+        padding-left: 72px;
+        font-size: 24px;
+        border: 1px solid #d2d2d2;
+        margin-right: 15px;
+        &.active {
+          border-color: #008bff;
+          background-color: #008bff;
+          color: #fff;
+        }
+        &:nth-child(1) {
+          background-position-y: 16px;
+          &.active {
+            background-position-y: -39px;
+          }
+        }
+        &:nth-child(2) {
+          background-position-y: -104px;
+          &.active {
+            background-position-y: -161px;
+          }
+        }
       }
-      div {
-        text-align: left;
-        // 文章发布信息
-        &.publish {
-          margin-bottom: 30px;
-          span {
-            font-size: 20px;
-            color: #767676ff;
-            margin-right: 60px;
+    }
+
+    // 媒体
+    .media {
+      display: flex;
+      align-items: center;
+
+      .left {
+        position: relative;
+        flex: 0 0 940px;
+        background-color: #e5e5e5;
+        padding: 40px 120px;
+        box-sizing: border-box;
+        .pages {
+          cursor: pointer;
+          width: 82px;
+          height: 82px;
+          border-radius: 82px;
+          background-size: cover;
+          position: absolute;
+          top: 35%;
+          z-index: 99;
+          &.last {
+            background-image: url("../../assets/images/about/last.png");
+            left: 20px;
+          }
+          &.next {
+            right: 20px;
+            background-image: url("../../assets/images/about/next.png");
           }
         }
 
-        // 媒体资源
-        &.resource {
-          margin-bottom: 25px;
-          // 图片
+        .el-carousel {
           img {
-            width: 895px;
-            height: 403px;
+            width: 100%;
           }
-          // 视频
-          .video {
-            height: 540px;
-            width: 960px;
-            position: relative;
-            cursor: pointer;
-            video {
-              height: 540px;
-              width: 960x;
-            }
-            // 蒙层
-            .mask {
-              height: 540px;
-              width: 960px;
-              position: absolute;
-              top: 0;
 
-              div {
-                position: absolute;
-                width: 90px;
-                height: 90px;
-                top: 50%;
-                left: 50%;
-                margin-top: -45px;
-                margin-left: -45px;
-                background: url("../../assets/images/播放.png");
-                background-size: cover;
+          // 指示器
+          .el-carousel__indicators {
+            border-radius: 10px;
+            margin-top: 28px;
+            .el-carousel__indicator--horizontal {
+              &.is-active {
+                button {
+                  opacity: 0.64;
+                  background-color: #008bff;
+                }
               }
             }
-          }
-        }
 
-        // 正文
-        &.content {
-          margin-bottom: 100px;
-          h4 {
-            margin-bottom: 22px;
-            font-size: 24px;
-            color: #2e2e2eff;
-            text-align: left;
-          }
-          div {
-            font-size: 16px;
-            color: #525151ff;
-            line-height: 50px;
-            text-align: left;
-            span,
-            p {
-              text-indent: 2rem;
-            }
-            img {
-              width: 100%;
-              height: auto;
-              margin: 10px 0;
+            .el-carousel__button {
+              opacity: 1;
+              margin: 0 10px;
+              height: 10px;
+              width: 10px;
+              border-radius: 10px;
+              background-color: #a0a0a0;
             }
           }
         }
+      }
 
-        // 翻页
-        &.page {
-          display: flex;
-          justify-content: space-between;
-          button {
-            border: none;
-            outline: none;
-            background: none;
-            font-size: 20px;
-            color: #767676ff;
-            cursor: pointer;
-            &:hover {
-              color: #6de0f8ff;
-            }
-          }
-        }
+      .right {
+        flex: 0 1 auto;
+        margin-left: 66px;
+      }
+    }
+
+    // 正文
+    .content {
+      margin-top: 60px;
+      width: 940px;
+    }
+
+    // 按钮
+    .text_btn {
+      cursor: pointer;
+      margin-top: 60px;
+      margin-bottom: 28px;
+      color: #008bff;
+      font-size: 30px;
+      &:hover {
+        color: #56adf5;
+      }
+    }
+
+    // 段落
+    .paragraph {
+      color: #666;
+      h2 {
+        font-size: 30px;
+        line-height: 26px;
+        margin-bottom: 34px;
+      }
+      p {
+        text-indent: 2em;
+        font-size: 16px;
+        line-height: 36px;
       }
     }
   }

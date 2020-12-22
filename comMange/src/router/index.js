@@ -614,6 +614,26 @@ export default new VueRouter({
           ],
         },
 
+        // AR游戏配置-盲盒列表
+        {
+          path: "blind_list",
+          component: () => import("../views/ArGame/blindBox/list.vue"),
+          meta: [
+            { name: "AR游戏配置", path: "" },
+            { name: "盲盒列表", path: "blind_list" },
+          ],
+        },
+        // AR游戏配置-盲盒详情
+        {
+          path: "blind_details",
+          component: () => import("../views/ArGame/blindBox/details.vue"),
+          meta: [
+            { name: "AR游戏配置", path: "" },
+            { name: "盲盒列表", path: "blind_list" },
+            { name: "盲盒详情", path: "blind_details" },
+          ],
+        },
+
         // AR游戏配置-内容池列表
         {
           path: "contentPool_list",
@@ -787,13 +807,6 @@ export default new VueRouter({
             { name: "游戏公告列表", path: "gameNotice_list" },
             { name: "游戏公告详情", path: "gameNotice_details" },
           ],
-        },
-
-        // 测试页
-        {
-          path: "test",
-          component: () => import("../views/test.vue"),
-          meta: [{ name: "测试页", path: "test" }],
         },
       ],
     },

@@ -152,6 +152,7 @@ export const toBeProto = (MsgID, parmas1, parmas2) => {
       Body.setToken(parmas1);
       Body.setUsertype(1);
       Body.setTime(time);
+      console.log("发送登录报文", Body);
       break;
 
     // 发送消息给用户
@@ -268,6 +269,7 @@ export const translateProto = (str) => {
     // 接收消息
     case 13:
       res = proto.Wang.ReceiveMsgInfo.deserializeBinary(Body);
+      console.log(res);
       var res = res.array;
       var obj = {
         friendType: res[0] || 0,

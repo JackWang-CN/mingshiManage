@@ -269,7 +269,8 @@ export default {
     showModel() {
       this.show_mode = true;
       this.find_form = createGet();
-      getFileList("u3dResourceNameList", 1, this.find_form, this, "model_list");
+      var form = filteObj({ ...this.find_form });
+      getFileList("u3dResourceNameList", 1, form, this, "model_list");
     },
 
     // 点击选中模型

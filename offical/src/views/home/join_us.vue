@@ -1,18 +1,17 @@
 <template>
   <div id="join_us">
-    <!-- 轮播 -->
-    <div class="banner">
-      <img :src="banner_img" alt />
-    </div>
-
     <!-- 主体 -->
-    <div class="main">
+    <div class="main container">
       <!-- 一级标题 -->
-      <SectionTitle :text="{ pri: '加入我们', sec: 'Join Us' }"></SectionTitle>
+      <SectionTitle :text="{ pri: '加入我们', sec: 'JOIN US' }"></SectionTitle>
 
       <!-- 招聘列表 -->
-      <ul class="recruit_list container">
-        <li v-for="(item, index) in recruit_list" :key="index" class="article_shadow">
+      <ul class="recruit_list">
+        <li
+          v-for="(item, index) in recruit_list"
+          :key="index"
+          class="article_shadow"
+        >
           <h3>
             {{ item.title }}
             <p>发布于 {{ new Date(item.createTime).toJSON() }}</p>
@@ -56,22 +55,25 @@ import { getList } from "@/utils/api/api";
 import { spliceUrl, creatGet } from "@/utils/utils";
 export default {
   mounted() {
-    getList("recruit", this.get_form).then(res => {
-      if(res.resultObject.data.length < 1) return;
+    getList("recruit", this.get_form).then((res) => {
+      if (res.resultObject.data.length < 1) return;
       this.recruit_list = res.resultObject.data;
       // 重新编译排句;
-      this.recruit_list.forEach(item => {
+      this.recruit_list.forEach((item) => {
         item.power = toWrap(item.power);
       });
-      this.recruit_list.forEach(item => {
+      this.recruit_list.forEach((item) => {
         item.duties = toWrap(item.duties);
       });
     });
 
     this.banner_form = creatGet(1, 1, 3);
-    getList("media", this.banner_form).then(res => {
-      if(res.resultObject.data.length < 1) return;
-      this.banner_img = spliceUrl(res.resultObject.data, "mediaUrl")[0].mediaUrl;
+    getList("media", this.banner_form).then((res) => {
+      if (res.resultObject.data.length < 1) return;
+      this.banner_img = spliceUrl(
+        res.resultObject.data,
+        "mediaUrl"
+      )[0].mediaUrl;
     });
   },
   components: { SectionTitle },
@@ -80,7 +82,7 @@ export default {
     return {
       list: [],
       // 轮播图
-      banner_img: require("@/assets/images/banner5.png"),
+      banner_img: "",
 
       // 招聘列表
       recruit_list: [],
@@ -93,10 +95,10 @@ export default {
         data: {
           scene: "3",
           isEnable: 1,
-        }
-      }
+        },
+      },
     };
-  }
+  },
 };
 </script>
 
@@ -112,7 +114,6 @@ export default {
   // 主体
   .main {
     .recruit_list {
-      width: 50%;
       text-align: left;
       li {
         padding-left: 10%;

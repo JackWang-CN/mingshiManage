@@ -132,6 +132,7 @@ import { getDetail } from "@/utils/api/apis";
 import { toBinary, translateProto, toBeProto } from "@/utils/common";
 export default {
   created() {
+    console.log("进入首页");
     var Authorization = sessionStorage.getItem("token");
 
     if (!Authorization) {
@@ -303,14 +304,14 @@ export default {
           this.nav_list[parentIndex].children[childIndex].isActive = isActive;
           if (isActive) {
             var { url } = this.nav_list[parentIndex].children[childIndex];
-            this.$router.push(url);
+            this.$router.push(url).catch((err) => {});
           }
           break;
         case "number":
           this.nav_list[model].isActive = isActive;
           if (isActive) {
             var { url } = this.nav_list[model];
-            this.$router.push(url);
+            this.$router.push(url).catch((err) => {});
           }
           break;
       }

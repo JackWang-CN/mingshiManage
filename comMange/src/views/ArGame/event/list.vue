@@ -170,7 +170,19 @@
           <el-table-column
             prop="radius"
             label="范围半径"
-            width="120"
+            width="80"
+          ></el-table-column>
+
+          <el-table-column
+            prop="radius"
+            label="点击次数"
+            width="80"
+          ></el-table-column>
+
+          <el-table-column
+            prop="radius"
+            label="投放次数"
+            width="80"
           ></el-table-column>
 
           <el-table-column prop="enable" label="启用状态" width="120">
@@ -443,8 +455,14 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="广告内容">
-          <el-input type="textarea" :rows="3" v-model="data_info.contentText">
-          </el-input>
+          <el-select v-model="data_info.contentStoreID">
+            <el-option
+              v-for="content in content_list"
+              :key="content.contentStoreID"
+              :label="content.storeName"
+              :value="content.contentStoreID"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -524,6 +542,7 @@ export default {
       advert_list: [],
       world_list: [],
       merchant_list: [],
+      content_list: [], // 内容池列表
       show_details: false,
       operate: 0,
       data_info: {},
@@ -731,6 +750,14 @@ export default {
             getData("merchant", "merchantInfo", 1, createGet(1, 99999)).then(
               (res) => {
                 this.merchant_list = res.resultObject.data;
+              }
+            );
+
+          // 请求内容池列表
+          if (this.content_list.length == 0)
+            getData("ARGame", "contentStore", 1, createGet(1, 99999)).then(
+              (res) => {
+                this.content_list = res.resultObject.data;
               }
             );
           break;

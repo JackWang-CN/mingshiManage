@@ -248,7 +248,9 @@ export const uploadFiles = (
   fileList, // 文件列表
   parameter1, // 参数1
   parameter2, // 参数2
-  parameter3 // 参数3
+  parameter3, // 参数3
+  parameter4, // 参数4
+  parameter5
 ) => {
   var formData = createFormData(fileList);
 
@@ -260,7 +262,8 @@ export const uploadFiles = (
       var path = `file/upload/common/v${version}?Remarks=${parameter1}`;
       break;
     case 3:
-      var path = `file/upload/aru3d/v${version}?TypeID=${parameter1}&&ShowResourceName=${parameter2}&&Remarks=${parameter3}`;
+      var path = `file/upload/aru3d/v${version}?TypeID=${parameter1}&&ShowResourceName=${parameter2}&&Remarks=${parameter3}&&ClientType=${parameter4}&&MainResID=${parameter5 ||
+        ""}`;
       break;
     case 4:
       var path = `file/upload/ar2d/v${version}?IsMain=${parameter1}&&MainARResID=${parameter2}`;

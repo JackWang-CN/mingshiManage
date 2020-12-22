@@ -47,6 +47,12 @@ export default new VueRouter({
           component: () => import("../views/home/product_details.vue"),
           meta: { index: 2, title: "-案例详情" },
         },
+        // 产品案例-案例详情
+        {
+          path: "product_kongwan",
+          component: () => import("../views/home/product_kongwan.vue"),
+          meta: { index: 6, title: "-案例详情" },
+        },
 
         // 关于名视
         {

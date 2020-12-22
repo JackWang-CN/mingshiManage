@@ -46,7 +46,6 @@ export default {
       //console.log(res)
       this.airtcle = spliceUrl([res.resultObject], "mainMediaUrl")[0];
     });
-    
   },
   data() {
     return {
@@ -54,11 +53,11 @@ export default {
     };
   },
 
-  methods:{
-    backList(){
-      this.$router.push('news')
-    }
-  }
+  methods: {
+    backList() {
+      this.$router.push("news");
+    },
+  },
 };
 </script>
 
@@ -67,7 +66,6 @@ export default {
   .main {
     padding-bottom: 80px;
     .article_shadow {
-      max-width: 900px;
       padding-bottom: 20px;
       h3 {
         font-size: 36px;
@@ -92,8 +90,7 @@ export default {
         &.resource {
           margin-bottom: 25px;
           img {
-            width: 100%;
-            // height: 400px;
+            width: 50%;
           }
           video {
             height: 400px;

@@ -16,10 +16,11 @@ import "@/utils/other/date";
 
 // 引入重置、公共样式
 import "./assets/css/reset.css";
+import "./assets/css/common.scss";
 
 // 通过路由钩子设置网页名称
 router.beforeEach((to, from, next) => {
-  document.title = "四川名视人工智能" + to.meta.title;
+  document.title = "四川名视人工智能";
   next();
 });
 

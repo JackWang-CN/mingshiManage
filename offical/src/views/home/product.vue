@@ -1,32 +1,30 @@
 <template>
   <div id="product">
-    <!-- 轮播 -->
-    <Banner :banner="banner_list"></Banner>
-
     <!-- 主体 -->
     <div class="main">
       <div class="container">
         <!-- 一级标题 -->
         <SectionTitle
-          :text="{ pri: '产品案例', sec: 'Product Case' }"
+          :text="{ pri: '产品案例', sec: 'PRODUCT CASE' }"
         ></SectionTitle>
 
         <!-- 产品列表 -->
         <ul class="product_list">
+          <li @click="toApp">
+            <img :src="kongwan.img" alt="" />
+            <div class="title">
+              <span class="pri">{{ kongwan.title }}</span>
+            </div>
+          </li>
+
           <li
             v-for="(item, index) in product_list"
             :key="index"
             @click="toDetails(item.caseID)"
           >
-            <div class="resource">
-              <img :src="item.mainMediaUrl" alt class="proudct_img" />
-              <div class="mask" v-if="true">
-                <img :src="icons.play" alt />
-              </div>
-            </div>
+            <img :src="item.mainMediaUrl" alt class="proudct_img" />
             <div class="title">
               <span class="pri">{{ item.title }}</span>
-              {{ item.title.sec }}
             </div>
           </li>
         </ul>
@@ -45,7 +43,6 @@
 </template>
 
 <script>
-import Banner from "@/components/banner";
 import SectionTitle from "@/components/section_title";
 
 import { getList } from "@/utils/api/api";
@@ -54,7 +51,7 @@ export default {
   mounted() {
     // 请求轮播列表
     getList("media", this.banner_form).then((res) => {
-      if(res.resultObject.data.length < 1) return;
+      if (res.resultObject.data.length < 1) return;
       this.banner_list = spliceUrl(res.resultObject.data, "mediaUrl");
     });
 
@@ -62,7 +59,6 @@ export default {
     this.getDataList();
   },
   components: {
-    Banner,
     SectionTitle,
   },
   data() {
@@ -75,9 +71,10 @@ export default {
       // 产品案例
       product_list: [],
 
-      // icons
-      icons: {
-        play: require("@/assets/images/播放.png"),
+      // 案例-空玩
+      kongwan: {
+        img: require("../../assets/images/product/kongwan/app.png"),
+        title: "空玩APP",
       },
 
       // 轮播表单的对象
@@ -115,7 +112,7 @@ export default {
     // 请求数据列表
     getDataList() {
       getList("case", this.get_form).then((res) => {
-        if(res.resultObject.data.length < 1) return;
+        if (res.resultObject.data.length < 1) return;
         this.product_list = spliceUrl(res.resultObject.data, "mainMediaUrl");
         this.totalDataNum = res.totalDataNum;
       });
@@ -127,6 +124,11 @@ export default {
         path: "product_details",
         query: { caseID },
       });
+    },
+
+    // 跳转到空玩APP
+    toApp() {
+      this.$router.push("product_kongwan");
     },
   },
 };
@@ -141,58 +143,21 @@ export default {
       flex-direction: column;
       align-items: center;
       .product_list {
-        width: 1600px;
-        @media screen and (max-width: 1789px) {
-          width: 90%;
-        }
-        @media screen and (max-width: 750px) {
-          width: 650px;
-        }
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         li {
+          box-shadow: 0 0 20px #dddddd;
+          width: 442px;
           cursor: pointer;
-          box-shadow: 0 0 12px -6px #1a1b1b7e;
           border-radius: 10px;
           overflow: hidden;
-          margin-bottom: 24px;
-          // 图片&视频
-          .resource {
+          margin-bottom: 80px;
+          img {
             width: 100%;
-            height: 556px;
-            overflow: hidden;
-            position: relative;
-            @media screen and (max-width: 1789px) {
-              height: 390px;
-            }
-            @media screen and (max-width: 750px) {
-              height: 300px;
-            }
-            .proudct_img {
-              width: 100%;
-              position: absolute;
-              top: -30%;
-              left: 0;
-              @media screen and (max-width: 950px) {
-                top: -10%;
-              }
-              @media screen and (max-width: 750px) {
-                top: -20%;
-              }
-            }
-            .mask {
-              height: 100%;
-              position: relative;
-              background-color: rgba($color: #000, $alpha: 0.4);
-              img {
-                width: 138px;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                margin-top: -69px;
-                margin-left: -69px;
-                cursor: pointer;
-              }
-            }
           }
+
           // 标题
           .title {
             text-align: left;

@@ -144,7 +144,6 @@ export default {
           this.find_form,
           "userChatLogList"
         );
-        debugger;
         this.message_list = res.resultObject || [];
         sessionStorage.setItem(receiveID, JSON.stringify(res.resultObject));
       }
@@ -164,36 +163,36 @@ export default {
     },
 
     // 接收消息
-    webMessage(res) {
-      var mesInfo = JSON.parse(res.data);
-      // 1.判断用户是否已在会话列表中
-      switch (mesInfo.Type) {
-        case "16":
-          var flag = true;
-          this.data_list.some((item, index) => {
-            if (item.receiveID == mesInfo.OutUserId) {
-              // 已在-调整顺序
-              flag = false;
-            }
-            return item.receiveID == mesInfo.OutUserId;
-          });
-      }
+    // webMessage(res) {
+    //   var mesInfo = JSON.parse(res.data);
+    //   // 1.判断用户是否已在会话列表中
+    //   switch (mesInfo.Type) {
+    //     case "16":
+    //       var flag = true;
+    //       this.data_list.some((item, index) => {
+    //         if (item.receiveID == mesInfo.OutUserId) {
+    //           // 已在-调整顺序
+    //           flag = false;
+    //         }
+    //         return item.receiveID == mesInfo.OutUserId;
+    //       });
+    //   }
 
-      // 2.判断当前聊天窗口是否为消息来源用户
-      if (mesInfo.OutUserId && mesInfo.OutUserId == this.data_info.receiveID) {
-        this.find_form = createGet(1, 20);
-        this.find_form.data = { receiveID: this.data_info.receiveID };
-        getDataList(
-          this.model,
-          this.control,
-          1,
-          this.find_form,
-          this,
-          "message_list",
-          "userChatLogList"
-        );
-      }
-    },
+    //   // 2.判断当前聊天窗口是否为消息来源用户
+    //   if (mesInfo.OutUserId && mesInfo.OutUserId == this.data_info.receiveID) {
+    //     this.find_form = createGet(1, 20);
+    //     this.find_form.data = { receiveID: this.data_info.receiveID };
+    //     getDataList(
+    //       this.model,
+    //       this.control,
+    //       1,
+    //       this.find_form,
+    //       this,
+    //       "message_list",
+    //       "userChatLogList"
+    //     );
+    //   }
+    // },
 
     // 发送消息
     sendMessage() {
@@ -251,6 +250,7 @@ export default {
   watch: {
     data_list() {
       spliceImg(this.data_list, "userHeadpng");
+      console.log(this.data_list);
     },
 
     message_list() {

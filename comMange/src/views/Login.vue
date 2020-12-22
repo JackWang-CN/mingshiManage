@@ -120,7 +120,7 @@ export default {
             this.loading = true;
             var loginJson = {
               account: this.loginForm.username,
-              passWord: this.loginForm.password,
+              password: this.loginForm.password,
             };
             getData(
               this.model,
@@ -131,7 +131,6 @@ export default {
             ).then((res) => {
               var res = res.resultObject;
               if (res) {
-                console.log(res);
                 var token = res.accessToken;
                 var headImg = res.user.headIco;
                 var userName = res.user.name;

@@ -5,28 +5,43 @@
     <!-- 表单 -->
     <el-form label-width="100px">
       <!-- 文件上传 -->
-      <el-form-item label="安卓模型">
-        <el-upload
-          class="upload-demo"
-          action="#"
-          :on-change="androidAr"
-          :auto-upload="false"
-          :file-list="file_android"
-        >
-          <el-button size="small" type="primary">添加模型</el-button>
-        </el-upload>
+      <el-form-item label="模型名称">
+        <el-input v-model="data_info.showResourceName" clearable></el-input>
       </el-form-item>
 
-      <el-form-item label="IOS模型">
-        <el-upload
-          class="upload-demo"
-          action="#"
-          :on-change="iosAr"
-          :auto-upload="false"
-          :file-list="file_ios"
-        >
-          <el-button size="small" type="primary">添加模型</el-button>
-        </el-upload>
+      <el-form-item label="所属分类">
+        <el-select v-model="data_info.typeID">
+          <el-option
+            v-for="type in type_list"
+            :key="type.typeID"
+            :label="type.name"
+            :value="type.typeID"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="上传模型">
+        <div class="wraper">
+          <el-upload
+            class="upload-demo"
+            action="#"
+            :on-change="androidAr"
+            :auto-upload="false"
+            :file-list="file_android"
+          >
+            <el-button size="small" type="success">安卓模型</el-button>
+          </el-upload>
+
+          <el-upload
+            class="upload-demo"
+            action="#"
+            :on-change="iosAr"
+            :auto-upload="false"
+            :file-list="file_ios"
+          >
+            <el-button size="small" type="primary">IOS模型</el-button>
+          </el-upload>
+        </div>
       </el-form-item>
 
       <el-form-item label="模型主图">
@@ -55,31 +70,18 @@
         </el-upload>
       </el-form-item>
 
-      <el-form-item label="所属分类">
-        <el-select v-model="data_info.TypeID">
-          <el-option
-            v-for="type in type_list"
-            :key="type.typeID"
-            :label="type.name"
-            :value="type.typeID"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="模型名称">
-        <el-input v-model="data_info.ShowResourceName" clearable></el-input>
-      </el-form-item>
-
       <el-form-item label="备注信息">
         <el-input
-          v-model="data_info.Remarks"
+          v-model="data_info.describe"
           type="textarea"
           :rows="3"
         ></el-input>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="sendSubmit">确认上传</el-button>
+        <el-button type="primary" @click="sendSubmit" :disabled="isDisable"
+          >确认上传</el-button
+        >
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
@@ -88,7 +90,7 @@
 
 <script>
 import { uploadFiles, getFileList, getFile } from "@/utils/api/apis";
-import { createFormData, createGet } from "@/utils/common";
+import { createFormData, createGet, hintMessage } from "@/utils/common";
 export default {
   mounted() {
     // 请求ar资源类型列表
@@ -104,6 +106,8 @@ export default {
       main_list: [], // 主缩略图文件对象
       main_img: "",
       children_list: [], // 子多图文件对象
+
+      isDisable: false,
     };
   },
 
@@ -115,7 +119,11 @@ export default {
 
     // 发送请求
     async sendSubmit() {
-      var { ShowResourceName, Remarks, TypeID } = this.data_info;
+      var ShowResourceName = this.data_info.showResourceName;
+      var Remarks = this.data_info.describe;
+      var TypeID = this.data_info.typeID;
+
+      console.log(ShowResourceName, Remarks, TypeID);
 
       // 验证文件名称是否重复
       var res = await getFile("hasU3DResNameV1", 1, {
@@ -128,26 +136,54 @@ export default {
 
       var flag = true;
 
-      // 1.上传AR资源
+      var mainResID = null;
+
+      // 1.上传AR资源-安卓
       if (this.file_android.length > 0) {
-        var arRes = await uploadFiles(
+        this.isDisable = true;
+
+        var androidRes = await uploadFiles(
           3,
           1,
           this.file_android,
           TypeID,
           ShowResourceName,
-          Remarks
+          Remarks,
+          "android"
         );
-        if (arRes.code != "000000") flag = false;
+        if (androidRes.code != "000000") flag = false;
       } else {
         this.$message.error("请先添加模型文件");
         return;
       }
 
-      var { resID } = arRes.resultObject[0];
+      // 取主文件resID
+      mainResID = androidRes.resultObject.mainResID;
+
+      // 1.上传AR资源-ios
+      if (this.file_ios.length > 0) {
+        var iosRes = await uploadFiles(
+          3,
+          1,
+          this.file_ios,
+          TypeID,
+          ShowResourceName,
+          Remarks,
+          "ios",
+          mainResID
+        );
+        if (iosRes.code != "000000") flag = false;
+      } else {
+        this.$message.error("请先添加模型文件");
+        return;
+      }
+
+      this.data_info.androidResID = androidRes.resultObject.resID;
+      this.data_info.iosResID = iosRes.resultObject.resID;
+
       // 2.上传主图、子图
       if (this.main_list.length > 0) {
-        var mainRes = await uploadFiles(4, 1, this.main_list, true, resID);
+        var mainRes = await uploadFiles(4, 1, this.main_list, true, mainResID);
         if (mainRes.code !== "000000") flag = false;
       }
       if (this.children_list.length > 0) {
@@ -156,16 +192,23 @@ export default {
           1,
           this.children_list,
           false,
-          resID
+          mainResID
         );
         if (childRes.code !== "000000") flag = false;
       }
 
-      // 3.根据标杆做提示
-      if (flag) {
-        this.$message.success("上传成功！");
+      this.data_info.mainImageID = mainRes.resultObject[0].resID;
+      this.data_info.mainResID = mainResID;
+      console.log(this.data_info);
+
+      getFile("u3dRelationalSub", 1, this.data_info).then((res) => {
+        hintMessage(this, res);
         this.$router.push("ar_list");
-      }
+      });
+
+      // if (flag) {
+      //   this.$message.success("上传成功！");
+      // }
     },
 
     // 取消
@@ -190,7 +233,7 @@ export default {
         return;
       }
       var name = name.substring(0, index);
-      this.data_info.ShowResourceName = name;
+      this.data_info.showResourceName = name;
       var obj = { ...this.data_info };
       this.data_info = { ...obj };
       this.file_android = [file];
@@ -207,7 +250,7 @@ export default {
         return;
       }
       var name = name.substring(0, index);
-      this.data_info.ShowResourceName = name;
+      this.data_info.showResourceName = name;
       var obj = { ...this.data_info };
       this.data_info = { ...obj };
       this.file_ios = [file];
@@ -234,6 +277,14 @@ export default {
       .el-input,
       .el-textarea {
         width: 300px;
+      }
+
+      // 上传按钮容器
+      .wraper {
+        display: flex;
+        .el-button {
+          margin-right: 10px;
+        }
       }
 
       // 头像上传

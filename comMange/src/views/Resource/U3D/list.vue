@@ -62,16 +62,7 @@
         label="模型名称"
         width="150"
       ></el-table-column>
-      <el-table-column
-        prop="uploadFileName"
-        label="原文件名"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="storeFileName"
-        label="存储文件名"
-        width="150"
-      ></el-table-column>
+
       <el-table-column prop="mainImageID" label="资源缩略图" width="120">
         <template slot-scope="scope">
           <el-avatar
@@ -83,16 +74,7 @@
           ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="resExtName"
-        label="资源后缀名"
-        width="100"
-      ></el-table-column>
-      <el-table-column
-        prop="scene"
-        label="业务场景"
-        width="100"
-      ></el-table-column>
+
       <el-table-column
         prop="uploadUName"
         label="上传用户"
@@ -109,11 +91,11 @@
         width="250"
       ></el-table-column>
       <el-table-column
-        prop="creationTime"
+        prop="createTime"
         label="上传时间"
         width="250"
       ></el-table-column>
-      <el-table-column label="操作" width="220" fixed="right">
+      <el-table-column label="操作" width="220">
         <template slot-scope="scope">
           <el-button
             @click="disableRow(scope.row.resID)"
