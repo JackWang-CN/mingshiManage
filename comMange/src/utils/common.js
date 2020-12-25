@@ -60,7 +60,7 @@ export const spliceKey = (obj) => {
 export const createGet = (currPage, pageSize, order) => {
   var obj = {};
   obj.currPage = currPage || 1;
-  obj.pageSize = pageSize || 10;
+  obj.pageSize = pageSize || 5;
   if (order) {
     obj.orderByFileds = order;
   }

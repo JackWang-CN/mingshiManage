@@ -104,7 +104,7 @@
 </template>
 
 <script>
-const fileUrl = window.baseUrl.ar_2d;
+const { normal_file } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
 import { getDataList, delData, updateData } from "@/utils/api/apis";
@@ -183,9 +183,9 @@ export default {
   watch: {
     // 拼接图片url
     data_list() {
-      spliceImg(this.data_list, "imgID", true);
+      spliceImg(this.data_list, "imgID");
       this.data_list.forEach((item) => {
-        if (item.nonFullImgID) item.noFullUrl = fileUrl + item.nonFullImgID;
+        if (item.nonFullImgID) item.noFullUrl = normal_file + item.nonFullImgID;
       });
     },
   },

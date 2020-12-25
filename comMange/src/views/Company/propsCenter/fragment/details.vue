@@ -58,6 +58,7 @@
 </template>
 
 <script>
+const { normal_file } = window.baseUrl;
 import {
   getDetails,
   addDataList,
@@ -72,9 +73,8 @@ export default {
       this.operate = "1";
       getDetails(this.model, this.control, 1, { chipID: id }).then((res) => {
         this.data_info = res.resultObject;
-        this.imageUrl = window.baseUrl.ar_2d + res.resultObject.imgID;
-        this.imageUrl_noFull =
-          window.baseUrl.ar_2d + res.resultObject.nonFullImgID;
+        this.imageUrl = normal_file + res.resultObject.imgID;
+        this.imageUrl_noFull = normal_file + res.resultObject.nonFullImgID;
       });
     }
   },
@@ -102,7 +102,7 @@ export default {
         case "0":
           // 是否上传文件
           if (this.img_list.length > 0) {
-            var res = await uploadFiles(4, 1, this.img_list, false, "道具碎片");
+            var res = await uploadFiles(1, 1, this.img_list);
             this.data_info.imgID = res.resultObject[0].resID;
           } else {
             this.$message.error("请添加碎片缩略图");
@@ -110,13 +110,7 @@ export default {
           }
           // 是否上传文件
           if (this.imgNoFull_list.length > 0) {
-            var res = await uploadFiles(
-              4,
-              1,
-              this.imgNoFull_list,
-              false,
-              "道具碎片(未集齐)"
-            );
+            var res = await uploadFiles(1, 1, this.imgNoFull_list);
             this.data_info.nonFullImgID = res.resultObject[0].resID;
           }
           // 新增数据
@@ -133,18 +127,12 @@ export default {
         case "1":
           // 是否上传文件
           if (this.img_list.length > 0) {
-            var res = await uploadFiles(4, 1, this.img_list, false, "道具碎片");
+            var res = await uploadFiles(1, 1, this.img_list);
             this.data_info.imgID = res.resultObject[0].resID;
           }
           // 是否上传文件
           if (this.imgNoFull_list.length > 0) {
-            var res = await uploadFiles(
-              4,
-              1,
-              this.imgNoFull_list,
-              false,
-              "道具碎片(未集齐)"
-            );
+            var res = await uploadFiles(1, 1, this.imgNoFull_list);
             this.data_info.nonFullImgID = res.resultObject[0].resID;
           }
           // 修改数据

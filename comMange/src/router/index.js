@@ -769,6 +769,16 @@ export default new VueRouter({
           ],
         },
 
+        // AR游戏配置-金币模型配置
+        {
+          path: "config_gold",
+          component: () => import("../views/ArGame/config/gold.vue"),
+          meta: [
+            { name: "AR游戏配置", path: "" },
+            { name: "金币模型配置", path: "config_gold" },
+          ],
+        },
+
         // AR游戏配置-城市范围配置
         {
           path: "config_scope",

@@ -11,10 +11,20 @@
           <li
             v-for="item in data_list"
             :key="item.nickname"
-            @click="switchCustomer(item)"
-            :class="item.isActive ? 'active' : ''"
+            @mousedown="rightClick($event, item)"
+            @click="
+              item.chatType == 'Notice'
+                ? getNoctice(item)
+                : switchCustomer(item)
+            "
+            :class="item.isActive ? 'active chat_list' : 'chat_list'"
           >
-            <el-avatar :size="50" :src="item.imgUrl" shape="square"></el-avatar>
+            <el-avatar
+              :size="50"
+              :src="item.imgUrl"
+              shape="square"
+              class="headImg"
+            ></el-avatar>
             <div class="chat">
               <!-- 昵称 -->
               <span class="nickname">{{ item.nickname }}</span>
@@ -54,11 +64,23 @@
           <!-- 输入框 -->
           <div class="message_input">
             <textarea v-model="data_info.draft" @input="saveDraft"></textarea>
-            <button @click="sendMessage">发送</button>
+            <button :disabled="sendBtn_status" @click="sendMessage">
+              发送
+            </button>
           </div>
         </div>
       </el-main>
     </el-container>
+
+    <!-- 右键菜单 -->
+    <ul
+      id="rightMenu"
+      :style="`top:${menu_y};left:${menu_x}`"
+      v-show="showMenu"
+    >
+      <li>标为未读</li>
+      <li>删除</li>
+    </ul>
   </div>
 </template>
 
@@ -67,9 +89,21 @@ import { spliceImg, createGet, toBeProto } from "@/utils/common";
 import { getData, getDataList, getDetail } from "@/utils/api/apis";
 export default {
   created() {
-    // window.websocket.onmessage = function () {
-    //   console.log("监听接收");
-    // };
+    document.oncontextmenu = () => {
+      return false;
+    };
+
+    document.onmousedown = (e) => {
+      var className = e.target.className;
+      console.log(className);
+      if (
+        !className.includes("chat_list") &&
+        !className.includes("nickname") &&
+        !className.includes("message") &&
+        !className.includes("chat")
+      )
+        this.showMenu = false;
+    };
   },
 
   props: ["message"],
@@ -104,15 +138,23 @@ export default {
         },
       ],
 
+      sendBtn_status: false, // 发送按钮禁用状态
+
       receiveID: "", // 当前聊天的客户ID
       message_list: [], // 聊天记录
       chatHeight: 0, // 聊天窗口偏移值
+
+      menu_x: "0", // 右键菜单偏移值
+      menu_y: "0", // 右键菜单偏移值
+      showMenu: false,
     };
   },
 
   methods: {
     // 切换聊天窗口
     async switchCustomer(customer) {
+      this.sendBtn_status = false;
+
       var { nickname, receiveID } = customer;
       this.receiveID = receiveID;
       // 1.保存草稿
@@ -161,38 +203,6 @@ export default {
         }
       });
     },
-
-    // 接收消息
-    // webMessage(res) {
-    //   var mesInfo = JSON.parse(res.data);
-    //   // 1.判断用户是否已在会话列表中
-    //   switch (mesInfo.Type) {
-    //     case "16":
-    //       var flag = true;
-    //       this.data_list.some((item, index) => {
-    //         if (item.receiveID == mesInfo.OutUserId) {
-    //           // 已在-调整顺序
-    //           flag = false;
-    //         }
-    //         return item.receiveID == mesInfo.OutUserId;
-    //       });
-    //   }
-
-    //   // 2.判断当前聊天窗口是否为消息来源用户
-    //   if (mesInfo.OutUserId && mesInfo.OutUserId == this.data_info.receiveID) {
-    //     this.find_form = createGet(1, 20);
-    //     this.find_form.data = { receiveID: this.data_info.receiveID };
-    //     getDataList(
-    //       this.model,
-    //       this.control,
-    //       1,
-    //       this.find_form,
-    //       this,
-    //       "message_list",
-    //       "userChatLogList"
-    //     );
-    //   }
-    // },
 
     // 发送消息
     sendMessage() {
@@ -244,6 +254,40 @@ export default {
         this.chatHeight = document.querySelector(".message_box").scrollHeight;
         document.querySelector(".message_box").scrollTop = this.chatHeight;
       });
+    },
+
+    // 获取公告
+    getNoctice(customer) {
+      var { nickname } = customer;
+      this.data_list.forEach((item) => {
+        if (item.nickname == nickname) {
+          item.isActive = true;
+        } else {
+          item.isActive = false;
+        }
+      });
+
+      this.sendBtn_status = true;
+      getDataList(
+        this.model,
+        this.control,
+        1,
+        this.find_form,
+        this,
+        "message_list",
+        "getPashInfo"
+      );
+    },
+
+    // 鼠标右击事件
+    rightClick(e) {
+      this.showMenu = false;
+      if (e.button == 2) {
+        console.log(e.clientX, e.clientY);
+        this.menu_x = e.clientX + "px";
+        this.menu_y = e.clientY + "px";
+        this.showMenu = true;
+      }
     },
   },
 
@@ -459,6 +503,21 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+
+  // 右键菜单
+  #rightMenu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #dadada;
+    li {
+      padding: 5px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(226, 226, 226);
       }
     }
   }

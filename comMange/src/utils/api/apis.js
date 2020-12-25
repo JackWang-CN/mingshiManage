@@ -285,3 +285,10 @@ export const changeFileInfo = (operate, method, version, info) => {
       return axios.delete(url, { data: info });
   }
 };
+
+// 8.删除文件 type: 0-普通资源 1-U3D资源
+export const delFile = (type, version, info) => {
+  var operate = type ? "u3dDel" : "del";
+  var url = fileUrl + `file/info/${operate}/v${version}`;
+  return axios.delete(url, { data: info });
+};

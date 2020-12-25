@@ -32,6 +32,16 @@
             width="180"
           ></el-table-column>
 
+          <el-table-column label="缩略图" width="120">
+            <template slot-scope="scope">
+              <el-image
+                style="width: 80px; height: 80px"
+                :src="scope.row.imgUrl"
+                fit="cover"
+              ></el-image>
+            </template>
+          </el-table-column>
+
           <el-table-column
             prop="activityContent"
             label="活动内容"
@@ -143,21 +153,31 @@
 
         <el-table :data="advert_list" style="width: 100%" border>
           <el-table-column
-            prop="merchantName"
-            label="商家名称"
-            width="180"
-          ></el-table-column>
-
-          <el-table-column
             prop="name"
             label="广告名称"
             width="180"
           ></el-table-column>
 
+          <el-table-column label="缩略图" width="120">
+            <template slot-scope="scope">
+              <el-avatar
+                :size="80"
+                :src="scope.row.imgUrl"
+                shape="square"
+              ></el-avatar>
+            </template>
+          </el-table-column>
+
           <el-table-column
             prop="contentText"
             label="广告内容"
             width="200"
+          ></el-table-column>
+
+          <el-table-column
+            prop="merchantName"
+            label="商家名称"
+            width="180"
           ></el-table-column>
 
           <el-table-column label="中心坐标" width="180">
@@ -203,6 +223,7 @@
             label="结束时间"
             width="180"
           ></el-table-column>
+
           <el-table-column label="操作" width="300">
             <template slot-scope="scope">
               <el-button
@@ -259,6 +280,16 @@
             label="事件名称"
             width="180"
           ></el-table-column>
+
+          <el-table-column label="缩略图" width="120">
+            <template slot-scope="scope">
+              <el-avatar
+                :size="80"
+                :src="scope.row.imgUrl"
+                shape="square"
+              ></el-avatar>
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="contentText"
@@ -403,6 +434,20 @@
           >
           </el-input>
         </el-form-item>
+
+        <el-form-item label="缩略图" style="display: block">
+          <el-upload
+            :auto-upload="false"
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :on-change="imgChange"
+            :file-list="img_list"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
 
       <!-- 广告 -->
@@ -464,6 +509,20 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="缩略图" style="display: block">
+          <el-upload
+            :auto-upload="false"
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :on-change="imgChange"
+            :file-list="img_list"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
 
       <!-- 世界 -->
@@ -501,9 +560,24 @@
           >
           </el-date-picker>
         </el-form-item>
+
         <el-form-item label="事件内容">
           <el-input type="textarea" :rows="3" v-model="data_info.contentText">
           </el-input>
+        </el-form-item>
+
+        <el-form-item label="缩略图" style="display: block">
+          <el-upload
+            :auto-upload="false"
+            class="avatar-uploader"
+            action="#"
+            :show-file-list="false"
+            :on-change="imgChange"
+            :file-list="img_list"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
       </el-form>
 
@@ -524,6 +598,7 @@ import {
   addData,
   updateData,
   delData,
+  uploadFiles,
 } from "@/utils/api/apis";
 export default {
   components: {
@@ -541,13 +616,17 @@ export default {
       activity_list: [],
       advert_list: [],
       world_list: [],
+      list_name: "",
+
       merchant_list: [],
       content_list: [], // 内容池列表
+      img_list: [], // 图片列表
       show_details: false,
       operate: 0,
       data_info: {},
+      imageUrl: "",
       title: "",
-      activeName: "activity",
+      activeName: "",
       model: "ARGame",
       control: "",
     };
@@ -555,44 +634,37 @@ export default {
 
   methods: {
     // 发送提交
-    sendSubmit() {
-      this.show_details = false;
+    async sendSubmit() {
       switch (this.operate) {
         case 0:
+          // 判断是否传图
+          if (!this.img_list.length) {
+            this.$message.error("请添加图片");
+            return;
+          }
+          // 上传图片
+          var res = await uploadFiles(1, 1, this.img_list);
+          this.data_info.imgID = res.resultObject[0].resID;
+
           addData(this.model, this.control, 1, this.data_info).then((res) => {
             hintMessage(this, res);
-            var form = filteObj({ ...this.find_form });
-            switch (this.control) {
-              case "ARActivityEvent":
-                var list = "activity_list";
-                break;
-              case "ARADEvent":
-                var list = "advert_list";
-                break;
-              case "ARWorldEvent":
-                var list = "world_list";
-                break;
-            }
-            getDataList(this.model, this.control, 1, form, this, list);
+            this.getList();
+            this.show_details = false;
           });
           break;
         case 1:
+          // 判断是否传图
+          if (this.img_list.length) {
+            // 上传图片
+            var res = await uploadFiles(1, 1, this.img_list);
+            this.data_info.imgID = res.resultObject[0].resID;
+          }
+
           updateData(this.model, this.control, 1, this.data_info).then(
             (res) => {
               hintMessage(this, res);
-              var form = filteObj({ ...this.find_form });
-              switch (this.control) {
-                case "ARActivityEvent":
-                  var list = "activity_list";
-                  break;
-                case "ARADEvent":
-                  var list = "advert_list";
-                  break;
-                case "ARWorldEvent":
-                  var list = "world_list";
-                  break;
-              }
-              getDataList(this.model, this.control, 1, form, this, list);
+              this.getList();
+              this.show_details = false;
             }
           );
           break;
@@ -627,40 +699,25 @@ export default {
       this.show_details = true;
       this.operate = type;
       this.data_info = { ...row };
+      this.imageUrl = row.imgUrl;
     },
 
     // 查询列表
     findData() {
-      var form = filteObj({ ...this.find_form });
-      switch (this.activeName) {
-        case "ARActivityEvent":
-          var list = "activity_list";
-          break;
-        case "ARADEvent":
-          var list = "advert_list";
-          break;
-        case "ARWorldEvent":
-          var list = "world_list";
-          break;
-      }
-
-      getDataList(this.model, this.control, 1, form, this, list);
+      this.getList();
     },
 
     // 启用/禁用
     switchState(type, row) {
       switch (type) {
         case 0:
-          var form = { activityID: row.activityID },
-            list = "activity_list";
+          var form = { activityID: row.activityID };
           break;
         case 1:
-          var form = { adid: row.adid },
-            list = "advert_list";
+          var form = { adid: row.adid };
           break;
         case 2:
-          var form = { worldEventID: row.worldEventID },
-            list = "world_list";
+          var form = { worldEventID: row.worldEventID };
           break;
       }
 
@@ -668,8 +725,7 @@ export default {
       var operate = row.enable ? "disable" : "enable";
       updateData(this.model, this.control, 1, form, operate).then((res) => {
         hintMessage(this, res);
-        var form = filteObj({ ...this.find_form });
-        getDataList(this.model, this.control, 1, form, this, list);
+        this.getList();
       });
     },
 
@@ -714,37 +770,47 @@ export default {
           this.find_form.currPage = page;
           break;
       }
-      var form = { ...this.find_form };
-      getDataList(this.model, this.control, 1, form, this, "data_list");
+
+      this.getList();
+    },
+
+    // 图片状态改变
+    imgChange(file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.img_list = [file];
     },
 
     // 清空
     clear() {
+      this.img_list = [];
       this.data_info = {};
+      this.imageUrl = "";
+    },
+
+    // 请求数据
+    async getList() {
+      var form = filteObj({ ...this.find_form });
+      var res = await getData(this.model, this.control, 1, form);
+      var data_list = res.resultObject.data;
+      this[this.list_name] = spliceImg(data_list, "imgID");
     },
   },
 
   watch: {
-    // 拼接图片url
-    data_list() {
-      this.data_list = spliceImg(this.data_list, "infoID");
-    },
-
     // 切换激活页
-    activeName(v) {
+    async activeName(v) {
       this.control = v;
       this.find_form = createGet();
-      var form = filteObj({ ...this.find_form });
       switch (v) {
         case "ARActivityEvent":
           this.title = "活动事件详情";
-          var length = this.activity_list.length,
-            list = "activity_list";
+          var length = this.activity_list.length;
+          this.list_name = "activity_list";
           break;
         case "ARADEvent":
           this.title = "广告事件详情";
-          var length = this.advert_list.length,
-            list = "advert_list";
+          var length = this.advert_list.length;
+          this.list_name = "advert_list";
           // 请求商家列表
           if (this.merchant_list.length == 0)
             getData("merchant", "merchantInfo", 1, createGet(1, 99999)).then(
@@ -763,13 +829,13 @@ export default {
           break;
         case "ARWorldEvent":
           this.title = "世界事件详情";
-          var length = this.world_list.length,
-            list = "world_list";
+          var length = this.world_list.length;
+          this.list_name = "world_list";
           break;
       }
 
-      if (length == 0) {
-        getDataList(this.model, this.control, 1, form, this, list);
+      if (!length) {
+        this.getList();
       }
     },
   },
@@ -801,6 +867,31 @@ export default {
 
     .el-date-editor.el-input {
       width: auto;
+    }
+  }
+
+  // 头像上传
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    &:hover {
+      border-color: #409eff;
+    }
+    .avatar-uploader-icon {
+      font-size: 20px;
+      color: #8c939d;
+      width: 130px;
+      height: 130px;
+      line-height: 130px;
+      text-align: center;
+    }
+    .avatar {
+      width: 130px;
+      height: 130px;
+      display: block;
     }
   }
 }

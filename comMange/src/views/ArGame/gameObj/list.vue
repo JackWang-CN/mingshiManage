@@ -19,23 +19,23 @@
           <el-table-column
             prop="name"
             label="对象名称"
-            width="180"
+            width="160"
           ></el-table-column>
 
           <el-table-column prop="ico" label="图标" width="120">
             <template slot-scope="scope">
-              <el-avatar
-                :size="70"
+              <el-image
+                style="width: 80px; height: 80px"
                 :src="scope.row.imgUrl"
-                shape="square"
-              ></el-avatar>
+                fit="cover"
+              ></el-image>
             </template>
           </el-table-column>
 
           <el-table-column
             prop="speed"
             label="速度"
-            width="180"
+            width="100"
           ></el-table-column>
 
           <el-table-column prop="typeName" label="类型" width="120">
@@ -70,22 +70,22 @@
             width="160"
           ></el-table-column>
 
+          <el-table-column prop="ico" label="图标" width="120">
+            <template slot-scope="scope">
+              <el-image
+                style="width: 80px; height: 80px"
+                :src="scope.row.imgUrl"
+                fit="cover"
+              ></el-image>
+            </template>
+          </el-table-column>
+
           <el-table-column prop="gender" label="生物性别" width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.gender == 0">女</span>
               <span v-else-if="scope.row.gender == 1">男</span>
             </template></el-table-column
           >
-
-          <el-table-column prop="ico" label="图标" width="120">
-            <template slot-scope="scope">
-              <el-avatar
-                :size="70"
-                :src="scope.row.imgUrl"
-                shape="square"
-              ></el-avatar>
-            </template>
-          </el-table-column>
 
           <el-table-column
             prop="criticalChance"

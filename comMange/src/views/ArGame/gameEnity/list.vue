@@ -36,11 +36,11 @@
 
       <el-table-column prop="ico" label="图标" width="120">
         <template slot-scope="scope">
-          <el-avatar
-            :size="70"
+          <el-image
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
+            fit="cover"
+          ></el-image>
         </template>
       </el-table-column>
 
@@ -183,12 +183,17 @@
             <div class="model_name">{{ model.name }}</div>
           </li>
         </ul>
-        <!-- 分页插件 -->
-        <Pagination
-          :find="find_form"
-          @sizeChange="pageChange('size', $event)"
-          @currChange="pageChange('curr', $event)"
-        ></Pagination>
+        <!-- 分页 -->
+        <el-pagination
+          background
+          layout="prev, pager, next,sizes"
+          :total="dialogTotal"
+          :page-size="prop_form.pageSize || 10"
+          :page-sizes="[5, 10, 20, 50]"
+          @size-change="dialogPageChange('size', $event)"
+          @current-change="dialogPageChange('curr', $event)"
+        >
+        </el-pagination>
         <!-- 选中模型 -->
         <div class="select_model" v-show="Object.keys(select_model).length">
           <div class="title">已选择</div>
@@ -216,7 +221,13 @@
 const { ar_2d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import { createGet, filteObj, spliceImg, hintMessage } from "@/utils/common";
-import { getDataList, addData, updateData, delData } from "@/utils/api/apis";
+import {
+  getData,
+  getDataList,
+  addData,
+  updateData,
+  delData,
+} from "@/utils/api/apis";
 export default {
   components: {
     Pagination,
@@ -231,6 +242,8 @@ export default {
   data() {
     return {
       find_form: { data: {} },
+      prop_form: {},
+
       data_list: [],
       data_info: { isCreature: 0 },
       show_details: false,
@@ -245,6 +258,7 @@ export default {
       model: "ARGame",
       control: "gameEntity",
       dialogControl: "gameObj",
+      dialogTotal: 0,
     };
   },
 
@@ -326,22 +340,9 @@ export default {
     // 打开对象列表
     showGameObj() {
       this.show_gameObj = true;
-
+      this.prop_form = createGet(1, 10);
       // 请求游戏对象列表
-      var form = filteObj(createGet());
-      if (this.activeName == 0) {
-        this.dialogControl = "gameObj";
-      } else {
-        this.dialogControl = "biologyObj";
-      }
-      getDataList(
-        this.model,
-        this.dialogControl,
-        1,
-        form,
-        this,
-        "gameObj_list"
-      );
+      this.getPropList();
     },
 
     // 点击选中模型
@@ -357,7 +358,6 @@ export default {
       this.data_info.objectInfoID = id;
       this.data_info.objectInfoName = this.select_model.name;
       this.obj_img = this.select_model.imgUrl;
-      console.log(this.data_info);
       this.show_gameObj = false;
     },
 
@@ -389,6 +389,28 @@ export default {
       getDataList(this.model, this.control, 1, form, this, "data_list");
     },
 
+    // 弹出框分页属性改变
+    dialogPageChange(type, page) {
+      switch (type) {
+        case "size":
+          this.prop_form.pageSize = page;
+          break;
+        case "curr":
+          this.prop_form.currPage = page;
+          break;
+      }
+
+      this.getPropList();
+    },
+
+    // 请求游戏对象列表
+    getPropList() {
+      getData(this.model, this.dialogControl, 1, this.prop_form).then((res) => {
+        this.gameObj_list = res.resultObject.data;
+        this.dialogTotal = res.resultObject.totalDataNum;
+      });
+    },
+
     // 清空
     clear() {
       this.data_info = {};
@@ -407,6 +429,9 @@ export default {
 
     activeName(v) {
       var type = v - 0;
+
+      this.dialogControl = type ? "biologyObj" : "gameObj";
+
       this.find_form.data.isCreature = type;
       var form = filteObj({ ...this.find_form });
       getDataList(this.model, this.control, 1, form, this, "data_list");

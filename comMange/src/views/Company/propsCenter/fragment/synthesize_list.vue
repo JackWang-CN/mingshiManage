@@ -170,7 +170,7 @@ export default {
   watch: {
     // 拼接图片url
     data_list() {
-      this.data_list = spliceImg(this.data_list, "glueImg", true);
+      this.data_list = spliceImg(this.data_list, "glueImg");
     },
   },
 };

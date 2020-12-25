@@ -25,11 +25,11 @@
 
       <el-table-column label="图片" width="140">
         <template slot-scope="scope">
-          <el-avatar
-            :size="80"
+          <el-image
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
+            fit="cover"
+          ></el-image>
         </template>
       </el-table-column>
 

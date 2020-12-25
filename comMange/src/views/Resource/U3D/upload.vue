@@ -123,8 +123,6 @@ export default {
       var Remarks = this.data_info.describe;
       var TypeID = this.data_info.typeID;
 
-      console.log(ShowResourceName, Remarks, TypeID);
-
       // 验证文件名称是否重复
       var res = await getFile("hasU3DResNameV1", 1, {
         resourceName: ShowResourceName,

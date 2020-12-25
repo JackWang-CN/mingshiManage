@@ -155,6 +155,7 @@
 </template>
 
 <script>
+const { normal_file } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import {
   getDetails,
@@ -175,7 +176,8 @@ export default {
       this.operate = 1;
       getDetails(this.model, this.control, 1, { glueID: id }).then((res) => {
         this.data_info = res.resultObject;
-        this.imageUrl = window.baseUrl.ar_2d + res.resultObject.glueImg;
+        this.imageUrl = normal_file + res.resultObject.glueImg;
+        this.chip_select = res.resultObject.chip;
         res.resultObject.chip.forEach((item) => {
           this.chipID_list.push(item.chipID);
         });
@@ -214,13 +216,7 @@ export default {
         case 0:
           // 是否上传文件
           if (this.img_list.length > 0) {
-            var res = await uploadFiles(
-              4,
-              1,
-              this.img_list,
-              false,
-              "合成配方图片"
-            );
+            var res = await uploadFiles(1, 1, this.img_list);
             this.data_info.glueImg = res.resultObject[0].resID;
           } else {
             this.$message.error("请添加配方图片");
@@ -240,13 +236,7 @@ export default {
         case 1:
           // 是否上传文件
           if (this.img_list.length > 0) {
-            var res = await uploadFiles(
-              4,
-              1,
-              this.img_list,
-              false,
-              "合成配方图片"
-            );
+            var res = await uploadFiles(1, 1, this.img_list);
             this.data_info.glueImg = res.resultObject[0].resID;
           }
           updateDetails(
@@ -359,7 +349,7 @@ export default {
   },
 
   watch: {
-    // 拼接图片url
+    // 拼接原始道具列表图片url
     data_list() {
       this.data_list = spliceImg(this.data_list, "facadeImageID", true);
     },
@@ -367,7 +357,7 @@ export default {
     // 编译碎片列表（1.图片拼接 2.添加是否已被添加判断属性）
     chip_list() {
       var list = [...this.chip_list];
-      list = spliceImg(list, "imgID", true);
+      list = spliceImg(list, "imgID");
       list.forEach((item) => {
         var flag = this.chipID_list.includes(item.chipID);
         item.isSelect = flag;

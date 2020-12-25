@@ -224,7 +224,7 @@ export const translateProto = (str) => {
         title: "新消息",
         message: "IM登录成功",
         type: "success",
-        position: "bottom-right",
+        position: "top-right",
       });
 
       if (res.array[1] == "ok") {
@@ -247,7 +247,7 @@ export const translateProto = (str) => {
         title: "好友申请",
         message: "有新的好友申请",
         type: "warning",
-        position: "bottom-right",
+        position: "top-right",
       });
       break;
 
@@ -282,7 +282,7 @@ export const translateProto = (str) => {
         title: "新消息",
         message: "您有新的消息，请注意查收",
         type: "warning",
-        position: "bottom-right",
+        position: "top-right",
       });
       return obj;
 

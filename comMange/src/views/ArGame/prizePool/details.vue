@@ -11,19 +11,17 @@
       </el-table-column>
       <el-table-column label="缩略图" width="180">
         <template slot-scope="scope">
-          <el-avatar
-            :size="60"
+          <el-image
+            v-if="scope.row.imgUrl"
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-            v-if="scope.row.typeID != 0"
-          ></el-avatar>
+            fit="cover"
+          ></el-image>
 
-          <el-avatar
-            :size="60"
-            :src="goldImg"
-            shape="square"
-            v-else-if="scope.row.typeID == 0"
-          ></el-avatar>
+          <span v-else
+            >无
+            {{ scope.row.imgUrl }}
+          </span>
         </template>
       </el-table-column>
 
@@ -35,6 +33,7 @@
           <span v-else-if="scope.row.typeID == 3">优惠券</span>
           <span v-else-if="scope.row.typeID == 4">配方</span>
           <span v-else-if="scope.row.typeID == 5">盲盒</span>
+          <span v-else-if="scope.row.typeID == 6">内容类</span>
         </template>
       </el-table-column>
 
@@ -90,12 +89,12 @@
 
         <el-form-item label="奖品类型">
           <el-select v-model="data_info.typeID" @change="typeChange">
-            <el-option label="金币" :value="0"></el-option>
-            <el-option label="道具" :value="1"></el-option>
-            <el-option label="碎片" :value="2"></el-option>
-            <el-option label="优惠券" :value="3"></el-option>
-            <el-option label="配方" :value="4"></el-option>
-            <el-option label="盲盒" :value="5"></el-option>
+            <el-option
+              v-for="type in type_list"
+              :key="type.lootTypeID"
+              :label="type.typeName"
+              :value="type.lootTypeID"
+            ></el-option>
           </el-select>
         </el-form-item>
 
@@ -105,7 +104,12 @@
           >
 
           <div class="mode_img" v-if="data_info.propID">
-            <el-avatar :size="80" :src="propImg" shape="square"></el-avatar>
+            <el-image
+              v-if="propImg"
+              style="width: 80px; height: 80px"
+              :src="propImg"
+              fit="cover"
+            ></el-image>
             <el-tag>{{ data_info.propName }}</el-tag>
           </div>
         </el-form-item>
@@ -140,6 +144,7 @@
         :visible.sync="show_props"
         width="25%"
         append-to-body
+        @closed="insideClear"
       >
         <el-table :data="prop_list">
           <el-table-column prop="name" label="道具名称"></el-table-column>
@@ -147,10 +152,12 @@
           <el-table-column label="缩略图" width="120">
             <template slot-scope="scope">
               <el-avatar
+                v-if="scope.row.imgUrl"
                 :size="60"
                 :src="scope.row.imgUrl"
                 shape="square"
               ></el-avatar>
+              <span v-else>无</span>
             </template>
           </el-table-column>
 
@@ -206,14 +213,18 @@ export default {
     this.find_form.data = { lootStoreID: this.lootStoreID };
     // 请求当前奖池下的奖品列表
     getDataList(this.model, this.control, 1, this.find_form, this, "data_list");
+
+    // 请求盲盒中的奖品列表
+    getData("ARGame", "lootType", 1, {}, "getLootTypeList").then((res) => {
+      this.type_list = res.resultObject;
+    });
   },
 
   data() {
     return {
       lootStoreID: "",
-      countMode: 0,
       find_form: {},
-      prop_form: {},
+      prop_form: {}, // 奖品属性
       data_list: [],
       data_info: { typeID: 0 },
       show_details: false,
@@ -221,6 +232,7 @@ export default {
       prize_list: [], // 奖品列表
       select_model: {},
       prop_list: [],
+      type_list: [], // 奖品类型列表
       propImg: "",
 
       goldImg: require("@/assets/images/icon/gold.jpg"),
@@ -239,6 +251,11 @@ export default {
   methods: {
     // 点击提交按钮
     async sendSubmit() {
+      if (this.data_info.typeID != 0 && !this.data_info.propID) {
+        this.$message.error("请选择需绑定的奖品");
+        return;
+      }
+
       this.show_details = false;
       this.data_info.lootStoreID = this.lootStoreID;
       switch (this.operate) {
@@ -310,13 +327,19 @@ export default {
             this.dialogControl = "blindBox";
             this.prop_title = "盲盒";
             break;
+          // 内容类
+          case 6:
+            this.dialogModel = "ARGame";
+            this.dialogControl = "contentStore";
+            this.prop_title = "内容类";
+            break;
         }
       }
 
       this.show_details = true;
       this.operate = type;
       if (type) {
-        this.propImg = row.imgUrl;
+        this.propImg = row.propImage ? row.imgUrl : null;
         this.data_info = { ...row };
       }
     },
@@ -329,14 +352,7 @@ export default {
       }
       this.show_props = true;
       // 请求道具列表
-      getDataList(
-        this.dialogModel,
-        this.dialogControl,
-        1,
-        this.prop_form,
-        this,
-        "prop_list"
-      );
+      this.getPropList();
     },
 
     // 选择当前道具
@@ -344,7 +360,7 @@ export default {
       this.data_info.propName = row.name;
       this.data_info.propID = row.myID;
       this.propImg = row.imgUrl;
-      console.log(this.propImg);
+      console.log(row.imgUrl);
       this.show_props = false;
     },
 
@@ -408,7 +424,15 @@ export default {
           this.dialogControl = "blindBox";
           this.prop_title = "盲盒";
           break;
+        // 内容类
+        case 6:
+          this.dialogModel = "ARGame";
+          this.dialogControl = "contentStore";
+          this.prop_title = "内容类";
+          break;
       }
+      this.data_info.propID = null;
+      this.propImg = null;
     },
 
     // 分页属性改变
@@ -455,6 +479,11 @@ export default {
       this.propImg = "";
     },
 
+    // 内层弹出框清空
+    insideClear() {
+      this.prop_form = createGet();
+    },
+
     // 取消回到列表页
     cancel() {
       this.$router.push("prizePool_list");
@@ -465,12 +494,18 @@ export default {
     // 拼接图片url
     data_list() {
       this.data_list.forEach((item) => {
-        if (item.typeID == 0) return;
+        if (item.typeID == 0) {
+          item.imgUrl = this.goldImg;
+          return;
+        }
+
         var imgID = item.propImage;
-        if (item.typeID == 3) {
-          item.imgUrl = normalUrl + imgID;
-        } else {
+        if (!imgID) return;
+
+        if (item.typeID == 1 || item.typeID == 5) {
           item.imgUrl = arUrl + imgID;
+        } else {
+          item.imgUrl = normalUrl + imgID;
         }
       });
     },
@@ -482,7 +517,7 @@ export default {
           var key = "propID";
           break;
         case "propChip":
-          spliceImg(this.prop_list, "imgID", true);
+          spliceImg(this.prop_list, "imgID");
           var key = "chipID";
           break;
         case "coupon":
@@ -492,7 +527,7 @@ export default {
         case "propChipGlue":
           this.prop_list.forEach((item) => {
             item.name = item.glueName;
-            item.imgUrl = arUrl + item.glueImg;
+            item.imgUrl = normalUrl + item.glueImg;
           });
           var key = "glueID";
           break;
@@ -503,11 +538,16 @@ export default {
           });
           var key = "boxID";
           break;
+        case "contentStore":
+          this.prop_list.forEach((item) => {
+            item.name = item.storeName;
+          });
+          var key = "contentStoreID";
+          break;
       }
       this.prop_list.forEach((item) => {
         item.myID = item[key];
       });
-      console.log(this.prop_list);
     },
   },
 };

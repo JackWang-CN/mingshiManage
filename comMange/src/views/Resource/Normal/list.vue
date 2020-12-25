@@ -62,11 +62,16 @@
         label="原文件名"
         width="150"
       ></el-table-column>
-      <el-table-column
-        prop="storeFileName"
-        label="存储文件名"
-        width="150"
-      ></el-table-column>
+      <el-table-column label="存储文件名" width="120">
+        <template slot-scope="scope">
+          <el-image
+            v-if="scope.row.imgUrl"
+            style="width: 80px; height: 80px"
+            :src="scope.row.imgUrl"
+            fit="cover"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="resExtName"
         label="资源后缀名"
@@ -98,9 +103,9 @@
         width="250"
       ></el-table-column>
       <el-table-column
-        prop="creationTime"
+        prop="createTime"
         label="上传时间"
-        width="250"
+        width="180"
       ></el-table-column>
       <el-table-column label="操作" width="210" fixed="right">
         <template slot-scope="scope">
@@ -118,10 +123,15 @@
             v-if="scope.row.isDelete"
             >恢复</el-button
           >
-          <el-link
-            class="btn_link"
-            type="primary"
-            :href="fileUrl + scope.row.resID"
+
+          <el-button
+            type="danger"
+            size="small"
+            @click="deleRow(scope.row.resID)"
+            >删除</el-button
+          >
+
+          <el-link class="btn_link" type="primary" :href="scope.row.imgUrl"
             >下载文件</el-link
           >
         </template>
@@ -138,14 +148,16 @@
 </template>
 
 <script>
+const { normal_file } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import {
   getFileList,
   downloadFile,
   disableFile,
   enableFile,
+  delFile,
 } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey } from "@/utils/common";
+import { createGet, filteObj, spliceKey, hintMessage } from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -195,6 +207,15 @@ export default {
       });
     },
 
+    // 删除文件
+    deleRow(resID) {
+      delFile(0, 1, { resID, clientType: "web" }).then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getFileList(undefined, 1, form, this);
+      });
+    },
+
     // 恢复禁用
     enableRow(resId) {
       enableFile(1, 1, { resId }).then((res) => {
@@ -235,6 +256,17 @@ export default {
     activeName() {
       var form = { ...this.find_form };
       getFileList(undefined, 1, form, this);
+    },
+
+    data_list() {
+      var list = [".jpg", ".png", ".gif", ".jfif"];
+      this.data_list.forEach((item) => {
+        item.imgUrl = normal_file + item.resID;
+        if (list.includes(item.resExtName)) {
+          item.isImg = true;
+        }
+      });
+      console.log(this.data_list);
     },
   },
 };

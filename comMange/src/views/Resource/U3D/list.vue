@@ -111,10 +111,18 @@
             v-if="scope.row.isDelete"
             >恢复</el-button
           >
+
+          <el-button
+            type="danger"
+            size="small"
+            @click="deleRow(scope.row.resID)"
+            >删除</el-button
+          >
+
           <el-link
             class="btn_link"
             type="primary"
-            :href="fileUrl + 'aru3d/v1?Mark=' + scope.row.resID"
+            :href="fileUrl + scope.row.resID"
             >下载文件</el-link
           >
         </template>
@@ -131,14 +139,22 @@
 </template>
 
 <script>
+const { ar_3d } = window.baseUrl;
 import Pagination from "@/components/Pagination";
 import {
   getFileList,
   downloadFile,
   disableFile,
   enableFile,
+  delFile,
 } from "@/utils/api/apis";
-import { createGet, filteObj, spliceKey, spliceImg } from "@/utils/common";
+import {
+  createGet,
+  filteObj,
+  spliceKey,
+  spliceImg,
+  hintMessage,
+} from "@/utils/common";
 export default {
   components: {
     Pagination,
@@ -149,6 +165,8 @@ export default {
     this.find_form = createGet(1, 10, "tableID desc");
     var form = { ...this.find_form };
     getFileList("u3dInfoList", 1, form, this);
+
+    this.fileUrl = ar_3d;
   },
 
   data() {
@@ -161,7 +179,7 @@ export default {
       isShowDetails: false, // 是否显示详情
       delType: 2,
 
-      fileUrl: "https://api.resources.scmsar.com/file/download/",
+      fileUrl: "",
     };
   },
 
@@ -194,6 +212,15 @@ export default {
             getFileList("u3dInfoList", 1, form, this);
             break;
         }
+      });
+    },
+
+    // 删除文件
+    deleRow(resID) {
+      delFile(1, 1, { resID, clientType: "web" }).then((res) => {
+        hintMessage(this, res);
+        var form = { ...this.find_form };
+        getFileList("u3dInfoList", 1, this.find_form, this);
       });
     },
 
