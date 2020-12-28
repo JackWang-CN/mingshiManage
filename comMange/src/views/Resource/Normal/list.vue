@@ -266,7 +266,6 @@ export default {
           item.isImg = true;
         }
       });
-      console.log(this.data_list);
     },
   },
 };

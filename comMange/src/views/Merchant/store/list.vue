@@ -16,11 +16,10 @@
 
       <el-table-column prop="headImage" label="商户头像" width="150">
         <template slot-scope="scope">
-          <el-avatar
-            :size="80"
+          <el-image
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
+          ></el-image>
         </template>
       </el-table-column>
 

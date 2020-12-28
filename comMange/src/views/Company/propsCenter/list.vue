@@ -55,8 +55,19 @@
         label="道具名称"
         width="120"
       ></el-table-column>
+
+      <el-table-column prop="facadeImageID" label="缩略图" width="120">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 80px; height: 80px"
+            :src="scope.row.imgUrl"
+          ></el-image>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="typeName" label="道具类型" width="120">
       </el-table-column>
+
       <el-table-column prop="isShelfPropMall" label="上架状态" width="120">
         <template slot-scope="scope">
           <span v-if="scope.row.isShelfPropMall">上架中</span>
@@ -86,16 +97,7 @@
           <span v-else>禁用</span>
         </template>
       </el-table-column>
-      <el-table-column prop="facadeImageID" label="道具缩略图" width="120">
-        <template slot-scope="scope">
-          <el-avatar
-            v-if="scope.row.facadeImageID"
-            shape="square"
-            :size="80"
-            :src="fileUrl + 'ar2d/v1?Mark=' + scope.row.facadeImageID"
-          ></el-avatar>
-        </template>
-      </el-table-column>
+
       <el-table-column
         prop="describe"
         label="道具描述"
@@ -269,7 +271,7 @@ export default {
 
     // 拼接图片url
     data_list() {
-      spliceImg(this.data_list, "facadeImageID");
+      spliceImg(this.data_list, "facadeImageID", true);
     },
   },
 };

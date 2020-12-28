@@ -54,11 +54,10 @@
       </el-table-column>
       <el-table-column prop="imgUrl" label="缩略图" width="120">
         <template slot-scope="scope">
-          <el-avatar
-            :size="80"
+          <el-image
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
+          ></el-image>
         </template>
       </el-table-column>
       <el-table-column prop="totalCount" label="发放数量" width="120">

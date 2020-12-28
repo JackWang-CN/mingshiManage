@@ -61,11 +61,10 @@
       ></el-table-column>
       <el-table-column prop="activityIcoID" label="活动图标" width="120">
         <template slot-scope="scope">
-          <el-avatar
-            :size="80"
+          <el-image
+            style="width: 80px; height: 80px"
             :src="scope.row.imgUrl"
-            shape="square"
-          ></el-avatar>
+          ></el-image>
         </template>
       </el-table-column>
       <el-table-column
